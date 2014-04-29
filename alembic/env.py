@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 from pyramid.paster import get_appsettings
 
-from wbcomposting.models import Base
+from wbcomposting.models.base import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

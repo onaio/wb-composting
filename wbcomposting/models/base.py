@@ -11,11 +11,7 @@ from sqlalchemy.orm import (
     sessionmaker,
     )
 
-from zope.sqlalchemy import ZopeTransactionExtension
-
-
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
-Base = declarative_base()
+from dashboard.models.base import Base, DBSession
 
 
 class RootFactory(object):
