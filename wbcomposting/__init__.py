@@ -38,13 +38,16 @@ def main(global_config, **settings):
     # configure password context
     pwd_context.load_path(global_config['__file__'])
 
+    # include ourselves
     includeme(config)
     return config.make_wsgi_app()
 
 
 def includeme(config):
+    config.include('dashboard')
+    config.commit()
     config.include('pyramid_jinja2')
     config.add_jinja2_search_path("wbcomposting:templates")
-    config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_static_view('static', 'wbcomposting:static', cache_max_age=3600)
     config.add_route('default', '/')
     config.scan()
