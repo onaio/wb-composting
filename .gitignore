@@ -36,3 +36,7 @@ nosetests.xml
 .pydevproject
 *.sqlite
 .idea
+
+# Deploy
+/.vagrant
+/ansible
