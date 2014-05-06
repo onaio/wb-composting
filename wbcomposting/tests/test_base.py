@@ -19,6 +19,7 @@ from wbcomposting.libs import DailyWasteSubmissionHandler
 from wbcomposting.models.base import (
     DBSession,
     Base)
+from wbcomposting.models import Municipality
 
 
 SETTINGS_FILE = 'test.ini'
@@ -40,6 +41,11 @@ class TestBase(unittest.TestCase):
     def tearDown(self):
         DBSession.remove()
         testing.tearDown()
+
+    def setup_test_data(self):
+        municipality = Municipality(name="Mukono")
+        with transaction.manager:
+            DBSession.add_all([municipality])
 
 
 class IntegrationTestBase(TestBase):
