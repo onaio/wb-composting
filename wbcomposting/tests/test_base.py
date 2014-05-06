@@ -12,7 +12,10 @@ from pyramid.security import IAuthenticationPolicy
 from sqlalchemy import engine_from_config
 from webtest import TestApp
 
+from dashboard.libs.submission_handler import submission_handler_manager
+
 from wbcomposting import main
+from wbcomposting.libs import DailyWasteSubmissionHandler
 from wbcomposting.models.base import (
     DBSession,
     Base)
@@ -68,3 +71,8 @@ class FunctionalTestBase(IntegrationTestBase):
         self.request.environ = {
             'SERVER_NAME': 'example.com',
         }
+
+
+class TestInclude(IntegrationTestBase):
+    def test_submission_handlers_included(self):
+        self.assertIn(DailyWasteSubmissionHandler, submission_handler_manager)

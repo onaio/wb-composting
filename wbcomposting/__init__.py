@@ -6,8 +6,10 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from sqlalchemy import engine_from_config
 
-from wbcomposting.security import group_finder, pwd_context
+from dashboard.libs.submission_handler import submission_handler_manager
 
+from wbcomposting.security import group_finder, pwd_context
+from wbcomposting.libs import DailyWasteSubmissionHandler
 from wbcomposting.models.base import (
     DBSession,
     Base,
@@ -43,9 +45,17 @@ def main(global_config, **settings):
     return config.make_wsgi_app()
 
 
+def hook_submission_handlers():
+    submission_handler_manager.add_handler(DailyWasteSubmissionHandler)
+
+
 def includeme(config):
     config.include('dashboard')
     config.commit()
+
+    # hook up our submission handlers
+    hook_submission_handlers()
+
     config.include('pyramid_jinja2')
     config.add_jinja2_search_path("wbcomposting:templates")
     config.add_static_view('static', 'wbcomposting:static', cache_max_age=3600)
