@@ -269,55 +269,7 @@
             </nav>
         </header>
         <div class="wrapper row-offcanvas row-offcanvas-left">
-            <!-- Left side column. contains the logo and sidebar -->
-            <aside class="left-side sidebar-offcanvas">                
-                <!-- sidebar: style can be found in sidebar.less -->
-                <section class="sidebar">
-                    <!-- Sidebar user panel -->
-
-                    <!-- search form -->
-
-                    <!-- /.search form -->
-                    <!-- sidebar menu: : style can be found in sidebar.less -->
-                    <ul class="sidebar-menu">
-                        <li class="active">
-                            <a href="{{ request.route_url('municipalities', traverse=(municipality.id)) }}">
-                                <i class="fa fa-desktop"></i> <span>Overview</span>
-                            </a>
-                        </li>
-                        <li class="">
-                            <a href="{{ request.route_url('municipalities', traverse=(municipality.id, 'daily-waste')) }}">
-                                <i class="fa fa-bar-chart-o"></i>
-                                <span>Daily Waste Register</span>
-                                <small class="badge pull-right bg-yellow">1</small>
-                            </a>
-                        </li>
-                    </ul>
-                </section>
-                <!-- /.sidebar -->
-            </aside>
-
-            <!-- Right side column. Contains the navbar and content of the page -->
-            <aside class="right-side">                
-                <!-- Content Header (Page header) -->
-                <section class="content-header">
-                    <h1>
-                        {{ self.title() }}
-                        <small>{{ self.description() }}</small>
-                    </h1>
-                    <ol class="breadcrumb">
-                      {% block breadcrumbs %}
-                        <li><a href="{{ request.route_url('default') }}"><i class="fa fa-desktop"></i> Overview</a></li>
-                      {% endblock %}
-                    </ol>
-                </section>
-
-                <!-- Main content -->
-                <section class="content">
-
-
-                </section><!-- /.content -->
-            </aside><!-- /.right-side -->
+            {% block wrapper %}{% endblock wrapper %}
         </div><!-- ./wrapper -->
 
 

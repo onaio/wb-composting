@@ -13,7 +13,8 @@ from wbcomposting.libs import DailyWasteSubmissionHandler
 from wbcomposting.models.base import (
     DBSession,
     Base,
-    )
+)
+from wbcomposting.models.municipality import MunicipalityFactory
 
 
 def main(global_config, **settings):
@@ -60,4 +61,5 @@ def includeme(config):
     config.add_jinja2_search_path("wbcomposting:templates")
     config.add_static_view('static', 'wbcomposting:static', cache_max_age=3600)
     config.add_route('default', '/')
+    config.add_route('municipalities', '/*traverse', factory=MunicipalityFactory)
     config.scan()

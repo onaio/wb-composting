@@ -3,17 +3,17 @@ from pyramid import testing
 from wbcomposting.tests.test_base import (
     IntegrationTestBase,
     FunctionalTestBase)
-from wbcomposting.views.default import home
+from wbcomposting.views.default import default
 
 
-class TestHomeView(IntegrationTestBase):
+class TestOverview(IntegrationTestBase):
     def test_home_view_response(self):
         request = testing.DummyRequest()
-        response = home(request)
+        response = default(request)
         self.assertEqual(response, {})
 
 
-class TestHomeViewFunctional(FunctionalTestBase):
+class TestOverviewFunctional(FunctionalTestBase):
     def test_home_view_response(self):
         url = self.request.route_url('default')
         response = self.testapp.get(url)

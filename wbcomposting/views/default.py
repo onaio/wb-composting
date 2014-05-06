@@ -3,6 +3,6 @@ from pyramid.view import (
 )
 
 
-@view_config(route_name='default', renderer='home.jinja2')
-def home(request):
+@view_config(route_name='default', renderer='default.jinja2')
+def default(request):
     return {}

@@ -11,25 +11,13 @@ from sqlalchemy.orm import (
     sessionmaker,
     )
 
-from dashboard.models.base import Base, DBSession
+from dashboard.models.base import (
+    Base, DBSession, BaseRootFactory, BaseModelFactory)
 
 
-class RootFactory(object):
-    __acl__ = [
-        (Allow, 'g:su', ALL_PERMISSIONS),
-        (Allow, Authenticated, 'authenticated'),
-        (Allow, 'g:supervisors', 'supervise'),
-    ]
-
-    def __init__(self, request):
-        self.request = request
+class RootFactory(BaseRootFactory):
+    pass
 
 
-class BaseModelFactory(object):
-    def __init__(self, request):
-        self.request = request
-
-    @property
-    def __parent__(self):
-        # set root factory as parent to inherit root's acl
-        return RootFactory(self.request)
+class ModelFactory(BaseModelFactory):
+    pass
