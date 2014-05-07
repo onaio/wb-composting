@@ -14,12 +14,12 @@ from webtest import TestApp
 
 from dashboard.libs.submission_handler import submission_handler_manager
 
-from wbcomposting import main
-from wbcomposting.libs import DailyWasteSubmissionHandler
-from wbcomposting.models.base import (
+from composting import main
+from composting.libs import DailyWasteSubmissionHandler
+from composting.models.base import (
     DBSession,
     Base)
-from wbcomposting.models import Municipality
+from composting.models import Municipality
 
 
 SETTINGS_FILE = 'test.ini'
@@ -51,7 +51,7 @@ class TestBase(unittest.TestCase):
 class IntegrationTestBase(TestBase):
     def setUp(self):
         super(IntegrationTestBase, self).setUp()
-        self.config.include('wbcomposting')
+        self.config.include('composting')
 
 
 class FunctionalTestBase(IntegrationTestBase):

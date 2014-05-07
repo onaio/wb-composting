@@ -1,9 +1,9 @@
 from pyramid import testing
 
-from wbcomposting.tests.test_base import (
+from composting.tests.test_base import (
     IntegrationTestBase,
     FunctionalTestBase)
-from wbcomposting.views.default import default
+from composting.views.default import default
 
 
 class TestOverview(IntegrationTestBase):

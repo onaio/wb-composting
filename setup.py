@@ -28,7 +28,7 @@ requires = [
 ]
 
 setup(name='WBComposting',
-      version='0.0',
+      version='0.1.0',
       description='WBComposting',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
@@ -44,17 +44,17 @@ setup(name='WBComposting',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      test_suite='wbcomposting',
+      test_suite='composting',
       install_requires=requires,
       message_extractors={
-          'wbcomposting': [
+          'composting': [
               ('**.py', 'lingua_python', None),
               ('**.jinja2', 'jinja2', None)]
       },
       entry_points="""\
       [paste.app_factory]
-      main = wbcomposting:main
+      main = composting:main
       [console_scripts]
-      initialize_WBComposting_db = wbcomposting.scripts.initializedb:main
+      initialize_WBComposting_db = composting.scripts.initializedb:main
       """,
       )

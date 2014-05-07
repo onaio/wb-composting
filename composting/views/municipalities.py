@@ -2,7 +2,7 @@ from pyramid.view import view_defaults, view_config
 
 from dashboard.views.base import BaseView
 
-from wbcomposting.models import Municipality
+from composting.models import Municipality
 
 
 @view_defaults(route_name='municipalities', context=Municipality)

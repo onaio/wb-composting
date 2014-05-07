@@ -1,9 +1,9 @@
 import json
 
 from dashboard.constants import XFORM_ID_STRING
-from wbcomposting.tests.test_base import TestBase
-from wbcomposting.libs import DailyWasteSubmissionHandler
-from wbcomposting.models import Submission, DailyWaste
+from composting.tests.test_base import TestBase
+from composting.libs import DailyWasteSubmissionHandler
+from composting.models import Submission, DailyWaste
 
 
 class TestDailyWasteRegisterHandler(TestBase):

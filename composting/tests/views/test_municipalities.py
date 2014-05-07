@@ -1,10 +1,10 @@
 from pyramid import testing
 
-from wbcomposting.tests.test_base import (
+from composting.tests.test_base import (
     IntegrationTestBase, FunctionalTestBase)
 
-from wbcomposting.models import Municipality
-from wbcomposting.views.municipalities import Municipalities
+from composting.models import Municipality
+from composting.views.municipalities import Municipalities
 
 
 class TestMunicipalities(IntegrationTestBase):

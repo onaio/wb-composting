@@ -6,7 +6,7 @@ from sqlalchemy import (
     String,
     )
 
-from wbcomposting.models.base import Base
+from composting.models.base import Base
 
 
 class Submission(Base):

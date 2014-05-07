@@ -8,13 +8,13 @@ from sqlalchemy import engine_from_config
 
 from dashboard.libs.submission_handler import submission_handler_manager
 
-from wbcomposting.security import group_finder, pwd_context
-from wbcomposting.libs import DailyWasteSubmissionHandler
-from wbcomposting.models.base import (
+from composting.security import group_finder, pwd_context
+from composting.libs import DailyWasteSubmissionHandler
+from composting.models.base import (
     DBSession,
     Base,
 )
-from wbcomposting.models.municipality import MunicipalityFactory
+from composting.models.municipality import MunicipalityFactory
 
 
 def main(global_config, **settings):
@@ -26,7 +26,7 @@ def main(global_config, **settings):
     session_factory = UnencryptedCookieSessionFactoryConfig(
         settings['secret_key'])
     config = Configurator(settings=settings,
-                          root_factory='wbcomposting.models.base.RootFactory',
+                          root_factory='composting.models.base.RootFactory',
                           session_factory=session_factory)
     config.set_authentication_policy(
         AuthTktAuthenticationPolicy(settings['secret_key'],
@@ -58,8 +58,8 @@ def includeme(config):
     hook_submission_handlers()
 
     config.include('pyramid_jinja2')
-    config.add_jinja2_search_path("wbcomposting:templates")
-    config.add_static_view('static', 'wbcomposting:static', cache_max_age=3600)
+    config.add_jinja2_search_path("composting:templates")
+    config.add_static_view('static', 'composting:static', cache_max_age=3600)
     config.add_route('default', '/')
     config.add_route('municipalities', '/*traverse', factory=MunicipalityFactory)
     config.scan()

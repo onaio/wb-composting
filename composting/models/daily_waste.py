@@ -9,7 +9,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from wbcomposting.models.base import Base
+from composting.models.base import Base
 
 
 class DailyWaste(Base):

@@ -12,7 +12,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from wbcomposting.models.base import Base, ModelFactory
+from composting.models.base import Base, ModelFactory
 
 
 class Municipality(Base):
