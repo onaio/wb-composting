@@ -23,7 +23,8 @@ requires = [
     'fabric',
     'passlib',
     'Babel',
-    'lingua'
+    'lingua',
+    'Dashboard'
 ]
 
 setup(name='WBComposting',
