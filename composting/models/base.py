@@ -16,8 +16,10 @@ from dashboard.models.base import (
 
 
 class RootFactory(BaseRootFactory):
-    pass
+    __name__ = ''
+    __parent = None
 
 
 class ModelFactory(BaseModelFactory):
-    pass
+    __name__ = ''
+    __parent = None

@@ -2,7 +2,9 @@ from pyramid.view import view_defaults, view_config
 
 from dashboard.views.base import BaseView
 
-from composting.models import Municipality
+from composting.views.helpers import selections_from_request
+from composting.models import Municipality, DailyWaste, Submission
+
 
 
 @view_defaults(route_name='municipalities', context=Municipality)
@@ -15,8 +17,30 @@ class Municipalities(BaseView):
         }
 
     @view_config(name='daily-waste', renderer='daily_waste.jinja2')
-    def daily_waste(self):
+    def daily_waste_list(self):
         municipality = self.request.context
+        statuses = [Submission.PENDING, Submission.APPROVED, Submission.REJECTED]
+        status_selections = selections_from_request(
+            self.request,
+            statuses,
+            lambda s: s == '1',
+            Submission.PENDING)
+
+        criterion = Submission.status.in_(status_selections)
+        daily_wastes = municipality.get_register_records(DailyWaste, criterion)
+
+        response = dict([(s, s in statuses) for s in status_selections])
+        response.update({
+            'municipality': municipality,
+            'daily_wastes': daily_wastes
+        })
+        return response
+
+    @view_config(
+        name='daily-waste', context=DailyWaste, renderer='overview.jinja2')
+    def daily_waste_show(self):
+        record = self.request.context
+        municipality = record.__parent__
         return {
             'municipality': municipality
         }

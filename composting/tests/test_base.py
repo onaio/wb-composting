@@ -1,8 +1,8 @@
 import os
 import unittest
 import transaction
+import json
 
-from webob.multidict import MultiDict
 from pyramid.registry import Registry
 from pyramid import testing
 from pyramid.paster import (
@@ -19,7 +19,7 @@ from composting.libs import DailyWasteSubmissionHandler
 from composting.models.base import (
     DBSession,
     Base)
-from composting.models import Municipality
+from composting.models import Municipality, Submission
 
 
 SETTINGS_FILE = 'test.ini'
@@ -28,6 +28,11 @@ engine = engine_from_config(settings, 'sqlalchemy.')
 
 
 class TestBase(unittest.TestCase):
+    daily_waste_submissions = [
+        (Submission.PENDING, '{"_notes": [], "_bamboo_dataset_id": "", "_tags": [], "_xform_id_string": "daily_waste_register", "meta/instanceID": "uuid:d0998c99-9147-476b-b393-56254c27735c", "municipal_council": "Hahbs", "end": "2014-04-28T14:57:51.208+03", "vehicle_number": "Kaj 123k", "skip_number": "10B", "start": "2014-04-28T14:56:36.215+03", "location": "-1.29435992 36.78708972 1792.0 15.0", "compressor_truck": "no", "_status": "submitted_via_web", "today": "2014-04-28", "_uuid": "d0998c99-9147-476b-b393-56254c27735c", "skip_type": "A", "clerk_signature": "1398686267686.jpg", "date": "2014-04-28T14:56:00.000+03", "waste_height": "250.0", "formhub/uuid": "16b00ce47f224ebc8ca010aa606464f0", "_attachments": ["wb_composting/attachments/1398686267686.jpg"], "_submission_time": "2014-04-28T11:58:13", "_geolocation": ["-1.29435992", "36.78708972"], "deviceid": "358239056515325", "_id": 52559}'),
+        (Submission.APPROVED, '{"_notes": [], "_bamboo_dataset_id": "", "_tags": [], "_xform_id_string": "daily_waste_register", "meta/instanceID": "uuid:d0998c99-9147-476b-b393-56254c27736c", "municipal_council": "Jahjs", "end": "2014-04-28T14:57:51.208+03", "vehicle_number": "1234", "skip_number": "11", "start": "2014-04-28T14:56:36.215+03", "location": "-1.29435992 36.78708972 1792.0 15.0", "compressor_truck": "no", "_status": "submitted_via_web", "today": "2014-04-29", "_uuid": "d0998c99-9147-476b-b393-56254c27735c", "skip_type": "B", "clerk_signature": "1398686267686.jpg", "date": "2014-04-29T14:56:00.000+03", "waste_height": "13.0", "formhub/uuid": "16b00ce47f224ebc8ca010aa606464f0", "_attachments": ["wb_composting/attachments/1398686267686.jpg"], "_submission_time": "2014-04-29T11:58:13", "_geolocation": ["-1.29435992", "36.78708972"], "deviceid": "358239056515325", "_id": 52559}')
+    ]
+
     def setUp(self):
         registry = Registry()
         registry.settings = settings
@@ -45,6 +50,10 @@ class TestBase(unittest.TestCase):
     def setup_test_data(self):
         municipality = Municipality(name="Mukono")
         with transaction.manager:
+            for status, submission in self.daily_waste_submissions:
+                daily_waste = DailyWasteSubmissionHandler().__call__(
+                    json.loads(submission))
+                daily_waste.submission.status = status
             DBSession.add_all([municipality])
 
 

@@ -18,3 +18,4 @@ class DailyWasteSubmissionHandler(SubmissionHandler):
             xform_id=xform_id, json_data=json_payload)
         daily_waste = DailyWaste(submission=submission)
         daily_waste.save()
+        return daily_waste

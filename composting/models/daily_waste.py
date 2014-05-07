@@ -1,13 +1,9 @@
 from sqlalchemy import (
     Column,
     Integer,
-    Date,
-    DateTime,
     ForeignKey
 )
-from sqlalchemy.orm import (
-    relationship,
-)
+from sqlalchemy.orm import relationship
 
 from composting.models.base import Base
 
