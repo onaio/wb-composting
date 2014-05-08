@@ -3,12 +3,12 @@ from fabric.api import local, cd, run, settings, env, prefix
 
 DEPLOYMENTS = {
     'prod': {
-        'virtual_env': '/home/ubuntu/.virtualenvs/WBComposting_prod',
+        'virtual_env': '/home/ubuntu/.virtualenvs/composting_prod',
         'project_dir': '/home/ubuntu/WBComposting',
         'alembic_section': 'production'
     },
     'dev': {
-        'virtual_env': '/home/vagrant/.virtualenvs/WBComposting_dev',
+        'virtual_env': '/home/vagrant/.virtualenvs/composting_dev',
         'project_dir': '/home/vagrant/WBComposting'
     }
 }
