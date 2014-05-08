@@ -36,12 +36,3 @@ class Municipalities(BaseView):
             'daily_wastes': daily_wastes,
             'status': status
         }
-
-    @view_config(
-        name='daily-waste', context=DailyWaste, renderer='overview.jinja2')
-    def daily_waste_show(self):
-        record = self.request.context
-        municipality = record.__parent__
-        return {
-            'municipality': municipality
-        }
