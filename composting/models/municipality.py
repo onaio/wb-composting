@@ -1,4 +1,3 @@
-from sqlalchemy.exc import DataError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import (
     Column,

@@ -23,18 +23,18 @@ class Municipalities(BaseView):
         status_selections = selections_from_request(
             self.request,
             statuses,
-            lambda s: s == '1',
+            lambda status: status == '1',
             Submission.PENDING)
 
         criterion = Submission.status.in_(status_selections)
         daily_wastes = municipality.get_register_records(DailyWaste, criterion)
 
-        response = dict([(s, s in statuses) for s in status_selections])
-        response.update({
+        status = dict([(s, s in statuses) for s in status_selections])
+        return {
             'municipality': municipality,
-            'daily_wastes': daily_wastes
-        })
-        return response
+            'daily_wastes': daily_wastes,
+            'status': status
+        }
 
     @view_config(
         name='daily-waste', context=DailyWaste, renderer='overview.jinja2')

@@ -62,4 +62,6 @@ def includeme(config):
     config.add_static_view('static', 'composting:static', cache_max_age=3600)
     config.add_route('default', '/')
     config.add_route('municipalities', '/*traverse', factory=MunicipalityFactory)
+    config.add_route('municipalities', '/municipalities/*traverse',
+                     factory=MunicipalityFactory)
     config.scan()
