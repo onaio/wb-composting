@@ -58,9 +58,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Provision using Ansible
   config.vm.provision "ansible" do |ansible|
     ansible.inventory_path = "ansible/development"
-    ansible.playbook = "ansible/wbcomposting.yml"
+    ansible.playbook = "ansible/composting.yml"
   #  ansible.sudo = true
-  #  ansible.raw_arguments = ['-l wbcomposting']
+  #  ansible.raw_arguments = ['-l composting']
   #  ansible.verbose = 'vvv'
   end
 end
