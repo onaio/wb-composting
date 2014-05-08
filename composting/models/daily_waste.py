@@ -6,7 +6,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
+from composting.libs.utils import translation_string_factory as _
 from composting.models.base import Base, ModelFactory
+from composting.models import Submission
 
 
 class DailyWaste(Base):
@@ -23,6 +25,27 @@ class DailyWaste(Base):
     @__name__.setter
     def __name__(self, value):
         self.id = value
+
+    def can_approve(self, request):
+        """
+        Anyone with permissions can approve if pending
+        """
+        return (self.submission.status == Submission.PENDING
+                or (self.submission.status == Submission.REJECTED
+                    and request.GET.get('role') != 'nema'))
+
+    def can_reject(self, request):
+        """
+        Only NEMA and WB can reject and only after it been approved
+        """
+        return (self.submission.status == Submission.APPROVED
+                and request.GET.get('role') == 'nema')
+
+    def can_unapprove(self, request):
+        """
+        Only the site manager can un-approve
+        """
+        return self.submission.status == Submission.APPROVED
 
 
 class DailyWasteFactory(ModelFactory):

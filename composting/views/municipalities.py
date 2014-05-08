@@ -19,7 +19,8 @@ class Municipalities(BaseView):
     @view_config(name='daily-waste', renderer='daily_waste.jinja2')
     def daily_waste_list(self):
         municipality = self.request.context
-        statuses = [Submission.PENDING, Submission.APPROVED, Submission.REJECTED]
+        statuses = [Submission.PENDING, Submission.APPROVED,
+                    Submission.REJECTED]
         status_selections = selections_from_request(
             self.request,
             statuses,

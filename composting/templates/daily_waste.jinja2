@@ -1,4 +1,6 @@
 {% extends 'base_municipality.jinja2' %}
+{% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
+{% from 'macros/action_button_class_from_status.jinja2' import action_button_class_from_status %}
 {% block title %}Daily Waste Register{% endblock %}
 {% block description %}List of daily waste register records{% endblock %}
 {% block breadcrumbs %}
@@ -55,6 +57,7 @@
               </tr>
               {% for daily_waste in daily_wastes %}
                 {% set report = daily_waste.submission.json_data %}
+                {% set status = daily_waste.submission.status %}
                 <tr>
                   <td>{{ report.vehicle_number }}</td>
                   <td>{{ report.skip_number }}</td>
@@ -64,13 +67,24 @@
                     <sup>3</sup>{% endif %}</td>
                   <td>0.25t</td>
                   <td><span
-                      class="label label-warning">{{ daily_waste.submission.status }}</span>
+                      class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
                   </td>
                   <td>
                     <a class="btn btn-default btn-xs">View</a>
-                    <button type="submit" class="btn btn-primary btn-xs" formaction="{{ request.route_url('daily-waste', traverse=(daily_waste.id, 'approve')) }}">
-                      Approve
+                    {% if daily_waste.can_approve(request) %}
+                      {% set action = 'approve' %}
+                    {% elif daily_waste.can_reject(request) %}
+                      {% set action = 'reject' %}
+                    {% elif daily_waste.can_unapprove(request) %}
+                      {% set action = 'unapprove' %}
+                    {% else %}
+                      {% set action = none %}
+                    {% endif %}
+                    {% if action is not none %}
+                    <button type="submit" class="btn {{ action_button_class_from_status(status) }} btn-xs" formaction="{{ request.route_url('daily-waste', traverse=(daily_waste.id, action)) }}">
+                      {{ action }}
                     </button>
+                    {% endif %}
                   </td>
                 </tr>
               {% endfor %}

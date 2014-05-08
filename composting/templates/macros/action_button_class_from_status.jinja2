@@ -1,0 +1,3 @@
+{% macro action_button_class_from_status (status) -%}
+  {% if status == 'pending' %}btn-primary{% elif status == 'approved' %}btn-danger{% else %}btn-primary{% endif %}
+{%- endmacro %}
