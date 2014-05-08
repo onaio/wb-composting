@@ -62,9 +62,8 @@
                   <td>{{ report.vehicle_number }}</td>
                   <td>{{ report.skip_number }}</td>
                   <td>{{ report.skip_type }}</td>
-                  <td>{{ report.waste_height }}m</td>
-                  <td>{% if report.volume %}{{ report.volume }}m
-                    <sup>3</sup>{% endif %}</td>
+                  <td>{% if report.volume %}{{ report.waste_height }}m{% endif %}</td>
+                  <td>{% if report.volume %}{{ report.volume }}m<sup>3</sup>{% endif %}</td>
                   <td>0.25t</td>
                   <td><span
                       class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
