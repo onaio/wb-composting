@@ -13,13 +13,13 @@
             <div class="form-group">
               <label for="inputEmail3" class="col-sm-2 control-label">Show:</label>
               <label class="checkbox-inline">
-                <input name="pending" type="checkbox" id="inlineCheckbox1" value="1" {% if pending is defined %}checked="checked"{% endif %}> Pending
+                <input name="pending" type="checkbox" id="inlineCheckbox1" value="1" {% if status.pending is defined %}checked="checked"{% endif %}> Pending
               </label>
               <label class="checkbox-inline">
-                <input name="approved" type="checkbox" id="inlineCheckbox2" value="1" {% if approved is defined %}checked="checked"{% endif %}> Approved
+                <input name="approved" type="checkbox" id="inlineCheckbox2" value="1" {% if status.approved is defined %}checked="checked"{% endif %}> Approved
               </label>
               <label class="checkbox-inline">
-                <input name="rejected" type="checkbox" id="inlineCheckbox3" value="1" {% if rejected is defined %}checked="checked"{% endif %}> Rejected
+                <input name="rejected" type="checkbox" id="inlineCheckbox3" value="1" {% if status.rejected is defined %}checked="checked"{% endif %}> Rejected
               </label>
             </div>
             <button type="submit" class="btn btn-primary btn-sm">Update</button>
@@ -40,33 +40,43 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
-          <table class="table table-hover">
-            <tbody>
-            <tr>
-              <th>Vehicle #</th>
-              <th>Skip #</th>
-              <th>Skip Type</th>
-              <th>Height</th>
-              <th>Volume</th>
-              <th>Tonnage</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-            {% for daily_waste in daily_wastes %}
-              {% set report = daily_waste.submission.json_data %}
-            <tr>
-              <td>{{ report.vehicle_number }}</td>
-              <td>{{ report.skip_number }}</td>
-              <td>{{ report.skip_type }}</td>
-              <td>{{ report.waste_height }}m</td>
-              <td>{% if report.volume %}{{ report.volume }}m<sup>3</sup>{% endif %}</td>
-              <td>0.25t</td>
-              <td><span class="label label-warning">{{ daily_waste.submission.status }}</span></td>
-              <td><button class="btn btn-primary btn-xs">Approve</button></td>
-            </tr>
-            {% endfor %}
-            </tbody>
-          </table>
+          <form method="post">
+            <table class="table table-hover">
+              <tbody>
+              <tr>
+                <th>Vehicle #</th>
+                <th>Skip #</th>
+                <th>Skip Type</th>
+                <th>Height</th>
+                <th>Volume</th>
+                <th>Tonnage</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+              {% for daily_waste in daily_wastes %}
+                {% set report = daily_waste.submission.json_data %}
+                <tr>
+                  <td>{{ report.vehicle_number }}</td>
+                  <td>{{ report.skip_number }}</td>
+                  <td>{{ report.skip_type }}</td>
+                  <td>{{ report.waste_height }}m</td>
+                  <td>{% if report.volume %}{{ report.volume }}m
+                    <sup>3</sup>{% endif %}</td>
+                  <td>0.25t</td>
+                  <td><span
+                      class="label label-warning">{{ daily_waste.submission.status }}</span>
+                  </td>
+                  <td>
+                    <a class="btn btn-default btn-xs">View</a>
+                    <button type="submit" class="btn btn-primary btn-xs" formaction="{{ request.route_url('daily-waste', traverse=(daily_waste.id, 'approve')) }}">
+                      Approve
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
         </div>
         <!-- /.box-body -->
       </div>

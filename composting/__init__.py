@@ -15,6 +15,7 @@ from composting.models.base import (
     Base,
 )
 from composting.models.municipality import MunicipalityFactory
+from composting.models.daily_waste import DailyWasteFactory
 
 
 def main(global_config, **settings):
@@ -61,7 +62,8 @@ def includeme(config):
     config.add_jinja2_search_path("composting:templates")
     config.add_static_view('static', 'composting:static', cache_max_age=3600)
     config.add_route('default', '/')
-    config.add_route('municipalities', '/*traverse', factory=MunicipalityFactory)
     config.add_route('municipalities', '/municipalities/*traverse',
                      factory=MunicipalityFactory)
+    config.add_route('daily-waste', '/daily-waste/*traverse',
+                     factory=DailyWasteFactory)
     config.scan()
