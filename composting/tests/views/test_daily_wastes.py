@@ -75,3 +75,10 @@ class TestDailyWastesFunctional(FunctionalTestBase):
             'daily-waste', traverse=(daily_waste.id,))
         result = self.testapp.get(url)
         self.assertEqual(result.status_code, 200)
+
+    def test_approve(self):
+        daily_waste = DailyWaste.newest()
+        url = self.request.route_path(
+            'daily-waste', traverse=(daily_waste.id, 'approve'))
+        result = self.testapp.post(url)
+        self.assertEqual(result.status_code, 302)

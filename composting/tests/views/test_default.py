@@ -6,14 +6,14 @@ from composting.tests.test_base import (
 from composting.views.default import default
 
 
-class TestOverview(IntegrationTestBase):
+class TestDefault(IntegrationTestBase):
     def test_home_view_response(self):
         request = testing.DummyRequest()
         response = default(request)
         self.assertEqual(response, {})
 
 
-class TestOverviewFunctional(FunctionalTestBase):
+class TestDefaultFunctional(FunctionalTestBase):
     def test_home_view_response(self):
         url = self.request.route_url('default')
         response = self.testapp.get(url)
