@@ -18,7 +18,7 @@ class TestHelpers(unittest.TestCase):
             request, selection_list, lambda v: v == '1', 'pending')
         self.assertEqual(sorted(selections), ['approved', 'pending'])
 
-    def test_selections_from_request_returns_default_if_no_matches(self):
+    def test_selections_from_request_returns_defaults_if_no_matches(self):
         request = testing.DummyRequest()
         request.GET = MultiDict([
             ('not-pending', '1'),
@@ -26,5 +26,5 @@ class TestHelpers(unittest.TestCase):
         ])
         selection_list = ['pending', 'approved', 'rejected']
         selections = selections_from_request(
-            request, selection_list, lambda v: v == '1', 'pending')
+            request, selection_list, lambda v: v == '1', ['pending'])
         self.assertEqual(sorted(selections), ['pending'])

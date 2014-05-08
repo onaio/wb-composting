@@ -25,7 +25,7 @@ class Municipalities(BaseView):
             self.request,
             statuses,
             lambda status: status == '1',
-            Submission.PENDING)
+            [Submission.PENDING, Submission.REJECTED])
 
         criterion = Submission.status.in_(status_selections)
         daily_wastes = municipality.get_register_records(DailyWaste, criterion)
