@@ -5,11 +5,13 @@ DEPLOYMENTS = {
     'prod': {
         'virtual_env': '/home/ubuntu/.virtualenvs/composting_prod',
         'project_dir': '/home/ubuntu/WBComposting',
+        'host_string': 'ubuntu@compost.ona.io',
         'alembic_section': 'production'
     },
     'dev': {
         'virtual_env': '/home/vagrant/.virtualenvs/composting_dev',
-        'project_dir': '/home/vagrant/WBComposting'
+        'project_dir': '/home/vagrant/WBComposting',
+        'host_string': 'vagrant@192.168.33.15'
     }
 }
 
