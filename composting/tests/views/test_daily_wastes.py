@@ -1,5 +1,6 @@
 from pyramid.httpexceptions import HTTPFound
 from pyramid import testing
+from pyramid.response import Response
 
 from composting.models.base import DBSession
 from composting.models import DailyWaste, Submission
@@ -25,43 +26,22 @@ class TestDailyWastes(IntegrationTestBase):
         self.assertEqual(result.keys(), [])
 
     def test_approve(self):
-        self.request.method = 'POST'
-        daily_waste = self.get_daily_waste_record(
-            Submission.status == Submission.PENDING)
-        daily_waste_id = daily_waste.id
-        self.request.context = daily_waste
         result = self.views.approve()
-        self.assertIsInstance(result, HTTPFound)
-
-        # check that it was approved
-        daily_waste = DailyWaste.get(DailyWaste.id == daily_waste_id)
-        self.assertEqual(daily_waste.submission.status, Submission.APPROVED)
+        self.assertIsInstance(result, Response)
+        self.assertEqual(self.request.new_status, Submission.APPROVED)
+        self.assertEqual(self.request.action, 'daily-waste')
 
     def test_reject(self):
-        self.request.method = 'POST'
-        daily_waste = self.get_daily_waste_record(
-            Submission.status == Submission.APPROVED)
-        daily_waste_id = daily_waste.id
-        self.request.context = daily_waste
         result = self.views.reject()
-        self.assertIsInstance(result, HTTPFound)
-
-        # check that it was rejected
-        daily_waste = DailyWaste.get(DailyWaste.id == daily_waste_id)
-        self.assertEqual(daily_waste.submission.status, Submission.REJECTED)
+        self.assertIsInstance(result, Response)
+        self.assertEqual(self.request.new_status, Submission.REJECTED)
+        self.assertEqual(self.request.action, 'daily-waste')
 
     def test_unapprove(self):
-        self.request.method = 'POST'
-        daily_waste = self.get_daily_waste_record(
-            Submission.status == Submission.APPROVED)
-        daily_waste_id = daily_waste.id
-        self.request.context = daily_waste
         result = self.views.unapprove()
-        self.assertIsInstance(result, HTTPFound)
-
-        # check that it was set to pending
-        daily_waste = DailyWaste.get(DailyWaste.id == daily_waste_id)
-        self.assertEqual(daily_waste.submission.status, Submission.PENDING)
+        self.assertIsInstance(result, Response)
+        self.assertEqual(self.request.new_status, Submission.PENDING)
+        self.assertEqual(self.request.action, 'daily-waste')
 
 
 class TestDailyWastesFunctional(FunctionalTestBase):
@@ -80,5 +60,19 @@ class TestDailyWastesFunctional(FunctionalTestBase):
         daily_waste = DailyWaste.newest()
         url = self.request.route_path(
             'daily-waste', traverse=(daily_waste.id, 'approve'))
+        result = self.testapp.post(url)
+        self.assertEqual(result.status_code, 302)
+
+    def test_reject(self):
+        daily_waste = DailyWaste.newest()
+        url = self.request.route_path(
+            'daily-waste', traverse=(daily_waste.id, 'reject'))
+        result = self.testapp.post(url)
+        self.assertEqual(result.status_code, 302)
+
+    def test_unapprove(self):
+        daily_waste = DailyWaste.newest()
+        url = self.request.route_path(
+            'daily-waste', traverse=(daily_waste.id, 'unapprove'))
         result = self.testapp.post(url)
         self.assertEqual(result.status_code, 302)

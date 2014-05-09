@@ -1,20 +1,11 @@
 from pyramid.view import view_defaults, view_config
 from pyramid.httpexceptions import HTTPFound
+from pyramid.response import Response
 
 from dashboard.views.base import BaseView
 
 from composting.models import DailyWaste, Submission
 
-@view_config(name='update_status_wrapper', request_method='POST')
-def update_status(context, request):
-    daily_waste = request.context
-    daily_waste.submission.status = request.new_status
-    daily_waste.save()
-
-    # todo: use daily_waste.municipality.id in redirect
-    return HTTPFound(
-        request.route_url(
-            'municipalities', traverse=('1', 'daily-waste')))
 
 @view_defaults(route_name='daily-waste', context=DailyWaste)
 class DailyWastes(BaseView):
@@ -23,30 +14,23 @@ class DailyWastes(BaseView):
         return {}
 
     @view_config(
-        name='approve', request_method='POST', wrapper='update_status_wrapper')
+        name='approve', request_method='POST',
+        wrapper='update_status_wrapper')
     def approve(self):
         self.request.new_status = Submission.APPROVED
-        from pyramid.response import Response
-        return Response('')
+        self.request.action = 'daily-waste'
+        return Response(None)
 
-    @view_config(name='reject', request_method='POST')
+    @view_config(name='reject', request_method='POST',
+                 wrapper='update_status_wrapper')
     def reject(self):
-        daily_waste = self.request.context
-        daily_waste.submission.status = Submission.REJECTED
-        daily_waste.save()
+        self.request.new_status = Submission.REJECTED
+        self.request.action = 'daily-waste'
+        return Response(None)
 
-        # todo: use daily_waste.municipality.id in redirect
-        return HTTPFound(
-            self.request.route_url(
-                'municipalities', traverse=('1', 'daily-waste')))
-
-    @view_config(name='unapprove', request_method='POST')
+    @view_config(name='unapprove', request_method='POST',
+                 wrapper='update_status_wrapper')
     def unapprove(self):
-        daily_waste = self.request.context
-        daily_waste.submission.status = Submission.PENDING
-        daily_waste.save()
-
-        # todo: use daily_waste.municipality.id in redirect
-        return HTTPFound(
-            self.request.route_url(
-                'municipalities', traverse=('1', 'daily-waste')))
+        self.request.new_status = Submission.PENDING
+        self.request.action = 'daily-waste'
+        return Response(None)
