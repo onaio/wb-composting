@@ -7,7 +7,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 from composting.libs.utils import translation_string_factory as _
-from composting.models.base import Base, ModelFactory
+from composting.models.base import Base, ModelFactory, DBSession
 from composting.models import Submission
 
 
@@ -17,6 +17,14 @@ class DailyWaste(Base):
     submission_id = Column(
         Integer, ForeignKey('submissions.id'), nullable=False)
     submission = relationship('Submission')
+    # todo: implement relationship
+    municipality_id = 1
+
+    # form fields
+    COMPRESSOR_TRUCK = 'compressor_truck'
+    VOLUME = 'volume'
+    SKIP_TYPE = 'skip_type'
+    WASTE_HEIGHT = 'waste_height'
 
     @property
     def __name__(self):
@@ -46,6 +54,39 @@ class DailyWaste(Base):
         Only the site manager can un-approve
         """
         return self.submission.status == Submission.APPROVED
+
+    @property
+    def volume(self):
+        """
+        Get the volume of the compost
+
+        if its a compressor truck, return the raw value of volume, otherwise
+        return the skip types cross sectional area * waste height
+        """
+        if self.submission.json_data[self.COMPRESSOR_TRUCK] == 'yes':
+            return float(self.submission.json_data[self.VOLUME])
+        else:
+            try:
+                skip = self.get_skip()
+            except NoResultFound:
+                return None
+            else:
+                return skip.cross_sectional_area * float(
+                    self.submission.json_data[self.WASTE_HEIGHT])
+
+    def get_skip(self):
+        """
+        Get the skip associated with this waste register
+        """
+        from composting.models import Skip
+        return DBSession.query(Skip)\
+            .filter(
+                Skip.skip_type == self.submission.json_data[self.SKIP_TYPE],
+                Skip.municipality_id == self.municipality_id).one()
+
+    @property
+    def tonnage(self):
+        pass
 
 
 class DailyWasteFactory(ModelFactory):

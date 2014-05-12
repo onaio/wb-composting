@@ -19,7 +19,7 @@ from composting.libs import DailyWasteSubmissionHandler
 from composting.models.base import (
     DBSession,
     Base)
-from composting.models import Municipality, Submission
+from composting.models import Municipality, Submission, Skip
 
 
 SETTINGS_FILE = 'test.ini'
@@ -50,12 +50,15 @@ class TestBase(unittest.TestCase):
 
     def setup_test_data(self):
         municipality = Municipality(name="Mukono")
+        skip_a = Skip(
+            municipality=municipality, skip_type='A', small_length=20,
+            large_length=30, small_breadth=10, large_breadth=16)
         with transaction.manager:
             for status, submission in self.daily_waste_submissions:
                 daily_waste = DailyWasteSubmissionHandler().__call__(
                     json.loads(submission))
                 daily_waste.submission.status = status
-            DBSession.add_all([municipality])
+            DBSession.add_all([municipality, skip_a])
 
 
 class IntegrationTestBase(TestBase):

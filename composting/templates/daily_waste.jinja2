@@ -59,7 +59,7 @@
                   <td>{{ report.skip_number }}</td>
                   <td>{{ report.skip_type }}</td>
                   <td>{% if report.waste_height %}{{ report.waste_height }}m{% endif %}</td>
-                  <td>{% if report.volume %}{{ report.volume }}m<sup>3</sup>{% endif %}</td>
+                  <td>{% if daily_waste.volume is not none %}{{ daily_waste.volume }}m<sup>3</sup>{% endif %}</td>
                   <td>0.25t</td>
                   <td><span
                       class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
