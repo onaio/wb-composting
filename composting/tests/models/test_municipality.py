@@ -1,5 +1,3 @@
-from pyramid import testing
-
 from composting.tests.test_base import IntegrationTestBase
 from composting.models import Municipality, DailyWaste, Submission
 
@@ -17,4 +15,4 @@ class TestMunicipality(IntegrationTestBase):
         municipality = Municipality.get(Municipality.name == "Mukono")
         results = municipality.get_register_records(DailyWaste)
         self.assertTrue(all([isinstance(r, DailyWaste) for r in results]))
-        self.assertEqual(len(results), 2)
+        self.assertEqual(len(results), 3)
