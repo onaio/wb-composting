@@ -54,6 +54,7 @@
                 <th>Height</th>
                 <th>Volume</th>
                 <th>Tonnage</th>
+                <th>Remarks</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -68,6 +69,13 @@
                   <td>{% if report.waste_height %}{{ report.waste_height }}m{% endif %}</td>
                   <td>{% if daily_waste.volume is not none %}{{ daily_waste.volume }}m<sup>3</sup>{% endif %}</td>
                   <td>0.25t</td>
+                  <td>
+                    {% if report.remarks %}
+                    <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
+                      <a href="javascript:;">{{ report.remarks }}</a>
+                    </div>
+                    {% endif %}
+                  </td>
                   <td><span
                       class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
                   </td>
