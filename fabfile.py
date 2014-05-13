@@ -27,8 +27,8 @@ def deploy(deployment="prod", branch="master"):
 
         # run migrations
         with prefix(virtual_env_command):
-            run("python setup.py test -q")
             run("pip install -r requirements.txt")
+            run("python setup.py test -q")
             run("python setup.py install")
             run("alembic -n {0} upgrade head".format(
                 env.get('alembic_section', 'alembic')))
