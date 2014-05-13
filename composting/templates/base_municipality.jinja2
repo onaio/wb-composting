@@ -1,50 +1,106 @@
 {% extends 'base.jinja2' %}
 {% block wrapper %}
-<!-- Left side column. contains the logo and sidebar -->
-<aside class="left-side sidebar-offcanvas">
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-        <!-- Sidebar user panel -->
+      <!-- Sidebar user panel -->
 
-        <!-- search form -->
+      <!-- search form -->
 
-        <!-- /.search form -->
-        <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu">
-            <li class="active">
-                <a href="{{ request.route_url('municipalities', traverse=(municipality.id)) }}">
-                    <i class="fa fa-desktop"></i> <span>Overview</span>
-                </a>
-            </li>
-            <li class="">
-                <a href="{{ request.route_url('municipalities', traverse=(municipality.id, 'daily-waste')) }}">
-                    <i class="fa fa-bar-chart-o"></i>
-                    <span>Daily Waste Register</span>
-                    <small class="badge pull-right bg-yellow">1</small>
-                </a>
-            </li>
-        </ul>
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu">
+        <li class="">
+          <a href="{{ request.route_url('municipalities', traverse=(municipality.id)) }}">
+            <span>Overview</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="{{ request.route_url('municipalities', traverse=(municipality.id, 'daily-waste')) }}">
+            <span>Daily Waste Register</span>
+            <small class="badge pull-right bg-yellow">1</small>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Monthly Waste Density</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Monthly Waste Composition</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Daily Rejects Landfilled</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Monthly Density of Rejects from Sieving</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Windrow Monitoring</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Windrow Dismantling</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Municipality Electricity Register</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Leachate Monthly Register</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Compost Sales Register</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Monthly Composition of Rejects from Sieving</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="#">
+            <span>Daily Vehicle Data Register</span>
+          </a>
+        </li>
+      </ul>
     </section>
     <!-- /.sidebar -->
-</aside>
+  </aside>
 
-<!-- Right side column. Contains the navbar and content of the page -->
-<aside class="right-side">
+  <!-- Right side column. Contains the navbar and content of the page -->
+  <aside class="right-side">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1>
-            {{ self.title() }}
-        </h1>
-        <ol class="breadcrumb">
-          {% block breadcrumbs %}
-            <li><a href="{{ request.route_url('default') }}"><i class="fa fa-desktop"></i> Overview</a></li>
-          {% endblock %}
-        </ol>
+      <h1>
+        {{ self.title() }}
+      </h1>
+      <ol class="breadcrumb">
+        {% block breadcrumbs %}
+          <li><a href="{{ request.route_url('default') }}"><i
+              class="fa fa-desktop"></i> Overview</a></li>
+        {% endblock %}
+      </ol>
     </section>
 
     <!-- Main content -->
     <section class="content">
       {% block content %}{% endblock content %}
-    </section><!-- /.content -->
-</aside><!-- /.right-side -->
+    </section>
+    <!-- /.content -->
+  </aside><!-- /.right-side -->
 {% endblock wrapper %}
