@@ -58,8 +58,9 @@ def includeme(config):
     # hook up our submission handlers
     hook_submission_handlers()
 
-    config.include('pyramid_jinja2')
+    # pyramid_jinja2 is already included by Dashboard
     config.add_jinja2_search_path("composting:templates")
+
     config.add_static_view('static', 'composting:static', cache_max_age=3600)
     config.add_route('default', '/')
     config.add_route('municipalities', '/municipalities/*traverse',
