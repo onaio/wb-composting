@@ -6,7 +6,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from composting.libs.utils import date_string_to_date, date_string_to_time
+from dashboard.libs.utils import date_string_to_date, date_string_to_time
+
 from composting.models.base import Base, ModelFactory, DBSession
 from composting.models import Submission
 
