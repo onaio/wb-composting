@@ -36,12 +36,18 @@
 
   <div class="row">
     <div class="col-xs-12">
+      {% for group in daily_wastes|groupby('date')|sort() %}
       <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">{{ group.grouper }}</h3>
+        </div>
+        <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
           <form method="post">
             <table class="table table-hover">
               <tbody>
               <tr>
+                <th>Time</th>
                 <th>Vehicle #</th>
                 <th>Skip #</th>
                 <th>Skip Type</th>
@@ -51,10 +57,11 @@
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
-              {% for daily_waste in daily_wastes %}
+              {% for daily_waste in group.list %}
                 {% set report = daily_waste.submission.json_data %}
                 {% set status = daily_waste.submission.status %}
                 <tr>
+                  <td>{{ daily_waste.time }}</td>
                   <td>{{ report.vehicle_number }}</td>
                   <td>{{ report.skip_number }}</td>
                   <td>{{ report.skip_type }}</td>
@@ -90,6 +97,7 @@
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
+      {% endfor %}
     </div>
   </div>
 {% endblock %}

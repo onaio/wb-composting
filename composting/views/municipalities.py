@@ -31,6 +31,7 @@ class Municipalities(BaseView):
         daily_wastes = municipality.get_register_records(DailyWaste, criterion)
 
         status = dict([(s, s in statuses) for s in status_selections])
+        from datetime import date
         return {
             'municipality': municipality,
             'daily_wastes': daily_wastes,

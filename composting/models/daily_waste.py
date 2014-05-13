@@ -6,7 +6,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from composting.libs.utils import translation_string_factory as _
+from composting.libs.utils import date_string_to_date, date_string_to_time
 from composting.models.base import Base, ModelFactory, DBSession
 from composting.models import Submission
 
@@ -87,6 +87,14 @@ class DailyWaste(Base):
     @property
     def tonnage(self):
         pass
+
+    @property
+    def date(self):
+        return date_string_to_date(self.submission.json_data['date'])
+
+    @property
+    def time(self):
+        return date_string_to_time(self.submission.json_data['date'])
 
 
 class DailyWasteFactory(ModelFactory):
