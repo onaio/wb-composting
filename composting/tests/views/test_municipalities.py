@@ -48,7 +48,7 @@ class TestMunicipalities(IntegrationTestBase):
         self.request.context = self.municipality
         self.request.method = 'POST'
         self.request.POST = MultiDict([
-            ('skip_type', 'A'),
+            ('skip_type', 'Z'),
             ('small_length', '20'),
             ('large_length', '30'),
             ('small_breadth', '16'),
@@ -56,8 +56,8 @@ class TestMunicipalities(IntegrationTestBase):
         ])
         num_skips = Skip.count()
         result = self.views.create_skip()
-        self.assertEqual(Skip.count(), num_skips + 1)
         self.assertIsInstance(result, HTTPFound)
+        self.assertEqual(Skip.count(), num_skips + 1)
         skip = Skip.newest()
         self.assertEqual(
             result.location,
@@ -69,7 +69,7 @@ class TestMunicipalities(IntegrationTestBase):
         self.request.context = self.municipality
         self.request.method = 'POST'
         self.request.POST = MultiDict([
-            ('skip_type', 'A'),
+            ('skip_type', 'Z'),
             ('small_length', '20'),
             ('large_length', '30'),
             ('small_breadth', '16'),
