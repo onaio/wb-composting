@@ -24,6 +24,7 @@ requires = [
     'passlib',
     'Babel',
     'lingua',
+    'deform',
     'Dashboard'
 ]
 
