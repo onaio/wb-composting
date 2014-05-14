@@ -31,7 +31,7 @@ class Skips(BaseView):
                 self.request.session.flash(
                     u"Please fix the errors indicated below.", "error")
             else:
-                skip.__dict__.update(**values)
+                skip.update(**values)
                 skip.save()
                 self.request.session.flash(
                     u"Your changes have been saved.", "success")

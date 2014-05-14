@@ -44,6 +44,15 @@ class Skip(Base):
             'large_breadth': self.large_breadth
         }
 
+    def update(
+            self, skip_type, small_length, large_length, small_breadth,
+            large_breadth):
+        self.skip_type = skip_type
+        self.small_length = small_length
+        self.large_length = large_length
+        self.small_breadth = small_breadth
+        self.large_breadth = large_breadth
+
 
 class SkipFactory(ModelFactory):
     def __getitem__(self, item):
