@@ -67,4 +67,6 @@ def includeme(config):
                      factory=MunicipalityFactory)
     config.add_route('daily-waste', '/daily-waste/*traverse',
                      factory=DailyWasteFactory)
+    config.add_route('skips', '/skips/*traverse',
+                     factory=DailyWasteFactory)
     config.scan()

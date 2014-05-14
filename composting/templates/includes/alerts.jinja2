@@ -1,0 +1,9 @@
+{% for message in request.session.pop_flash('error') %}
+<div class="alert alert-danger alert-dismissable">
+  <i class="fa fa-ban"></i>
+  <button type="button" class="close" data-dismiss="alert"
+          aria-hidden="true">×
+  </button>
+  <b>Error!</b> {{ message }}
+</div>
+{% endfor %}

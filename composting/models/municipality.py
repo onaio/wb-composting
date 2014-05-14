@@ -7,7 +7,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import contains_eager
 
 from composting.models.base import DBSession, Base, ModelFactory
-from composting.models import Submission, DailyWaste
+#from composting.models import Submission, DailyWaste
 
 
 class Municipality(Base):
