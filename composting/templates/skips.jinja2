@@ -1,0 +1,66 @@
+{% extends 'base_municipality.jinja2' %}
+{% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
+{% from 'macros/action_button_class_from_status.jinja2' import action_button_class_from_status %}
+{% block title %}Skip Types{% endblock %}
+{% block description %}List of daily waste register records{% endblock %}
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+{% block content %}
+  <!-- actions row -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-primary">
+        <div class="box-body">
+          <button type="button" class="btn btn-primary">
+            <i class="fa fa-plus"></i>
+            New Skip Type</button>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+  <!-- /actions row -->
+
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-body table-responsive no-padding">
+          <form method="post">
+            <table class="table table-hover">
+              <tbody>
+              <tr>
+                <th>Skip Type</th>
+                <th>Small Length</th>
+                <th>Large Length</th>
+                <th>Small Breadth</th>
+                <th>Large Breadth</th>
+                <th>Cross-Sectional Area</th>
+                <th>Actions</th>
+              </tr>
+              {% for skip in skips %}
+                <tr>
+                  <td>{{ skip.skip_type }}</td>
+                  <td>{{ skip.small_length }}m</td>
+                  <td>{{ skip.large_length }}m</td>
+                  <td>{{ skip.small_breadth }}m</td>
+                  <td>{{ skip.small_breadth }}m</td>
+                  <td>{{ skip.cross_sectional_area }}m<sup>2</sup></td>
+                  <td>
+                    <a class="btn btn-primary btn-xs" href="{{ request.route_url('skips', traverse=(skip.id, 'edit')) }}">Edit</a>
+                    <button type="submit" class="btn btn-danger btn-xs" formaction="{{ request.route_url('skips', traverse=(skip.id, 'delete')) }}">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+{% endblock content %}

@@ -33,6 +33,12 @@ class TestMunicipalities(IntegrationTestBase):
         self.assertEqual(result['municipality'], self.municipality)
         self.assertEqual(len(result['daily_wastes']), 1)
 
+    def test_skips(self):
+        self.request.context = self.municipality
+        result = self.views.skips()
+        self.assertEqual(
+            sorted(result.keys()), sorted(['municipality', 'skips']))
+
     def test_create_skip_get(self):
         self.request.context = self.municipality
         result = self.views.create_skip()
@@ -99,6 +105,12 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         daily_waste_record = None
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'daily-waste'))
+        result = self.testapp.get(url)
+        self.assertEqual(result.status_code, 200)
+
+    def test_skips(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'skips'))
         result = self.testapp.get(url)
         self.assertEqual(result.status_code, 200)
 

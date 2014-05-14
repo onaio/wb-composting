@@ -40,6 +40,15 @@ class Municipalities(BaseView):
             'status': status
         }
 
+    @view_config(name='skips', renderer='skips.jinja2')
+    def skips(self):
+        municipality = self.request.context
+        skips = municipality.get_skips()
+        return {
+            'skips': skips,
+            'municipality': municipality,
+        }
+
     @view_config(name='create-skip', renderer='create_skip.jinja2')
     def create_skip(self):
         municipality = self.request.context

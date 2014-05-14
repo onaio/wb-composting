@@ -7,7 +7,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import contains_eager
 
 from composting.models.base import DBSession, Base, ModelFactory
-#from composting.models import Submission, DailyWaste
+from composting.models.skip import Skip
 
 
 class Municipality(Base):
@@ -34,6 +34,11 @@ class Municipality(Base):
             .join(register_class.submission)\
             .filter(*criterion)\
             .options(contains_eager(register_class.submission))\
+            .all()
+
+    def get_skips(self, *criterion):
+        return DBSession.query(Skip)\
+            .filter(Skip.municipality == self, *criterion)\
             .all()
 
 
