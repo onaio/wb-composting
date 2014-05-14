@@ -16,6 +16,7 @@ from composting.models.base import (
 )
 from composting.models.municipality import MunicipalityFactory
 from composting.models.daily_waste import DailyWasteFactory
+from composting.models.skip import SkipFactory
 
 
 def main(global_config, **settings):
@@ -68,5 +69,5 @@ def includeme(config):
     config.add_route('daily-waste', '/daily-waste/*traverse',
                      factory=DailyWasteFactory)
     config.add_route('skips', '/skips/*traverse',
-                     factory=DailyWasteFactory)
+                     factory=SkipFactory)
     config.scan()

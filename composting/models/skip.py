@@ -30,11 +30,28 @@ class Skip(Base):
     @property
     def cross_sectional_area(self):
         return ((
-                   (self.small_length + self.large_length)
-                   * (self.small_breadth + self.large_breadth))\
-               / 4)
+                (self.small_length + self.large_length)
+                * (self.small_breadth + self.large_breadth))
+                / 4)
+
+    @property
+    def appstruct(self):
+        return {
+            'skip_type': self.skip_type,
+            'small_length': self.small_length,
+            'large_length': self.large_length,
+            'small_breadth': self.small_breadth,
+            'large_breadth': self.large_breadth
+        }
 
 
 class SkipFactory(ModelFactory):
     def __getitem__(self, item):
-        raise KeyError
+        try:
+            record = Skip.get(Skip.id == item)
+        except NoResultFound:
+            raise KeyError
+        else:
+            record.__name__ = item
+            record.__parent__ = self
+            return record

@@ -60,16 +60,13 @@ class SkipForm(colander.MappingSchema):
         valid = True
         if value['small_length'] > value['large_length']:
             valid = False
-        exc['small_length'] = "The small length must be less than the " \
-                              "large length"
+            exc['small_length'] = "The small length must be less than the " \
+                                  "large length"
 
         if value['small_breadth'] > value['large_breadth']:
             valid = False
             exc['small_breadth'] = "The small breadth must be less than the " \
                                    "large breadth"
-
-        # check that skip type is unique for this municipality
-
 
         if not valid:
             raise exc
