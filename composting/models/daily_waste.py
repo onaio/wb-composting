@@ -96,7 +96,8 @@ class DailyWaste(Base):
 
     @property
     def time(self):
-        return date_string_to_time(self.submission.json_data['date'])
+        # todo: stick to one field name likely date
+        return date_string_to_time(self.submission.json_data.get('date', self.submission.json_data.get('dateTime')))
 
 
 class DailyWasteFactory(ModelFactory):
