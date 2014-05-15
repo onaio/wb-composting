@@ -6,7 +6,7 @@ from dashboard.views.base import BaseView
 
 from composting.views.helpers import selections_from_request
 from composting.models import Municipality, DailyWaste, Submission, Skip
-from composting.forms import SkipForm
+from composting.forms import SkipForm, SiteProfileForm
 
 
 
@@ -72,6 +72,35 @@ class Municipalities(BaseView):
                 return HTTPFound(
                     self.request.route_url(
                         'skips', traverse=(skip.id, 'edit')))
+        return {
+            'municipality': municipality,
+            'form': form
+        }
+
+    @view_config(name='profile', renderer='edit_profile.jinja2')
+    def edit_profile(self):
+        municipality = self.request.context
+        form = Form(
+            SiteProfileForm().bind(
+                request=self.request),
+            buttons=('Save', Button(name='cancel', type='button')),
+            appstruct=municipality.appstruct)
+        if self.request.method == "POST":
+            data = self.request.POST.items()
+            try:
+                values = form.validate(data)
+            except ValidationFailure:
+                self.request.session.flash(
+                    u"Please fix the errors indicated below.", "error")
+            else:
+                municipality.update(**values)
+                municipality.save()
+                self.request.session.flash(
+                    u"Your changes have been saved.", "success")
+                return HTTPFound(
+                    self.request.route_url(
+                        'municipalities',
+                        traverse=(municipality.id, 'profile')))
         return {
             'municipality': municipality,
             'form': form

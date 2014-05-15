@@ -7,7 +7,7 @@
     </a>
   </li>
   <li class="dropdown tasks-menu">
-    <a href="#">
+    <a href="{{ municipality.url(request, 'profile') }}">
       <i class="fa fa-cog"></i>
       Site Profile
     </a>
@@ -113,6 +113,7 @@
 
     <!-- Main content -->
     <section class="content">
+      {% include 'includes/alerts.jinja2' %}
       {% block content %}{% endblock content %}
     </section>
     <!-- /.content -->

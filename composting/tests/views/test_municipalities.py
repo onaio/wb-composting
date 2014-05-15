@@ -80,6 +80,26 @@ class TestMunicipalities(IntegrationTestBase):
         self.assertEqual(Skip.count(), num_skips)
         self.assertIsInstance(result['form'].schema, SkipForm)
 
+    def test_edit_profile_post(self):
+        municipality_id = self.municipality.id
+        self.request.context = self.municipality
+        self.request.method = 'POST'
+        self.request.POST = MultiDict([
+            ('name', 'Mukono Municipality'),
+            ('wheelbarrow_volume', '0.15'),
+            ('box_volume', '0.3'),
+            ('leachete_tank_length', '8.0'),
+            ('leachete_tank_width', '8.0')
+        ])
+        result = self.views.edit_profile()
+        self.assertIsInstance(result, HTTPFound)
+        self.assertEqual(
+            result.location,
+            self.request.route_url(
+                'municipalities', traverse=(municipality_id, 'profile')))
+        municipality = Municipality.get(Skip.id == municipality_id)
+        self.assertEqual(municipality.name, "Mukono Municipality")
+
 
 class TestMunicipalitiesFunctional(FunctionalTestBase):
     def setUp(self):
@@ -117,5 +137,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
     def test_create_skip_get(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'create-skip'))
+        result = self.testapp.get(url)
+        self.assertEqual(result.status_code, 200)
+
+    def test_site_profile_get(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'profile'))
         result = self.testapp.get(url)
         self.assertEqual(result.status_code, 200)

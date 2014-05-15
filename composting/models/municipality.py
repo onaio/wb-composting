@@ -3,6 +3,7 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
+    Float
 )
 from sqlalchemy.orm import contains_eager
 
@@ -14,6 +15,10 @@ class Municipality(Base):
     __tablename__ = 'municipalities'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
+    box_volume = Column(Float, nullable=False, server_default='0.125')
+    wheelbarrow_volume = Column(Float, nullable=False, server_default='0.625')
+    leachete_tank_length = Column(Float, nullable=False, server_default='5.0')
+    leachete_tank_width = Column(Float, nullable=False, server_default='5.0')
 
     #def __getitem__(self, item):
     #    try:
@@ -40,6 +45,30 @@ class Municipality(Base):
         return DBSession.query(Skip)\
             .filter(Skip.municipality == self, *criterion)\
             .all()
+
+    @property
+    def appstruct(self):
+        return {
+            'name': self.name,
+            'box_volume': self.box_volume,
+            'wheelbarrow_volume': self.wheelbarrow_volume,
+            'leachete_tank_length': self.leachete_tank_length,
+            'leachete_tank_width': self.leachete_tank_width
+        }
+
+    def update(
+            self, name, box_volume, wheelbarrow_volume, leachete_tank_length,
+            leachete_tank_width):
+        self.name = name
+        self.box_volume = box_volume
+        self.wheelbarrow_volume = wheelbarrow_volume
+        self.leachete_tank_length = leachete_tank_length
+        self.leachete_tank_width = leachete_tank_width
+
+    def url(self, request, action=None):
+        traverse = (self.id, action) if action else (self.id,)
+        return request.route_url(
+            'municipalities', traverse=traverse)
 
 
 class MunicipalityFactory(ModelFactory):
