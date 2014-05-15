@@ -33,7 +33,9 @@
         <li class="active">
           <a href="{{ request.route_url('municipalities', traverse=(municipality.id, 'daily-waste')) }}">
             <span>Daily Waste Register</span>
-            <small class="badge pull-right bg-yellow">1</small>
+            {% if municipality.num_daily_wastes > 0 %}
+            <small class="badge pull-right bg-yellow">{{ municipality.num_daily_wastes }}</small>
+            {% endif %}
           </a>
         </li>
         <li class="">

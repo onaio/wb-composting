@@ -3,11 +3,14 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
-    Float
+    Float,
+    or_
 )
 from sqlalchemy.orm import contains_eager
 
 from composting.models.base import DBSession, Base, ModelFactory
+from composting.models.daily_waste import Submission
+from composting.models.daily_waste import DailyWaste
 from composting.models.skip import Skip
 
 
@@ -20,6 +23,8 @@ class Municipality(Base):
     leachete_tank_length = Column(Float, nullable=False, server_default='5.0')
     leachete_tank_width = Column(Float, nullable=False, server_default='5.0')
 
+    _num_daily_wastes = None
+
     #def __getitem__(self, item):
     #    try:
     #        submission = Submission.get(Submission.id == item)
@@ -30,7 +35,7 @@ class Municipality(Base):
     #        submission.__parent__ = self
     #        return submission
 
-    def get_register_records(self, register_class, *criterion):
+    def get_register_records_query(self, register_class, *criterion):
         """
         Get records filtered by specified criterion from `register_class`
         eager loading from submissions
@@ -38,7 +43,14 @@ class Municipality(Base):
         return DBSession.query(register_class)\
             .join(register_class.submission)\
             .filter(*criterion)\
-            .options(contains_eager(register_class.submission))\
+            .options(contains_eager(register_class.submission))
+
+    def get_register_records(self, register_class, *criterion):
+        """
+        Get records filtered by specified criterion from `register_class`
+        eager loading from submissions
+        """
+        return self.get_register_records_query(register_class, *criterion)\
             .all()
 
     def get_skips(self, *criterion):
@@ -64,6 +76,17 @@ class Municipality(Base):
         self.wheelbarrow_volume = wheelbarrow_volume
         self.leachete_tank_length = leachete_tank_length
         self.leachete_tank_width = leachete_tank_width
+
+    @property
+    def num_daily_wastes(self):
+        self._num_daily_wastes = self._num_daily_wastes\
+            or self.get_register_records_query(
+                DailyWaste,
+                or_(
+                    Submission.status == Submission.PENDING,
+                    Submission.status == Submission.REJECTED))\
+            .count()
+        return self._num_daily_wastes
 
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)

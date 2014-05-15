@@ -29,3 +29,14 @@ class TestMunicipality(IntegrationTestBase):
         self.assertEqual(m.wheelbarrow_volume, 0.15)
         self.assertEqual(m.leachete_tank_length, 8.0)
         self.assertEqual(m.leachete_tank_width, 6.0)
+
+    def test_num_daily_wastes_returns_cached_count_if_set(self):
+        self.setup_test_data()
+        municipality = Municipality.get(Municipality.name == "Mukono")
+        municipality._num_daily_wastes = 1000
+        self.assertEqual(municipality.num_daily_wastes, 1000)
+
+    def test_num_daily_wastes_returns_actual_count_if_not_cached(self):
+        self.setup_test_data()
+        municipality = Municipality.get(Municipality.name == "Mukono")
+        self.assertEqual(municipality.num_daily_wastes, 1)
