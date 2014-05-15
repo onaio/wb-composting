@@ -37,3 +37,15 @@ class TestSkips(IntegrationTestBase):
             self.request.route_url('skips', traverse=(skip_id, 'edit')))
         skip = Skip.get(Skip.id == skip_id)
         self.assertEqual(skip.small_length, 25.5)
+
+
+class TestSkipsFunctional(FunctionalTestBase):
+    def setUp(self):
+        super(TestSkipsFunctional, self).setUp()
+        self.setup_test_data()
+
+    def test_edit_skip_get(self):
+        skip = Skip.newest()
+        url = self.request.route_path('skips', traverse=(skip.id, 'edit'))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)
