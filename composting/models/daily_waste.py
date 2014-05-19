@@ -39,9 +39,7 @@ class DailyWaste(Base):
         """
         Anyone with permissions can approve if pending
         """
-        return (self.submission.status == Submission.PENDING
-                or (self.submission.status == Submission.REJECTED
-                    and request.GET.get('role') != 'nema'))
+        return self.submission.status == Submission.PENDING
 
     def can_reject(self, request):
         """
@@ -55,6 +53,12 @@ class DailyWaste(Base):
         Only the site manager can un-approve
         """
         return self.submission.status == Submission.APPROVED
+
+    def can_reapprove(self, request):
+        """
+        Re-approve a previously rejected submission
+        """
+        return self.submission.status == Submission.REJECTED
 
     @property
     def volume(self):

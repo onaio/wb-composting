@@ -53,6 +53,17 @@ class Municipality(Base):
         return self.get_register_records_query(register_class, *criterion)\
             .all()
 
+    @property
+    def num_daily_wastes(self):
+        self._num_daily_wastes = self._num_daily_wastes\
+            or self.get_register_records_query(
+                DailyWaste,
+                or_(
+                    Submission.status == Submission.PENDING,
+                    Submission.status == Submission.REJECTED))\
+            .count()
+        return self._num_daily_wastes
+
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\
             .filter(Skip.municipality == self, *criterion)\
@@ -76,17 +87,6 @@ class Municipality(Base):
         self.wheelbarrow_volume = wheelbarrow_volume
         self.leachete_tank_length = leachete_tank_length
         self.leachete_tank_width = leachete_tank_width
-
-    @property
-    def num_daily_wastes(self):
-        self._num_daily_wastes = self._num_daily_wastes\
-            or self.get_register_records_query(
-                DailyWaste,
-                or_(
-                    Submission.status == Submission.PENDING,
-                    Submission.status == Submission.REJECTED))\
-            .count()
-        return self._num_daily_wastes
 
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)

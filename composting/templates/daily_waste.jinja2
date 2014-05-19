@@ -83,16 +83,22 @@
                     <a class="btn btn-default btn-xs">View</a>
                     {% if daily_waste.can_approve(request) %}
                       {% set action = 'approve' %}
+                      {% set label = 'Approve' %}
                     {% elif daily_waste.can_reject(request) %}
                       {% set action = 'reject' %}
+                      {% set label = 'Reject' %}
                     {% elif daily_waste.can_unapprove(request) %}
                       {% set action = 'unapprove' %}
+                      {% set label = 'Unapprove' %}
+                    {% elif daily_waste.can_reapprove(request) %}
+                      {% set action = 'approve' %}
+                      {% set label = 'Reapprove' %}
                     {% else %}
                       {% set action = none %}
                     {% endif %}
                     {% if action is not none %}
                     <button type="submit" class="btn {{ action_button_class_from_status(status) }} btn-xs" formaction="{{ request.route_url('daily-waste', traverse=(daily_waste.id, action)) }}">
-                      {{ action }}
+                      {{ label }}
                     </button>
                     {% endif %}
                   </td>
