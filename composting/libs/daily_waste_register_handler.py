@@ -2,7 +2,8 @@ from dashboard.constants import XFORM_ID_STRING
 from dashboard.libs import SubmissionHandler
 
 from composting import constants
-from composting.models import Submission, DailyWaste
+from composting.models.submission import Submission
+from composting.models.daily_waste import DailyWaste
 
 
 class DailyWasteSubmissionHandler(SubmissionHandler):

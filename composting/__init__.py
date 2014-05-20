@@ -9,7 +9,8 @@ from sqlalchemy import engine_from_config
 from dashboard.libs.submission_handler import submission_handler_manager
 
 from composting.security import group_finder, pwd_context
-from composting.libs import DailyWasteSubmissionHandler
+from composting.libs.daily_waste_register_handler import (
+    DailyWasteSubmissionHandler)
 from composting.models.base import (
     DBSession,
     Base,

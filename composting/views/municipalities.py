@@ -9,7 +9,6 @@ from composting.models import Municipality, DailyWaste, Submission, Skip
 from composting.forms import SkipForm, SiteProfileForm
 
 
-
 @view_defaults(route_name='municipalities', context=Municipality)
 class Municipalities(BaseView):
     @view_config(name='', renderer='overview.jinja2')
@@ -19,7 +18,7 @@ class Municipalities(BaseView):
             'municipality': municipality
         }
 
-    @view_config(name='daily-waste', renderer='daily_waste.jinja2')
+    @view_config(name='daily-waste', renderer='daily_waste_list.jinja2')
     def daily_waste_list(self):
         municipality = self.request.context
         statuses = [Submission.PENDING, Submission.APPROVED,

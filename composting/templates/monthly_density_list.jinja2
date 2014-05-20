@@ -1,0 +1,120 @@
+{% extends 'base_municipality.jinja2' %}
+{% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
+{% from 'macros/action_button_class_from_status.jinja2' import action_button_class_from_status %}
+{% block title %}Monthly Waste Density Register{% endblock %}
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+{% block content %}
+  <!-- filter row -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box box-primary">
+        <div class="box-body">
+          <form class="form-inline" data-role="form">
+            <div class="form-group">
+              <label for="inputEmail3" class="col-sm-2 control-label">Show:</label>
+              <label class="checkbox-inline">
+                <input name="pending" type="checkbox" id="inlineCheckbox1" value="1" {% if status.pending is defined %}checked="checked"{% endif %}> Pending
+              </label>
+              <label class="checkbox-inline">
+                <input name="approved" type="checkbox" id="inlineCheckbox2" value="1" {% if status.approved is defined %}checked="checked"{% endif %}> Approved
+              </label>
+              <label class="checkbox-inline">
+                <input name="rejected" type="checkbox" id="inlineCheckbox3" value="1" {% if status.rejected is defined %}checked="checked"{% endif %}> Rejected
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+          </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+  <!-- /filter row -->
+
+  <div class="row">
+    <div class="col-xs-12">
+      {% for group in items|groupby('date')|sort(True) %}
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title"></h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+          <form method="post">
+            <table class="table table-hover">
+              <tbody>
+              <tr>
+                <th>Time</th>
+                <th>Skip #</th>
+                <th>Skip Type</th>
+                <th>Height</th>
+                <th>Volume</th>
+                <th>Filled Weight</th>
+                <th>Empty Weight</th>
+                <th>Net Weight</th>
+                <th>Density</th>
+                <th>Remarks</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+              {% for monthly_waste in group.list %}
+                {% set report = monthly_waste.json_data %}
+                {% set status = monthly_waste.status %}
+                <tr>
+                  <td>{{ monthly_waste.time|format_time(request) }}</td>
+                  <td>{{ report.skip_number }}</td>
+                  <td>{{ report.skip_type }}</td>
+                  <td>{% if report.waste_height %}{{ report.waste_height }}m{% endif %}</td>
+                  <td>{% if monthly_waste.volume is not none %}{{ monthly_waste.volume }}m<sup>3</sup>{% endif %}</td>
+                  <td>{{ report.filled_weight }}</td>
+                  <td>{{ report.empty_weight }}</td>
+                  <td>{{ monthly_waste.net_weight }}</td>
+                  <td>{{ monthly_waste.density }}</td>
+                  <td>
+                    {% if report.remarks %}
+                    <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
+                      <a href="javascript:;">{{ report.remarks }}</a>
+                    </div>
+                    {% endif %}
+                  </td>
+                  <td><span
+                      class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
+                  </td>
+                  <td>
+                    <a class="btn btn-default btn-xs">View</a>
+                    {% if monthly_waste.can_approve(request) %}
+                      {% set action = 'approve' %}
+                      {% set label = 'Approve' %}
+                    {% elif monthly_waste.can_reject(request) %}
+                      {% set action = 'reject' %}
+                      {% set label = 'Reject' %}
+                    {% elif monthly_waste.can_unapprove(request) %}
+                      {% set action = 'unapprove' %}
+                      {% set label = 'Unapprove' %}
+                    {% elif monthly_waste.can_reapprove(request) %}
+                      {% set action = 'approve' %}
+                      {% set label = 'Reapprove' %}
+                    {% else %}
+                      {% set action = none %}
+                    {% endif %}
+                    {% if action is not none %}
+                    <button type="submit" class="btn {{ action_button_class_from_status(status) }} btn-xs" formaction="{{ request.route_url('submissions', traverse=(monthly_waste.id, action)) }}">
+                      {{ label }}
+                    </button>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

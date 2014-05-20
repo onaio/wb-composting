@@ -9,8 +9,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import contains_eager
 
 from composting.models.base import DBSession, Base, ModelFactory
-from composting.models.daily_waste import Submission
+from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
+from composting.models.monthly_density import MonthlyDensity
 from composting.models.skip import Skip
 
 
@@ -25,15 +26,19 @@ class Municipality(Base):
 
     _num_daily_wastes = None
 
-    #def __getitem__(self, item):
-    #    try:
-    #        submission = Submission.get(Submission.id == item)
-    #    except NoResultFound:
-    #        raise KeyError
-    #    else:
-    #        submission.__name__ = item
-    #        submission.__parent__ = self
-    #        return submission
+    factories = {
+        'monthly-waste-density': MonthlyDensity
+    }
+
+    def __getitem__(self, item):
+        try:
+            model = self.factories[item](self.request)
+        except KeyError:
+            raise
+        else:
+            model.__name__ = str(item)
+            model.__parent__ = self
+            return model
 
     def get_register_records_query(self, register_class, *criterion):
         """
@@ -103,4 +108,5 @@ class MunicipalityFactory(ModelFactory):
         else:
             record.__name__ = item
             record.__parent__ = self
+            record.request = self.request
             return record
