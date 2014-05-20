@@ -26,6 +26,8 @@ class MonthlyDensity(Submission):
     VOLUME_FIELD = 'volume'
     SKIP_TYPE_FIELD = 'skip_type'
     WASTE_HEIGHT_FIELD = 'waste_height'
+    FILLED_WEIGHT_FIELD = 'filled_weight'
+    EMPTY_WEIGHT_FIELD = 'empty_weight'
 
     @property
     def date(self):
@@ -62,7 +64,9 @@ class MonthlyDensity(Submission):
 
     @property
     def net_weight(self):
-        return 0
+        return (
+            float(self.json_data[self.FILLED_WEIGHT_FIELD])
+            - float(self.json_data[self.EMPTY_WEIGHT_FIELD]))
 
     @property
     def density(self):

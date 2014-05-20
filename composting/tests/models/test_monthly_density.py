@@ -30,3 +30,19 @@ class TestMonthlyDensity(TestBase):
             MonthlyDensity.WASTE_HEIGHT_FIELD: '20.0'
         })
         self.assertIsNone(monthly_density.volume)
+
+    def test_net_weight(self):
+        monthly_density = MonthlyDensity(json_data={
+            MonthlyDensity.FILLED_WEIGHT_FIELD: '20',
+            MonthlyDensity.EMPTY_WEIGHT_FIELD: '12'
+        })
+        self.assertEqual(monthly_density.net_weight, 8.0)
+
+    def test_density(self):
+        monthly_density = MonthlyDensity(json_data={
+            MonthlyDensity.COMPRESSOR_TRUCK_FIELD: 'yes',
+            MonthlyDensity.FILLED_WEIGHT_FIELD: '20',
+            MonthlyDensity.EMPTY_WEIGHT_FIELD: '12',
+            MonthlyDensity.VOLUME_FIELD: '20.0'
+        })
+        self.assertEqual(monthly_density.density, 0.4)
