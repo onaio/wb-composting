@@ -1,14 +1,9 @@
 from zope.interface import implementer
 
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import (
-    Column,
-    Integer,
-    ForeignKey
-)
-from sqlalchemy.orm import relationship
 
-from dashboard.libs.utils import date_string_to_date, date_string_to_time
+from dashboard.libs.utils import (
+    date_string_to_date, date_string_to_time, date_string_to_month)
 
 from composting.models.base import Base, ModelFactory, DBSession
 from composting.models.submission import Submission, ISubmission
@@ -40,6 +35,12 @@ class MonthlyDensity(Submission):
     def time(self):
         # todo: stick to one convention for the name likely date
         return date_string_to_time(
+            self.json_data.get(
+                'date', self.json_data.get('dateTime')))
+
+    @property
+    def month(self):
+        return date_string_to_month(
             self.json_data.get(
                 'date', self.json_data.get('dateTime')))
 
