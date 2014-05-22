@@ -27,7 +27,7 @@ class Municipality(Base):
     _num_daily_wastes = None
 
     factories = {
-        'monthly-waste-density': MonthlyDensity
+        #'monthly-waste-density': MonthlyDensity
     }
 
     def __getitem__(self, item):

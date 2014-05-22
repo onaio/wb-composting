@@ -12,11 +12,11 @@ class DailyWasteSubmissionHandler(SubmissionHandler):
         return (json_payload[XFORM_ID_STRING] ==
                 constants.DAILY_WASTE_REGISTER_FORM)
 
-    def __call__(self, json_payload):
+    def __call__(self, json_payload, **kwargs):
         xform_id = json_payload[XFORM_ID_STRING]
         # create a submission
         submission = Submission(
-            xform_id=xform_id, json_data=json_payload)
+            xform_id=xform_id, json_data=json_payload, **kwargs)
         daily_waste = DailyWaste(submission=submission)
         daily_waste.save()
         return daily_waste

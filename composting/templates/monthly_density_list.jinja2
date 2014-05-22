@@ -35,10 +35,9 @@
 
   <div class="row">
     <div class="col-xs-12">
-      {% for group in items|groupby('month')|sort(True) %}
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">{{ group.grouper|format_date(request, 'MMM yyyy') }}</h3>
+          <h3 class="box-title">{#{{ group.grouper|format_date(request, 'MMM yyyy') }}#}</h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
@@ -59,7 +58,7 @@
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
-              {% for monthly_waste in group.list %}
+              {% for monthly_waste in items|sort %}
                 {% set report = monthly_waste.json_data %}
                 {% set status = monthly_waste.status %}
                 <tr>
@@ -108,13 +107,23 @@
                 </tr>
               {% endfor %}
               </tbody>
+              <tfoot>
+                <tr>
+                  <tr>
+                  <td class="text-right" colspan="8"><strong>Average Density</strong></td>
+                  <td><strong>{% if average_density is not none %}{{ average_density|format_decimal(request) }} t/m<sup>3</sup>{% else %}N/A{% endif %}</strong></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                </tr>
+              </tfoot>
             </table>
           </form>
         </div>
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
-      {% endfor %}
     </div>
   </div>
 {% endblock %}

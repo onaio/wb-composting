@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from dashboard.libs.utils import (
     date_string_to_date, date_string_to_time, date_string_to_month)
 
-from composting.models.base import Base, ModelFactory, DBSession
+from composting.models.base import DBSession
 from composting.models.submission import Submission, ISubmission
 
 
@@ -17,6 +17,7 @@ class MonthlyDensity(Submission):
     # TODO: make relationship
     municipality_id = 1
 
+    DATE_FIELD = 'datetime'
     COMPRESSOR_TRUCK_FIELD = 'compressor_truck'
     VOLUME_FIELD = 'volume'
     SKIP_TYPE_FIELD = 'skip_type'
@@ -24,25 +25,24 @@ class MonthlyDensity(Submission):
     FILLED_WEIGHT_FIELD = 'filled_weight'
     EMPTY_WEIGHT_FIELD = 'empty_weight'
 
+    date_format = '%Y-%m-%dT%H:%M:%S.%f'
+
     @property
     def date(self):
         # todo: stick to one convention for the name likely date
         return date_string_to_date(
-            self.json_data.get(
-                'date', self.json_data.get('dateTime')))
+            self.json_data[self.DATE_FIELD])
 
     @property
     def time(self):
         # todo: stick to one convention for the name likely date
         return date_string_to_time(
-            self.json_data.get(
-                'date', self.json_data.get('dateTime')))
+            self.json_data[self.DATE_FIELD])
 
     @property
     def month(self):
         return date_string_to_month(
-            self.json_data.get(
-                'date', self.json_data.get('dateTime')))
+            self.json_data[self.DATE_FIELD])
 
     @property
     def volume(self):
@@ -83,3 +83,11 @@ class MonthlyDensity(Submission):
             .filter(
                 Skip.skip_type == self.json_data[self.SKIP_TYPE_FIELD],
                 Skip.municipality_id == self.municipality_id).one()
+
+    @classmethod
+    def get_average_density(cls, monthly_densities):
+        if len(monthly_densities) < 1:
+            raise ValueError("You must provide at least 1 monthly density")
+        return (reduce(
+            lambda accum, x: x.density + accum, monthly_densities, 0)
+                / len(monthly_densities))

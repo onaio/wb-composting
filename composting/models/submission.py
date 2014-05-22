@@ -74,8 +74,13 @@ class Submission(Base):
         return self.status == Submission.REJECTED
 
     @classmethod
-    def get_items(cls):
-        return DBSession.query(cls).all()
+    def get_items_query(cls, *criterion):
+        return DBSession.query(cls)\
+            .filter(*criterion)
+
+    @classmethod
+    def get_items(cls, *criterion):
+        return cls.get_items_query(*criterion).all()
 
     @property
     def renderer(self):

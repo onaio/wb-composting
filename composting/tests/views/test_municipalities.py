@@ -1,11 +1,12 @@
 from webob.multidict import MultiDict
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from pyramid import testing
 
 from composting.tests.test_base import (
     IntegrationTestBase, FunctionalTestBase)
 
 from composting.models import Municipality, Skip
+from composting.models.municipality_submission import MunicipalitySubmission
 from composting.views.municipalities import Municipalities, Submission
 from composting.forms import SkipForm
 
@@ -32,6 +33,41 @@ class TestMunicipalities(IntegrationTestBase):
         result = self.views.daily_waste_list()
         self.assertEqual(result['municipality'], self.municipality)
         self.assertEqual(len(result['daily_wastes']), 1)
+
+    def test_monthly_density_list_returns_items_for_requested_date(self):
+        # today's date for this test
+        self.request.context = self.municipality
+        self.request.GET = MultiDict([
+            ('month', '2014-01')
+        ])
+        result = self.views.monthly_density_list()
+        self.assertEqual(len(result['items']), 1)
+
+    def _test_monthly_density_list_use_current_date_when_no_date_requested(
+            self):
+        # todo: after adding an explicit date field, update its value to
+        # today's date for this test
+        self.request.context = self.municipality
+        result = self.views.monthly_density_list()
+        self.assertEqual(len(result['items']), 1)
+
+    def test_monthly_density_list_returns_avg_of_none_if_no_items(self):
+        # todo: after adding an explicit date field, update its value to
+        # today's date for this test
+        self.request.context = self.municipality
+        self.request.GET = MultiDict([
+            ('month', '2011-01')
+        ])
+        result = self.views.monthly_density_list()
+        self.assertIsNone(result['average_density'])
+
+    def test_monthly_density_list_when_bad_date_requested(self):
+        self.request.context = self.municipality
+        self.request.GET = MultiDict([
+            ('month', '2014')
+        ])
+        result = self.views.monthly_density_list()
+        self.assertIsInstance(result, HTTPBadRequest)
 
     def test_skips(self):
         self.request.context = self.municipality
@@ -118,6 +154,13 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities',
             traverse=(self.municipality.id, 'daily-waste'),
             _query={Submission.PENDING: '1', Submission.REJECTED: '1'})
+        result = self.testapp.get(url)
+        self.assertEqual(result.status_code, 200)
+
+    def test_monthly_density_list(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'monthly-waste-density'))
         result = self.testapp.get(url)
         self.assertEqual(result.status_code, 200)
 

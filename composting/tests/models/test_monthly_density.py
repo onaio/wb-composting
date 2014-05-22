@@ -46,3 +46,22 @@ class TestMonthlyDensity(TestBase):
             MonthlyDensity.VOLUME_FIELD: '20.0'
         })
         self.assertEqual(monthly_density.density, 0.4)
+
+    def test_get_average_density(self):
+        average_density = MonthlyDensity.get_average_density([
+            MonthlyDensity(json_data={
+                MonthlyDensity.COMPRESSOR_TRUCK_FIELD: 'yes',
+                MonthlyDensity.FILLED_WEIGHT_FIELD: '20',
+                MonthlyDensity.EMPTY_WEIGHT_FIELD: '12',
+                MonthlyDensity.VOLUME_FIELD: '20.0'
+            }),
+            # density = 0.8
+            MonthlyDensity(json_data={
+                MonthlyDensity.COMPRESSOR_TRUCK_FIELD: 'yes',
+                MonthlyDensity.FILLED_WEIGHT_FIELD: '20',
+                MonthlyDensity.EMPTY_WEIGHT_FIELD: '12',
+                MonthlyDensity.VOLUME_FIELD: '10.0'
+            })
+            # density = 0.4
+        ])
+        self.assertAlmostEqual(average_density, 0.6)

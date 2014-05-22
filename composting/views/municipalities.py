@@ -1,11 +1,17 @@
-from pyramid.httpexceptions import HTTPFound
+import datetime
+
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from pyramid.view import view_defaults, view_config
 from deform import Form, ValidationFailure, Button
+from sqlalchemy import and_
 
 from dashboard.views.base import BaseView
 
+from composting.libs.utils import get_month_start_end
 from composting.views.helpers import selections_from_request
 from composting.models import Municipality, DailyWaste, Submission, Skip
+from composting.models.monthly_density import MonthlyDensity
+from composting.models.municipality_submission import MunicipalitySubmission
 from composting.forms import SkipForm, SiteProfileForm
 
 
@@ -36,6 +42,48 @@ class Municipalities(BaseView):
         return {
             'municipality': municipality,
             'daily_wastes': daily_wastes,
+            'status': status
+        }
+
+    @view_config(
+        name='monthly-waste-density',
+        renderer='monthly_density_list.jinja2')
+    def monthly_density_list(self):
+        municipality = self.request.context
+        statuses = [Submission.PENDING, Submission.APPROVED,
+                    Submission.REJECTED]
+        status_selections = selections_from_request(
+            self.request,
+            statuses,
+            lambda status: status == '1',
+            [Submission.PENDING, Submission.REJECTED])
+
+        # parse date from request if any
+        date_string = self.request.GET.get('month')
+        if date_string:
+            try:
+                date = datetime.datetime.strptime(date_string, '%Y-%m')
+            except ValueError:
+                return HTTPBadRequest("Couldn't understand the date format")
+        else:
+            date = datetime.datetime.now()
+
+        # determine the date ranges
+        start, end = get_month_start_end(date)
+        criterion = and_(
+            MunicipalitySubmission.date >= start,
+            MunicipalitySubmission.date <= end)
+        municipality_submissions = MunicipalitySubmission.get_items(
+            municipality, MonthlyDensity, criterion)
+        items = [s for ms, s in municipality_submissions]
+        average_density = (MonthlyDensity.get_average_density(
+            items) if len(items) > 0 else None)
+
+        status = dict([(s, s in statuses) for s in status_selections])
+        return {
+            'municipality': municipality,
+            'items': items,
+            'average_density': average_density,
             'status': status
         }
 
