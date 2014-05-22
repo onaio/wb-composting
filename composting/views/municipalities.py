@@ -56,7 +56,7 @@ class Municipalities(BaseView):
             self.request,
             statuses,
             lambda status: status == '1',
-            [Submission.PENDING, Submission.REJECTED])
+            [Submission.PENDING, Submission.APPROVED, Submission.REJECTED])
 
         # parse date from request if any
         date_string = self.request.GET.get('month')
