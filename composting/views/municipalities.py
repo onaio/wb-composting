@@ -71,8 +71,8 @@ class Municipalities(BaseView):
         # determine the date ranges
         start, end = get_month_start_end(date)
         criterion = and_(
-            MunicipalitySubmission.date >= start,
-            MunicipalitySubmission.date <= end)
+            MonthlyDensity.date >= start,
+            MonthlyDensity.date <= end)
         municipality_submissions = MunicipalitySubmission.get_items(
             municipality, MonthlyDensity, criterion)
         items = [s for ms, s in municipality_submissions]

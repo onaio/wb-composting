@@ -25,13 +25,12 @@ class MonthlyDensity(Submission):
     FILLED_WEIGHT_FIELD = 'filled_weight'
     EMPTY_WEIGHT_FIELD = 'empty_weight'
 
-    date_format = '%Y-%m-%dT%H:%M:%S.%f'
+    DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
-    @property
-    def date(self):
-        # todo: stick to one convention for the name likely date
+    @classmethod
+    def date_from_json(cls, json_data):
         return date_string_to_date(
-            self.json_data[self.DATE_FIELD])
+            json_data[cls.DATE_FIELD], cls.DATE_FORMAT)
 
     @property
     def time(self):

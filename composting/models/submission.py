@@ -6,7 +6,7 @@ from sqlalchemy import (
     Integer,
     String,
     Enum,
-    ForeignKey
+    Date,
 )
 from sqlalchemy.orm import relationship
 
@@ -30,6 +30,7 @@ class Submission(Base):
     status = Column(
         Enum(PENDING, APPROVED, REJECTED, name='SUBMISSION_STATUS'),
         nullable=False, index=True, default=PENDING)
+    date = Column(Date, nullable=False, server_default='1970-01-01')
 
     StatusLabels = (
         (PENDING, 'Pending'),

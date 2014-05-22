@@ -25,7 +25,6 @@ class MunicipalitySubmission(Base):
     municipality_id = Column(
         Integer, ForeignKey('municipalities.id'), nullable=False)
     municipality = relationship('Municipality')
-    date = Column(Date, nullable=False)
 
     @classmethod
     def get_items(cls, municipality, submission_subclass, *criterion):
