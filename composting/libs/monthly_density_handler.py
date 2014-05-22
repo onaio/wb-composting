@@ -31,4 +31,5 @@ class MonthlyDensityHandler(SubmissionHandler):
             date=date,
             municipality=municipality)
 
+        # todo: save just the submission when if we don't have a municipality
         DBSession.add(municipality_submission)
