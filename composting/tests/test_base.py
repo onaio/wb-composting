@@ -15,7 +15,7 @@ from webtest import TestApp
 from dashboard.libs.submission_handler import (
     submission_handler_manager, NoAppropriateHandlerException)
 
-from composting import main
+from composting import main, hook_submission_handlers
 from composting.libs import DailyWasteSubmissionHandler
 from composting.models.base import (
     DBSession,
@@ -58,6 +58,8 @@ class TestBase(unittest.TestCase):
         skip_a = Skip(
             municipality=municipality, skip_type='A', small_length=20,
             large_length=30, small_breadth=10, large_breadth=16)
+        submission_handler_manager.clear()
+        hook_submission_handlers()
         with transaction.manager:
             DBSession.add_all([municipality, skip_a])
             for status, raw_json in self.submissions:
