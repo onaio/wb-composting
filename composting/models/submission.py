@@ -8,7 +8,7 @@ from sqlalchemy import (
     Enum,
     Date,
 )
-from sqlalchemy.orm import relationship
+from dashboard.libs.utils import date_string_to_date
 
 from composting.models.base import Base, DBSession
 
@@ -37,12 +37,14 @@ class Submission(Base):
         (APPROVED, 'Approved'),
         (REJECTED, 'Rejected'),
     )
-    submission_type = Column(
-        String(50), nullable=False, server_default='submission', index=True)
+
     __mapper_args__ = {
         'polymorphic_identity': 'submission',
-        'polymorphic_on': submission_type
+        'polymorphic_on': xform_id
     }
+
+    DATE_FIELD = 'datetime'
+    DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
     def __init__(self, request=None, **kwargs):
         if request is not None:
@@ -87,3 +89,12 @@ class Submission(Base):
     def renderer(self):
         return "{}_list.jinja2".format(
             self.__mapper_args__['polymorphic_identity'])
+
+    @classmethod
+    def date_from_json(cls, json_data):
+        """
+        Return a date object parsed from the specific submission class's
+        DATE_FIELD and DATE_FORMAT
+        """
+        return date_string_to_date(
+            json_data[cls.DATE_FIELD], cls.DATE_FORMAT)

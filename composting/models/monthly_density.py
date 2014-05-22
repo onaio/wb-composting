@@ -5,6 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from dashboard.libs.utils import (
     date_string_to_date, date_string_to_time, date_string_to_month)
 
+from composting import constants
 from composting.models.base import DBSession
 from composting.models.submission import Submission, ISubmission
 
@@ -12,20 +13,17 @@ from composting.models.submission import Submission, ISubmission
 @implementer(ISubmission)
 class MonthlyDensity(Submission):
     __mapper_args__ = {
-        'polymorphic_identity': 'monthly_density',
+        'polymorphic_identity': constants.MONTHLY_WASTE_DENSITY_FORM,
     }
     # TODO: make relationship
     municipality_id = 1
 
-    DATE_FIELD = 'datetime'
     COMPRESSOR_TRUCK_FIELD = 'compressor_truck'
     VOLUME_FIELD = 'volume'
     SKIP_TYPE_FIELD = 'skip_type'
     WASTE_HEIGHT_FIELD = 'waste_height'
     FILLED_WEIGHT_FIELD = 'filled_weight'
     EMPTY_WEIGHT_FIELD = 'empty_weight'
-
-    DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
     @classmethod
     def date_from_json(cls, json_data):

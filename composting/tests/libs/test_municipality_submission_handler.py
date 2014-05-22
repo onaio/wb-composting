@@ -4,6 +4,7 @@ from composting import constants
 from composting.libs.municipality_submission_handler import (
     MunicipalitySubmissionHandler)
 from composting.models.monthly_density import MonthlyDensity
+from composting.models.daily_waste import DailyWaste
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.tests.test_base import TestBase
 
@@ -38,3 +39,19 @@ class TestMunicipalitySubmissionHandler(TestBase):
         self.assertEqual(MonthlyDensity.count(), num_submissions + 1)
         self.assertEqual(
             MunicipalitySubmission.count(), num_municipality_submissions + 1)
+
+    def test_can_handle_daily_waste_submission(self):
+        json_payload = {
+            XFORM_ID_STRING: constants.DAILY_WASTE_REGISTER_FORM
+        }
+        result = MunicipalitySubmissionHandler.can_handle(json_payload)
+        self.assertTrue(result)
+
+    def test_creates_daily_waste_submission(self):
+        json_payload = {
+            XFORM_ID_STRING: constants.DAILY_WASTE_REGISTER_FORM,
+            DailyWaste.DATE_FIELD: '2014-04-21T10:34:03.000'
+        }
+        submission = MunicipalitySubmissionHandler.create_submission(
+            json_payload)
+        self.assertIsInstance(submission, DailyWaste)

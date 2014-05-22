@@ -5,33 +5,39 @@ from composting import constants
 from composting.models.base import DBSession
 from composting.models.municipality import Municipality
 from composting.models.monthly_density import MonthlyDensity
+from composting.models.daily_waste import DailyWaste
 from composting.models.municipality_submission import MunicipalitySubmission
 
 
 class MunicipalitySubmissionHandler(SubmissionHandler):
     # mapping of id strings to classes
     XFORM_CLASS_MAPPING = {
-        constants.MONTHLY_WASTE_DENSITY_FORM: MonthlyDensity
+        constants.MONTHLY_WASTE_DENSITY_FORM: MonthlyDensity,
+        constants.DAILY_WASTE_REGISTER_FORM: DailyWaste
     }
 
     @staticmethod
     def can_handle(json_payload):
         return json_payload[XFORM_ID_STRING] in [
-            constants.MONTHLY_WASTE_DENSITY_FORM
+            constants.MONTHLY_WASTE_DENSITY_FORM,
+            constants.DAILY_WASTE_REGISTER_FORM
         ]
 
     @staticmethod
     def create_submission(json_payload):
+        xform_id = json_payload[XFORM_ID_STRING]
         # get the specific submission sub-class
-        klass = MunicipalitySubmissionHandler.XFORM_CLASS_MAPPING[
-            json_payload[XFORM_ID_STRING]]
-
-        # determine the date the data is in reference of
-        date = klass.date_from_json(json_payload)
-        return klass(
-            xform_id=json_payload[XFORM_ID_STRING],
-            json_data=json_payload,
-            date=date)
+        try:
+            klass = MunicipalitySubmissionHandler.XFORM_CLASS_MAPPING[xform_id]
+        except KeyError:
+            raise ValueError("No xform class mapping to '{}'".format(xform_id))
+        else:
+            # determine the date the data is in reference of
+            date = klass.date_from_json(json_payload)
+            return klass(
+                xform_id=json_payload[XFORM_ID_STRING],
+                json_data=json_payload,
+                date=date)
 
     def __call__(self, json_payload, **kwargs):
         submission = self.create_submission(json_payload)
