@@ -14,9 +14,6 @@ class DailyWaste(Submission):
         'polymorphic_identity': constants.DAILY_WASTE_REGISTER_FORM,
     }
 
-    municipality_submission = relationship(
-        'MunicipalitySubmission', uselist=False)
-
     # form fields
     DATE_FIELD = 'datetime'
     COMPRESSOR_TRUCK = 'compressor_truck'

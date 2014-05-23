@@ -30,10 +30,10 @@ def update_status(context, request):
             "You must set request.action to the desired return action in the "
             "municipalities route")
 
+    municipality_id = context.municipality_submission.municipality_id
     context.status = request.new_status
     context.save()
 
-    # todo: use daily_waste.municipality.id in redirect
     return HTTPFound(
         request.route_url(
-            'municipalities', traverse=('1', request.action)))
+            'municipalities', traverse=(municipality_id, request.action)))

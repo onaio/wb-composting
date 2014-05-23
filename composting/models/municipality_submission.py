@@ -5,7 +5,7 @@ from sqlalchemy import (
     ForeignKey,
     Index
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from composting.models.base import Base, DBSession
 
@@ -21,7 +21,9 @@ class MunicipalitySubmission(Base):
     submission_id = Column(
         Integer, ForeignKey('submissions.id'), primary_key=True,
         nullable=False)
-    submission = relationship('Submission')
+    submission = relationship(
+        'Submission',
+        backref=backref('municipality_submission', uselist=False))
     municipality_id = Column(
         Integer, ForeignKey('municipalities.id'), nullable=False)
     municipality = relationship('Municipality')

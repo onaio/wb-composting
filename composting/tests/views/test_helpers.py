@@ -6,6 +6,8 @@ from pyramid import testing
 
 from composting import constants
 from composting.models import Submission, DailyWaste
+from composting.models.municipality import Municipality
+from composting.models.municipality_submission import MunicipalitySubmission
 from composting.views import helpers
 from composting.tests.test_base import IntegrationTestBase
 
@@ -37,9 +39,14 @@ class TestHelpers(unittest.TestCase):
 class TestHelpersIntegration(IntegrationTestBase):
     def setUp(self):
         super(TestHelpersIntegration, self).setUp()
+        self.setup_test_data()
+        municipality_id = Municipality.get(Municipality.name == "Mukono").id
         self.context = DailyWaste(
             xform_id=constants.DAILY_WASTE_REGISTER_FORM,
-            status=Submission.PENDING)
+            status=Submission.PENDING,
+            municipality_submission=MunicipalitySubmission(
+                municipality_id=municipality_id
+            ))
         self.request = testing.DummyRequest()
 
     def test_update_status(self):
