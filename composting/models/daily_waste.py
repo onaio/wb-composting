@@ -1,10 +1,9 @@
 from zope.interface import implementer
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.orm import relationship
 from dashboard.libs.utils import date_string_to_time
 
 from composting import constants
-from composting.models.base import Base, ModelFactory, DBSession
+from composting.models.base import ModelFactory, DBSession
 from composting.models.submission import ISubmission, Submission
 
 
