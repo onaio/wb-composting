@@ -24,7 +24,7 @@ class Municipalities(BaseView):
             'municipality': municipality
         }
 
-    @view_config(name='daily-waste', renderer='daily_waste_list.jinja2')
+    #@view_config(name='daily-waste', renderer='daily_waste_list.jinja2')
     def daily_waste_list(self):
         municipality = self.request.context
         statuses = [Submission.PENDING, Submission.APPROVED,

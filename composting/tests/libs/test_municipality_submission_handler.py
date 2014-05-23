@@ -55,3 +55,17 @@ class TestMunicipalitySubmissionHandler(TestBase):
         submission = MunicipalitySubmissionHandler.create_submission(
             json_payload)
         self.assertIsInstance(submission, DailyWaste)
+
+    def test_call_on_daily_waste_submission(self):
+        self.setup_test_data()
+        json_payload = {
+            XFORM_ID_STRING: constants.DAILY_WASTE_REGISTER_FORM,
+            DailyWaste.DATE_FIELD: '2014-04-21T10:34:03.000'
+        }
+        handler = MunicipalitySubmissionHandler()
+        num_submissions = DailyWaste.count()
+        num_municipality_submissions = MunicipalitySubmission.count()
+        handler.__call__(json_payload)
+        self.assertEqual(DailyWaste.count(), num_submissions + 1)
+        self.assertEqual(
+            MunicipalitySubmission.count(), num_municipality_submissions + 1)

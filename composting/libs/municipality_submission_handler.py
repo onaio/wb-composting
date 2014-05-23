@@ -24,7 +24,7 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
         ]
 
     @staticmethod
-    def create_submission(json_payload):
+    def create_submission(json_payload, **kwargs):
         xform_id = json_payload[XFORM_ID_STRING]
         # get the specific submission sub-class
         try:
@@ -37,10 +37,11 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
             return klass(
                 xform_id=json_payload[XFORM_ID_STRING],
                 json_data=json_payload,
-                date=date)
+                date=date,
+                **kwargs)
 
     def __call__(self, json_payload, **kwargs):
-        submission = self.create_submission(json_payload)
+        submission = self.create_submission(json_payload, **kwargs)
         # add the submission because we can save even when we can't determine
         # its municipality
         DBSession.add(submission)

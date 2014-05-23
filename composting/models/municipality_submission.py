@@ -27,9 +27,15 @@ class MunicipalitySubmission(Base):
     municipality = relationship('Municipality')
 
     @classmethod
-    def get_items(cls, municipality, submission_subclass, *criterion):
+    def get_items_query(cls, municipality, submission_subclass, *criterion):
         return DBSession.query(cls, submission_subclass)\
             .filter(
                 cls.submission_id == submission_subclass.id,
-                cls.municipality == municipality, *criterion)\
+                cls.municipality == municipality,
+                *criterion)
+
+    @classmethod
+    def get_items(cls, municipality, submission_subclass, *criterion):
+        return cls.get_items_query(
+            municipality, submission_subclass, *criterion)\
             .all()

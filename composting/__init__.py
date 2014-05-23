@@ -9,8 +9,6 @@ from sqlalchemy import engine_from_config
 from dashboard.libs.submission_handler import submission_handler_manager
 
 from composting.security import group_finder, pwd_context
-from composting.libs.daily_waste_register_handler import (
-    DailyWasteSubmissionHandler)
 from composting.libs.municipality_submission_handler import (
     MunicipalitySubmissionHandler)
 from composting.models.base import (
@@ -53,7 +51,6 @@ def main(global_config, **settings):
 
 def hook_submission_handlers():
     submission_handler_manager.add_handler(MunicipalitySubmissionHandler)
-    submission_handler_manager.add_handler(DailyWasteSubmissionHandler)
 
 
 def includeme(config):

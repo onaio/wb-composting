@@ -15,13 +15,13 @@
             <div class="form-group">
               <label for="inputEmail3" class="col-sm-2 control-label">Show:</label>
               <label class="checkbox-inline">
-                <input name="pending" type="checkbox" id="inlineCheckbox1" value="1" {% if status.pending is defined %}checked="checked"{% endif %}> Pending
+                <input name="pending" type="checkbox" id="inlineCheckbox1" value="1" {% if statuses.pending is defined %}checked="checked"{% endif %}> Pending
               </label>
               <label class="checkbox-inline">
-                <input name="approved" type="checkbox" id="inlineCheckbox2" value="1" {% if status.approved is defined %}checked="checked"{% endif %}> Approved
+                <input name="approved" type="checkbox" id="inlineCheckbox2" value="1" {% if statuses.approved is defined %}checked="checked"{% endif %}> Approved
               </label>
               <label class="checkbox-inline">
-                <input name="rejected" type="checkbox" id="inlineCheckbox3" value="1" {% if status.rejected is defined %}checked="checked"{% endif %}> Rejected
+                <input name="rejected" type="checkbox" id="inlineCheckbox3" value="1" {% if statuses.rejected is defined %}checked="checked"{% endif %}> Rejected
               </label>
             </div>
             <button type="submit" class="btn btn-primary btn-sm">Update</button>
@@ -36,10 +36,10 @@
 
   <div class="row">
     <div class="col-xs-12">
-      {% for group in daily_wastes|groupby('date')|sort(True) %}
+      {#{% for group in daily_wastes|groupby('date')|sort(True) %}#}
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">{{ group.grouper|format_date(request) }}</h3>
+          <h3 class="box-title">{#{{ group.grouper|format_date(request) }}#}</h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
@@ -58,9 +58,9 @@
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
-              {% for daily_waste in group.list %}
-                {% set report = daily_waste.submission.json_data %}
-                {% set status = daily_waste.submission.status %}
+              {% for daily_waste in items %}
+                {% set report = daily_waste.json_data %}
+                {% set status = daily_waste.status %}
                 <tr>
                   <td>{{ daily_waste.time|format_time(request) }}</td>
                   <td>{{ report.vehicle_number }}</td>
@@ -111,7 +111,7 @@
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
-      {% endfor %}
+      {#{% endfor %}#}
     </div>
   </div>
 {% endblock %}

@@ -1,1 +1,0 @@
-from daily_waste_register_handler import DailyWasteSubmissionHandler

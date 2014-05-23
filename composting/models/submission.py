@@ -81,10 +81,6 @@ class Submission(Base):
         return DBSession.query(cls)\
             .filter(*criterion)
 
-    @classmethod
-    def get_items(cls, *criterion):
-        return cls.get_items_query(*criterion).all()
-
     @property
     def renderer(self):
         return "{}_list.jinja2".format(

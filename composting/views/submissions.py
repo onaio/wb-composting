@@ -3,8 +3,8 @@ from pyramid.view import view_defaults, view_config
 from dashboard.views.base import BaseView
 from composting.models import Municipality
 from composting.models.submission import Submission, ISubmission
+from composting.models.municipality_submission import MunicipalitySubmission
 from composting.views.helpers import selections_from_request
-
 
 from pyramid.events import ContextFound
 from pyramid.events import subscriber
@@ -29,20 +29,22 @@ class Submissions(BaseView):
         self.request.override_renderer = model.renderer
 
         # statuses
-        statuses = [Submission.PENDING, Submission.APPROVED,
+        all_statuses = [Submission.PENDING, Submission.APPROVED,
                     Submission.REJECTED]
         status_selections = selections_from_request(
             self.request,
-            statuses,
+            all_statuses,
             lambda status: status == '1',
             [Submission.PENDING, Submission.REJECTED])
 
         criterion = Submission.status.in_(status_selections)
-        items = model.__class__.get_items()
+        municipality_submissions = MunicipalitySubmission.get_items(
+            municipality, model.__class__, criterion)
+        items = [s for ms, s in municipality_submissions]
 
-        status = dict([(s, s in statuses) for s in status_selections])
+        statuses = dict([(s, s in all_statuses) for s in status_selections])
         return {
             'municipality': municipality,
             'items': items,
-            'status': status
+            'statuses': statuses
         }

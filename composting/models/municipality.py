@@ -11,8 +11,9 @@ from sqlalchemy.orm import contains_eager
 from composting.models.base import DBSession, Base, ModelFactory
 from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
-from composting.models.monthly_density import MonthlyDensity
 from composting.models.skip import Skip
+from composting.models.municipality_submission import (
+            MunicipalitySubmission)
 
 
 class Municipality(Base):
@@ -24,10 +25,11 @@ class Municipality(Base):
     leachete_tank_length = Column(Float, nullable=False, server_default='5.0')
     leachete_tank_width = Column(Float, nullable=False, server_default='5.0')
 
-    _num_daily_wastes = None
+    _num_actionable_daily_wastes = None
 
     factories = {
         #'monthly-waste-density': MonthlyDensity
+        'daily-waste': DailyWaste
     }
 
     def __getitem__(self, item):
@@ -40,34 +42,16 @@ class Municipality(Base):
             model.__parent__ = self
             return model
 
-    def get_register_records_query(self, register_class, *criterion):
-        """
-        Get records filtered by specified criterion from `register_class`
-        eager loading from submissions
-        """
-        return DBSession.query(register_class)\
-            .join(register_class.submission)\
-            .filter(*criterion)\
-            .options(contains_eager(register_class.submission))
-
-    def get_register_records(self, register_class, *criterion):
-        """
-        Get records filtered by specified criterion from `register_class`
-        eager loading from submissions
-        """
-        return self.get_register_records_query(register_class, *criterion)\
-            .all()
-
     @property
-    def num_daily_wastes(self):
-        self._num_daily_wastes = self._num_daily_wastes\
-            or self.get_register_records_query(
-                DailyWaste,
-                or_(
-                    Submission.status == Submission.PENDING,
-                    Submission.status == Submission.REJECTED))\
+    def num_actionable_daily_wastes(self):
+        criterion = or_(
+            Submission.status == Submission.PENDING,
+            Submission.status == Submission.REJECTED)
+        self._num_actionable_daily_wastes = self._num_actionable_daily_wastes\
+            or MunicipalitySubmission.get_items_query(
+                self, DailyWaste, criterion)\
             .count()
-        return self._num_daily_wastes
+        return self._num_actionable_daily_wastes
 
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\

@@ -1,22 +1,21 @@
+from zope.interface import implementer
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import (
-    Column,
-    Integer,
-    ForeignKey
-)
 from sqlalchemy.orm import relationship
-
-from dashboard.libs.utils import date_string_to_date, date_string_to_time
+from dashboard.libs.utils import date_string_to_time
 
 from composting import constants
 from composting.models.base import Base, ModelFactory, DBSession
 from composting.models.submission import ISubmission, Submission
 
 
+@implementer(ISubmission)
 class DailyWaste(Submission):
     __mapper_args__ = {
         'polymorphic_identity': constants.DAILY_WASTE_REGISTER_FORM,
     }
+
+    municipality_submission = relationship(
+        'MunicipalitySubmission', uselist=False)
 
     # form fields
     DATE_FIELD = 'datetime'
@@ -57,10 +56,20 @@ class DailyWaste(Submission):
         Get the skip associated with this waste register
         """
         from composting.models import Skip
-        return DBSession.query(Skip)\
-            .filter(
-                Skip.skip_type == self.json_data[self.SKIP_TYPE],
-                Skip.municipality_id == self.municipality_id).one()
+        # find our municipality submission
+        municipality_submission = self.municipality_submission
+        if municipality_submission:
+            return DBSession.query(Skip)\
+                .filter(
+                    Skip.skip_type == self.json_data[self.SKIP_TYPE],
+                    Skip.municipality_id ==
+                    municipality_submission.municipality.id)\
+                .one()
+        else:
+            raise NoResultFound(
+                "Submission doesnt have a corresponding"
+                " MunicipalitySubmission")
+
 
     @property
     def time(self):

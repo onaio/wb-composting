@@ -24,16 +24,6 @@ class TestMunicipalities(IntegrationTestBase):
         result = self.views.index()
         self.assertEqual(result['municipality'], self.municipality)
 
-    def test_daily_waste_list(self):
-        self.request.context = self.municipality
-        self.request.GET = MultiDict([
-            ('pending', '1'),
-            ('rejected', '1')
-        ])
-        result = self.views.daily_waste_list()
-        self.assertEqual(result['municipality'], self.municipality)
-        self.assertEqual(len(result['daily_wastes']), 1)
-
     def test_monthly_density_list_returns_items_for_requested_date(self):
         # today's date for this test
         self.request.context = self.municipality
@@ -146,14 +136,6 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
     def test_index(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id,))
-        result = self.testapp.get(url)
-        self.assertEqual(result.status_code, 200)
-
-    def test_daily_waste_list(self):
-        url = self.request.route_path(
-            'municipalities',
-            traverse=(self.municipality.id, 'daily-waste'),
-            _query={Submission.PENDING: '1', Submission.REJECTED: '1'})
         result = self.testapp.get(url)
         self.assertEqual(result.status_code, 200)
 
