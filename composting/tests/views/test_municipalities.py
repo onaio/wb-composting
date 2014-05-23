@@ -6,8 +6,7 @@ from composting.tests.test_base import (
     IntegrationTestBase, FunctionalTestBase)
 
 from composting.models import Municipality, Skip
-from composting.models.municipality_submission import MunicipalitySubmission
-from composting.views.municipalities import Municipalities, Submission
+from composting.views.municipalities import Municipalities
 from composting.forms import SkipForm
 
 

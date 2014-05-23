@@ -1,4 +1,5 @@
 from pyramid.view import view_defaults, view_config
+from pyramid.response import Response
 
 from dashboard.views.base import BaseView
 from composting.models import Municipality
@@ -20,9 +21,10 @@ def override_submission_renderer(event):
         #event.request.override_renderer = 'json'
         pass
 
-@view_defaults(route_name='municipalities', context=Municipality)
+@view_defaults(route_name='submissions', context=ISubmission)
 class Submissions(BaseView):
-    @view_config(name='', context=ISubmission, renderer='string')
+    @view_config(
+        route_name='municipalities', name='', renderer='string')
     def list(self):
         model = self.request.context
         municipality = model.__parent__
@@ -48,3 +50,24 @@ class Submissions(BaseView):
             'items': items,
             'statuses': statuses
         }
+
+    @view_config(name='approve', request_method='POST',
+                 wrapper='update_status_wrapper')
+    def approve(self):
+        self.request.new_status = Submission.APPROVED
+        self.request.action = 'daily-waste'
+        return Response(None)
+
+    @view_config(name='reject', request_method='POST',
+                 wrapper='update_status_wrapper')
+    def reject(self):
+        self.request.new_status = Submission.REJECTED
+        self.request.action = 'daily-waste'
+        return Response(None)
+
+    @view_config(name='unapprove', request_method='POST',
+                 wrapper='update_status_wrapper')
+    def unapprove(self):
+        self.request.new_status = Submission.PENDING
+        self.request.action = 'daily-waste'
+        return Response(None)

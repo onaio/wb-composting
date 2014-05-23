@@ -1,5 +1,6 @@
 from zope.interface import Interface
 
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy import (
     Column,
@@ -10,7 +11,7 @@ from sqlalchemy import (
 )
 from dashboard.libs.utils import date_string_to_date
 
-from composting.models.base import Base, DBSession
+from composting.models.base import Base, DBSession, ModelFactory
 
 
 class ISubmission(Interface):
@@ -94,3 +95,15 @@ class Submission(Base):
         """
         return date_string_to_date(
             json_data[cls.DATE_FIELD], cls.DATE_FORMAT)
+
+
+class SubmissionFactory(ModelFactory):
+    def __getitem__(self, item):
+        try:
+            submission = Submission.get(Submission.id == item)
+        except NoResultFound:
+            raise KeyError
+        else:
+            submission.__parent__ = self
+            submission.name = item
+            return submission

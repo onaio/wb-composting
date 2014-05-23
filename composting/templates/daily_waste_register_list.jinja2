@@ -97,7 +97,7 @@
                       {% set action = none %}
                     {% endif %}
                     {% if action is not none %}
-                    <button type="submit" class="btn {{ action_button_class_from_status(status) }} btn-xs" formaction="{{ request.route_url('daily-waste', traverse=(daily_waste.id, action)) }}">
+                    <button type="submit" class="btn {{ action_button_class_from_status(status) }} btn-xs" formaction="{{ request.route_url('submissions', traverse=(daily_waste.id, action)) }}">
                       {{ label }}
                     </button>
                     {% endif %}

@@ -30,7 +30,7 @@ def update_status(context, request):
             "You must set request.action to the desired return action in the "
             "municipalities route")
 
-    context.submission.status = request.new_status
+    context.status = request.new_status
     context.save()
 
     # todo: use daily_waste.municipality.id in redirect

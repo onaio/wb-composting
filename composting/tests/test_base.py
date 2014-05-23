@@ -102,7 +102,11 @@ class FunctionalTestBase(IntegrationTestBase):
                 'here': current_dir
             },
             **settings)
-        self.testapp = TestApp(app)
+        self.testapp = TestApp(app, extra_environ={
+            'HTTP_HOST': 'example.com'
+        })
+
+        # used by cookie auth as the domain
         self.request.environ = {
             'SERVER_NAME': 'example.com',
         }
