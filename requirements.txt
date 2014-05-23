@@ -41,4 +41,4 @@ colander==1.0b1
 peppercorn==0.4
 deform==2.0a2
 
--e git://github.com/onaio/dashboard-skeleton.git@0.1.1b#egg=Dashboard
+-e git://github.com/onaio/dashboard-skeleton.git@0.1.2#egg=Dashboard
