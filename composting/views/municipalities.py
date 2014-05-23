@@ -47,7 +47,7 @@ class Municipalities(BaseView):
 
     @view_config(
         name='monthly-waste-density',
-        renderer='monthly_density_list.jinja2')
+        renderer='monthly_waste_density_list.jinja2')
     def monthly_density_list(self):
         municipality = self.request.context
         statuses = [Submission.PENDING, Submission.APPROVED,
