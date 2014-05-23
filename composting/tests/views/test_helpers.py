@@ -4,6 +4,7 @@ from webob.multidict import MultiDict
 from pyramid.httpexceptions import HTTPFound
 from pyramid import testing
 
+from composting import constants
 from composting.models import Submission, DailyWaste
 from composting.views import helpers
 from composting.tests.test_base import IntegrationTestBase
@@ -37,8 +38,8 @@ class TestHelpersIntegration(IntegrationTestBase):
     def setUp(self):
         super(TestHelpersIntegration, self).setUp()
         self.context = DailyWaste(
-            submission=Submission(
-                xform_id='daily_waste', status=Submission.PENDING))
+            xform_id=constants.DAILY_WASTE_REGISTER_FORM,
+            status=Submission.PENDING)
         self.request = testing.DummyRequest()
 
     def test_update_status(self):
@@ -50,7 +51,7 @@ class TestHelpersIntegration(IntegrationTestBase):
             response.location,
             self.request.route_url(
                 'municipalities', traverse=('1', self.request.action)))
-        self.assertEqual(self.context.submission.status, Submission.APPROVED)
+        self.assertEqual(self.context.status, Submission.APPROVED)
 
     def test_update_status_raises_value_error_if_no_new_status(self):
         self.request.action = 'some-action'
