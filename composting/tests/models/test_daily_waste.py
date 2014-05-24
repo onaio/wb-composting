@@ -10,19 +10,7 @@ class TestDailyWaste(TestBase):
     def setUp(self):
         super(TestDailyWaste, self).setUp()
         self.setup_test_data()
-
-    def test_skip_returns_skip_if_found(self):
-        daily_waste = DBSession.query(DailyWaste)\
-            .filter(DailyWaste.json_data['skip_type'].astext == 'A')\
-            .first()
-        skip = daily_waste.get_skip()
-        self.assertIsInstance(skip, Skip)
-
-    def test_skip_raises_no_result_if_not_found(self):
-        daily_waste = DBSession.query(DailyWaste)\
-            .filter(DailyWaste.json_data['skip_type'].astext == 'F')\
-            .first()
-        self.assertRaises(NoResultFound, daily_waste.get_skip)
+        self.municipality = Municipality.get(Municipality.name == "Mukono")
 
     def test_volume_returns_raw_value_if_compressor(self):
         daily_waste = DailyWaste(
@@ -34,9 +22,8 @@ class TestDailyWaste(TestBase):
         self.assertEqual(daily_waste.volume, 20.0)
 
     def test_calculates_volume_if_not_compressor(self):
-        municipality = Municipality.get(Municipality.name == "Mukono")
         municipality_submission = MunicipalitySubmission(
-            municipality=municipality)
+            municipality_id=self.municipality.id)
         daily_waste = DailyWaste(
             json_data={
                 'compressor_truck': 'no',
@@ -46,9 +33,8 @@ class TestDailyWaste(TestBase):
         self.assertEqual(daily_waste.volume, 6500.0)
 
     def test_volume_returns_none_if_no_skip(self):
-        municipality = Municipality.get(Municipality.name == "Mukono")
         municipality_submission = MunicipalitySubmission(
-            municipality=municipality)
+            municipality=self.municipality)
         daily_waste = DailyWaste(
             json_data={
                 'compressor_truck': 'no',
