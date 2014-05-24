@@ -20,6 +20,9 @@ class DailyWaste(Submission):
     SKIP_TYPE = 'skip_type'
     WASTE_HEIGHT = 'waste_height'
 
+    # list url suffix
+    LIST_URL_SUFFIX = 'daily-waste'
+
     @property
     def __name__(self):
         return self.id

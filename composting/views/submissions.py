@@ -55,19 +55,16 @@ class Submissions(BaseView):
                  wrapper='update_status_wrapper')
     def approve(self):
         self.request.new_status = Submission.APPROVED
-        self.request.action = 'daily-waste'
         return Response(None)
 
     @view_config(name='reject', request_method='POST',
                  wrapper='update_status_wrapper')
     def reject(self):
         self.request.new_status = Submission.REJECTED
-        self.request.action = 'daily-waste'
         return Response(None)
 
     @view_config(name='unapprove', request_method='POST',
                  wrapper='update_status_wrapper')
     def unapprove(self):
         self.request.new_status = Submission.PENDING
-        self.request.action = 'daily-waste'
         return Response(None)

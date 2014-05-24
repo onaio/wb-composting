@@ -145,13 +145,6 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         result = self.testapp.get(url)
         self.assertEqual(result.status_code, 200)
 
-    def _test_daily_waste_show(self):
-        daily_waste_record = None
-        url = self.request.route_path(
-            'municipalities', traverse=(self.municipality.id, 'daily-waste'))
-        result = self.testapp.get(url)
-        self.assertEqual(result.status_code, 200)
-
     def test_skips(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'skips'))

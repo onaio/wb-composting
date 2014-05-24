@@ -41,3 +41,15 @@ class MunicipalitySubmission(Base):
         return cls.get_items_query(
             municipality, submission_subclass, *criterion)\
             .all()
+
+    def get_skip(self, skip_type):
+        """
+        Get the skip associated with this municipality and of the specified
+        type
+        """
+        from composting.models import Skip
+        return DBSession.query(Skip)\
+            .filter(
+                Skip.municipality_id == self.municipality_id,
+                Skip.skip_type == skip_type)\
+            .one()

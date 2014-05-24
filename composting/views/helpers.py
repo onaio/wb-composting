@@ -20,15 +20,17 @@ def update_status(context, request):
     Update the context.submission.status property with the value in
     request.new_status
     """
+    # the action we want to target on the municipalities route
+
     # todo: check that context is a Submission subclass
     if not hasattr(request, 'new_status'):
         raise ValueError(
             "You must set request.new_status to the desired value")
 
-    if not hasattr(request, 'action'):
+    if not hasattr(context.__class__, 'LIST_URL_SUFFIX'):
         raise ValueError(
-            "You must set request.action to the desired return action in the "
-            "municipalities route")
+            "You must set 'LIST_URL_SUFFIX' on '{}'".format(context.__class__))
+    action = context.__class__.LIST_URL_SUFFIX
 
     municipality_id = context.municipality_submission.municipality_id
     context.status = request.new_status
@@ -36,4 +38,4 @@ def update_status(context, request):
 
     return HTTPFound(
         request.route_url(
-            'municipalities', traverse=(municipality_id, request.action)))
+            'municipalities', traverse=(municipality_id, action)))

@@ -51,13 +51,13 @@ class TestHelpersIntegration(IntegrationTestBase):
 
     def test_update_status(self):
         self.request.new_status = Submission.APPROVED
-        self.request.action = 'some-action'
         response = helpers.update_status(self.context, self.request)
         self.assertIsInstance(response, HTTPFound)
         self.assertEqual(
             response.location,
             self.request.route_url(
-                'municipalities', traverse=('1', self.request.action)))
+                'municipalities',
+                traverse=('1', self.context.__class__.LIST_URL_SUFFIX)))
         self.assertEqual(self.context.status, Submission.APPROVED)
 
     def test_update_status_raises_value_error_if_no_new_status(self):
@@ -67,5 +67,11 @@ class TestHelpersIntegration(IntegrationTestBase):
 
     def test_update_status_raises_value_error_if_no_action(self):
         self.request.new_status = Submission.APPROVED
+
+        class BadSubmissionType(Submission):
+            # missing a LIST_URL_SUFFIX property
+            pass
+
         self.assertRaises(
-            ValueError, helpers.update_status, self.context, self.request)
+            ValueError, helpers.update_status, BadSubmissionType(),
+            self.request)

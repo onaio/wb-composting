@@ -6,8 +6,8 @@ from dashboard.libs.utils import (
     date_string_to_date, date_string_to_time, date_string_to_month)
 
 from composting import constants
-from composting.models.base import DBSession
 from composting.models.submission import Submission, ISubmission
+from composting.models.municipality_submission import MunicipalitySubmission
 
 
 @implementer(ISubmission)
@@ -15,8 +15,6 @@ class MonthlyDensity(Submission):
     __mapper_args__ = {
         'polymorphic_identity': constants.MONTHLY_WASTE_DENSITY_FORM,
     }
-    # TODO: make relationship
-    municipality_id = 1
 
     COMPRESSOR_TRUCK_FIELD = 'compressor_truck'
     VOLUME_FIELD = 'volume'
@@ -24,6 +22,9 @@ class MonthlyDensity(Submission):
     WASTE_HEIGHT_FIELD = 'waste_height'
     FILLED_WEIGHT_FIELD = 'filled_weight'
     EMPTY_WEIGHT_FIELD = 'empty_weight'
+
+    # list url suffix
+    LIST_URL_SUFFIX = 'monthly-waste-density'
 
     @classmethod
     def date_from_json(cls, json_data):
@@ -53,7 +54,8 @@ class MonthlyDensity(Submission):
             return float(self.json_data[self.VOLUME_FIELD])
         else:
             try:
-                skip = self.get_skip()
+                skip_type = self.json_data[self.SKIP_TYPE_FIELD]
+                skip = self.municipality_submission.get_skip(skip_type)
             except NoResultFound:
                 return None
             else:
@@ -69,17 +71,6 @@ class MonthlyDensity(Submission):
     @property
     def density(self):
         return self.net_weight / self.volume
-
-    def get_skip(self):
-        """
-        Get the skip associated with this waste register
-        """
-        # TODO: make a pure function that takes a municipality/id and skip type
-        from composting.models import Skip
-        return DBSession.query(Skip)\
-            .filter(
-                Skip.skip_type == self.json_data[self.SKIP_TYPE_FIELD],
-                Skip.municipality_id == self.municipality_id).one()
 
     @classmethod
     def get_average_density(cls, monthly_densities):
