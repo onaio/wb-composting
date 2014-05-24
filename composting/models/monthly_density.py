@@ -73,7 +73,7 @@ class MonthlyDensity(Submission):
         return self.net_weight / self.volume
 
     @classmethod
-    def get_average_density(cls, monthly_densities):
+    def calculate_average_density(cls, monthly_densities):
         if len(monthly_densities) < 1:
             raise ValueError("You must provide at least 1 monthly density")
         return (reduce(

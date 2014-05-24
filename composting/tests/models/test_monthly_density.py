@@ -59,7 +59,7 @@ class TestMonthlyDensity(TestBase):
         self.assertEqual(monthly_density.density, 0.4)
 
     def test_get_average_density(self):
-        average_density = MonthlyDensity.get_average_density([
+        average_density = MonthlyDensity.calculate_average_density([
             MonthlyDensity(json_data={
                 MonthlyDensity.COMPRESSOR_TRUCK_FIELD: 'yes',
                 MonthlyDensity.FILLED_WEIGHT_FIELD: '20',
