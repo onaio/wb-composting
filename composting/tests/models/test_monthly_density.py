@@ -1,5 +1,6 @@
-from composting.tests.test_base import TestBase
+import datetime
 
+from composting.tests.test_base import TestBase
 from composting.models.municipality import Municipality
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
@@ -58,7 +59,7 @@ class TestMonthlyDensity(TestBase):
         })
         self.assertEqual(monthly_density.density, 0.4)
 
-    def test_get_average_density(self):
+    def test_claculate_average_density(self):
         average_density = MonthlyDensity.calculate_average_density([
             MonthlyDensity(json_data={
                 MonthlyDensity.COMPRESSOR_TRUCK_FIELD: 'yes',
@@ -76,3 +77,16 @@ class TestMonthlyDensity(TestBase):
             # density = 0.4
         ])
         self.assertAlmostEqual(average_density, 0.6)
+
+    def test_get_average_density_returns_none_if_below_threshold(self):
+        # this also checks that PENDING and REJECTED submissions are not
+        # considered
+        date = datetime.date(2014, 05, 07)
+        average_density = MonthlyDensity.get_average_density(date)
+        self.assertIsNone(average_density)
+
+    def test_get_average_density_returns_avg_if_above_threshold(self):
+        MonthlyDensity.THRESHOLD_MIN = 2
+        date = datetime.date(2014, 01, 07)
+        average_density = MonthlyDensity.get_average_density(date)
+        self.assertAlmostEqual(average_density, 0.000226923)

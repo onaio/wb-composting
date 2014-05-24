@@ -1,13 +1,14 @@
 from zope.interface import implementer
-
+from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound
 
 from dashboard.libs.utils import (
     date_string_to_date, date_string_to_time, date_string_to_month)
 
 from composting import constants
+from composting.libs.utils import get_month_start_end
+from composting.models.base import DBSession
 from composting.models.submission import Submission, ISubmission
-from composting.models.municipality_submission import MunicipalitySubmission
 
 
 @implementer(ISubmission)
@@ -25,6 +26,9 @@ class MonthlyDensity(Submission):
 
     # list url suffix
     LIST_URL_SUFFIX = 'monthly-waste-density'
+
+    # required min. number of monthly densities to allow calculating average
+    THRESHOLD_MIN = 5
 
     @classmethod
     def date_from_json(cls, json_data):
@@ -78,4 +82,23 @@ class MonthlyDensity(Submission):
             raise ValueError("You must provide at least 1 monthly density")
         return (reduce(
             lambda accum, x: x.density + accum, monthly_densities, 0)
-                / len(monthly_densities))
+            / len(monthly_densities))
+
+    @classmethod
+    def get_average_density(cls, date):
+        """
+        Get the average density for the month that said date falls in
+        """
+        # determine the start and end days for the month
+        start, end = get_month_start_end(date)
+
+        # get monthly density records that
+        monthly_densities = DBSession.query(cls)\
+            .filter(
+                cls.date >= start, cls.date <= end,
+                cls.status == Submission.APPROVED)\
+            .all()
+        if len(monthly_densities) >= cls.THRESHOLD_MIN:
+            return cls.calculate_average_density(monthly_densities)
+        else:
+            return None

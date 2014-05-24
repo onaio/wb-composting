@@ -30,7 +30,7 @@ class TestMunicipalities(IntegrationTestBase):
             ('month', '2014-01')
         ])
         result = self.views.monthly_density_list()
-        self.assertEqual(len(result['items']), 1)
+        self.assertEqual(len(result['items']), 3)
 
     def _test_monthly_density_list_use_current_date_when_no_date_requested(
             self):
