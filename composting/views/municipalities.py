@@ -50,13 +50,6 @@ class Municipalities(BaseView):
         renderer='monthly_waste_density_list.jinja2')
     def monthly_density_list(self):
         municipality = self.request.context
-        statuses = [Submission.PENDING, Submission.APPROVED,
-                    Submission.REJECTED]
-        status_selections = selections_from_request(
-            self.request,
-            statuses,
-            lambda status: status == '1',
-            [Submission.PENDING, Submission.APPROVED, Submission.REJECTED])
 
         # parse date from request if any
         date_string = self.request.GET.get('month')
@@ -79,12 +72,11 @@ class Municipalities(BaseView):
         average_density = (MonthlyDensity.get_average_density(
             items) if len(items) > 0 else None)
 
-        status = dict([(s, s in statuses) for s in status_selections])
         return {
             'municipality': municipality,
             'items': items,
             'average_density': average_density,
-            'status': status
+            'selected_date': date.strftime("%b, %Y")
         }
 
     @view_config(name='skips', renderer='skips.jinja2')
