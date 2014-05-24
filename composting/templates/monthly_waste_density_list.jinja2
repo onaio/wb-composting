@@ -109,10 +109,7 @@
                 <tr>
                   <tr>
                   <td class="text-right" colspan="8"><strong>Average Density</strong></td>
-                  <td><strong>{% if average_density is not none %}{{ average_density|format_decimal(request) }} t/m<sup>3</sup>{% else %}N/A{% endif %}</strong></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td colspan="4"><strong>{% if average_density is not none %}{{ average_density|format_decimal(request) }} t/m<sup>3</sup>{% else %}<i>Requires 5 approved records</i>{% endif %}</strong></td>
                 </tr>
                 </tr>
               </tfoot>

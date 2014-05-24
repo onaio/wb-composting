@@ -69,8 +69,7 @@ class Municipalities(BaseView):
         municipality_submissions = MunicipalitySubmission.get_items(
             municipality, MonthlyDensity, criterion)
         items = [s for ms, s in municipality_submissions]
-        average_density = (MonthlyDensity.calculate_average_density(
-            items) if len(items) > 0 else None)
+        average_density = MonthlyDensity.get_average_density(date)
 
         return {
             'municipality': municipality,

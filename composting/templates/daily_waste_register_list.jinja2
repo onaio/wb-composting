@@ -61,6 +61,7 @@
               {% for daily_waste in group.list %}
                 {% set report = daily_waste.json_data %}
                 {% set status = daily_waste.status %}
+                {% set tonnage = daily_waste.tonnage %}
                 <tr>
                   <td>{{ daily_waste.time|format_time(request) }}</td>
                   <td>{{ report.vehicle_number }}</td>
@@ -68,7 +69,7 @@
                   <td>{{ report.skip_type }}</td>
                   <td>{% if report.waste_height %}{{ report.waste_height }}m{% endif %}</td>
                   <td>{% if daily_waste.volume is not none %}{{ daily_waste.volume }}m<sup>3</sup>{% endif %}</td>
-                  <td>0.25t</td>
+                  <td>{% if tonnage is not none %}{{ tonnage|format_decimal(request) }}t{% else %}-{% endif %}</td>
                   <td>
                     {% if report.remarks %}
                     <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
