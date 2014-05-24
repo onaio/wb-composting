@@ -28,7 +28,7 @@ class MonthlyDensity(Submission):
     LIST_URL_SUFFIX = 'monthly-waste-density'
 
     # required min. number of monthly densities to allow calculating average
-    THRESHOLD_MIN = 1
+    THRESHOLD_MIN = 5
 
     @classmethod
     def date_from_json(cls, json_data):
