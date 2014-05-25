@@ -11,6 +11,7 @@ from sqlalchemy.orm import contains_eager
 from composting.models.base import DBSession, Base, ModelFactory
 from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
+from composting.models.monthly_density import MonthlyDensity
 from composting.models.skip import Skip
 from composting.models.municipality_submission import (
             MunicipalitySubmission)
@@ -25,7 +26,11 @@ class Municipality(Base):
     leachete_tank_length = Column(Float, nullable=False, server_default='5.0')
     leachete_tank_width = Column(Float, nullable=False, server_default='5.0')
 
+    actionable_criterion = criterion = or_(
+        Submission.status == Submission.PENDING,
+        Submission.status == Submission.REJECTED)
     _num_actionable_daily_wastes = None
+    _num_actionable_monthly_waste = None
 
     factories = {
         #'monthly-waste-density': MonthlyDensity
@@ -44,14 +49,19 @@ class Municipality(Base):
 
     @property
     def num_actionable_daily_wastes(self):
-        criterion = or_(
-            Submission.status == Submission.PENDING,
-            Submission.status == Submission.REJECTED)
         self._num_actionable_daily_wastes = self._num_actionable_daily_wastes\
             or MunicipalitySubmission.get_items_query(
-                self, DailyWaste, criterion)\
+                self, DailyWaste, self.actionable_criterion)\
             .count()
         return self._num_actionable_daily_wastes
+
+    @property
+    def num_actionable_monthly_waste(self):
+        self._num_actionable_monthly_waste = (
+            self._num_actionable_monthly_waste
+            or MunicipalitySubmission.get_items_query(
+                self, MonthlyDensity, self.actionable_criterion).count())
+        return self._num_actionable_monthly_waste
 
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\

@@ -45,6 +45,9 @@
         <li class="{% if request.is_current_path(path) %}active{% endif %}">
           <a href="{{ path }}">
             <span>Monthly Waste Density</span>
+            {% if municipality.num_actionable_monthly_waste > 0 %}
+            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_monthly_waste }}</small>
+            {% endif %}
           </a>
         </li>
         <li class="">

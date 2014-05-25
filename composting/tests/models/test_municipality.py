@@ -26,3 +26,14 @@ class TestMunicipality(IntegrationTestBase):
         self.setup_test_data()
         municipality = Municipality.get(Municipality.name == "Mukono")
         self.assertEqual(municipality.num_actionable_daily_wastes, 1)
+
+    def test_num_monthly_density_returns_cached_count_if_set(self):
+        self.setup_test_data()
+        municipality = Municipality.get(Municipality.name == "Mukono")
+        municipality._num_actionable_monthly_waste = 10
+        self.assertEqual(municipality.num_actionable_monthly_waste, 10)
+
+    def test_num_monthly_density_returns_actual_count_if_not_cached(self):
+        self.setup_test_data()
+        municipality = Municipality.get(Municipality.name == "Mukono")
+        self.assertEqual(municipality.num_actionable_monthly_waste, 3)
