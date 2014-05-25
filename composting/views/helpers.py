@@ -39,3 +39,11 @@ def update_status(context, request):
     return HTTPFound(
         request.route_url(
             'municipalities', traverse=(municipality_id, action)))
+
+
+def is_current_path(request, path):
+    """
+    Return true if path is the current path. Used to set the active css class
+    on URLs
+    """
+    return request.environ['PATH_INFO'] == path

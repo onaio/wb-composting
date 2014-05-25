@@ -75,3 +75,17 @@ class TestHelpersIntegration(IntegrationTestBase):
         self.assertRaises(
             ValueError, helpers.update_status, BadSubmissionType(),
             self.request)
+
+    def test_is_current_path_returns_true_if_path_info_matches(self):
+        self.request.environ['PATH_INFO'] = '/municipalities/1/daily-waste'
+        path = self.request.route_path(
+            'municipalities', traverse=(1, 'daily-waste'))
+        result = helpers.is_current_path(self.request, path)
+        self.assertTrue(result)
+
+    def test_is_current_path_returns_false_if_path_info_not_match(self):
+        self.request.environ['PATH_INFO'] = '/municipalities/1/monthly-density'
+        path = self.request.route_path(
+            'municipalities', traverse=(1, 'daily-waste'))
+        result = helpers.is_current_path(self.request, path)
+        self.assertFalse(result)

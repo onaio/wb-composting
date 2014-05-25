@@ -18,6 +18,7 @@ from composting.models.base import (
 from composting.models.municipality import MunicipalityFactory
 from composting.models.submission import SubmissionFactory
 from composting.models.skip import SkipFactory
+from composting.views.helpers import is_current_path
 
 
 def main(global_config, **settings):
@@ -59,6 +60,9 @@ def includeme(config):
 
     # hook up our submission handlers
     hook_submission_handlers()
+
+    # request methods
+    config.add_request_method(is_current_path)
 
     # pyramid_jinja2 is already included by Dashboard
     config.add_jinja2_search_path("composting:templates")

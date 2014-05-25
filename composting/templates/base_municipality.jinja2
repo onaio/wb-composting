@@ -1,13 +1,15 @@
 {% extends 'base.jinja2' %}
 {% block extra_navs %}
-  <li class="dropdown tasks-menu">
-    <a href="{{ request.route_url('municipalities', traverse=(municipality.id, 'skips')) }}">
+  {% set path = request.route_path('municipalities', traverse=(municipality.id, 'skips')) %}
+  <li class="tasks-menu">
+    <a href="{{ path }}" class="{% if request.is_current_path(path) %}active{% endif %}">
       <i class="fa fa-truck"></i>
       Skip Types
     </a>
   </li>
-  <li class="dropdown tasks-menu">
-    <a href="{{ municipality.url(request, 'profile') }}">
+  {% set path = request.route_path('municipalities', traverse=(municipality.id, 'profile')) %}
+  <li class="tasks-menu">
+    <a href="{{ path }}" class="{% if request.is_current_path(path) %}active{% endif %}">
       <i class="fa fa-cog"></i>
       Site Profile
     </a>
@@ -30,16 +32,18 @@
             <span>Overview</span>
           </a>
         </li>
-        <li class="active">
-          <a href="{{ request.route_url('municipalities', traverse=(municipality.id, 'daily-waste')) }}">
+        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'daily-waste')) %}
+        <li class="{% if request.is_current_path(path) %}active{% endif %}">
+          <a href="{{ path }}">
             <span>Daily Waste Register</span>
             {% if municipality.num_actionable_daily_wastes > 0 %}
             <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_daily_wastes }}</small>
             {% endif %}
           </a>
         </li>
-        <li class="">
-          <a href="{{ municipality.url(request, 'monthly-waste-density') }}">
+        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'monthly-waste-density')) %}
+        <li class="{% if request.is_current_path(path) %}active{% endif %}">
+          <a href="{{ path }}">
             <span>Monthly Waste Density</span>
           </a>
         </li>

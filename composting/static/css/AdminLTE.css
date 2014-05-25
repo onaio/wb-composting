@@ -2421,6 +2421,7 @@ Component: timeline
 }
 .skin-blue .navbar .nav > li > a:hover,
 .skin-blue .navbar .nav > li > a:active,
+.skin-blue .navbar .nav > li > a.active,
 .skin-blue .navbar .nav > li > a:focus,
 .skin-blue .navbar .nav .open > a,
 .skin-blue .navbar .nav .open > a:hover,
