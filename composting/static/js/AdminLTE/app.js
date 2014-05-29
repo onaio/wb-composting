@@ -11,6 +11,41 @@
  */
 var left_side_width = 220; //Sidebar width in pixels
 
+(function ($, window, document) {
+    var pluginName = "imageMeta",
+        defaults = {};
+
+    function ImageMeta(element, options) {
+        this.element = element;
+        this.settings = $.extend( {}, defaults, options );
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    ImageMeta.prototype = {
+        init: function () {
+            $(this.element).on('load', function () {
+                console.log(this);
+               EXIF.getData(this, function() {
+                    console.log(EXIF.pretty(this));
+                });
+            });
+        }
+    };
+
+    $.fn[ pluginName ] = function ( options ) {
+        this.each(function () {
+            if (!$.data(this, "plugin_" + pluginName)) {
+                $.data(this, "plugin_" + pluginName, new ImageMeta(this, options));
+            }
+        });
+
+        // chain jQuery functions
+        return this;
+    }
+})(jQuery, window, document );
+
 $(function() {
     "use strict";
 
@@ -134,7 +169,25 @@ $(function() {
         radioClass: 'iradio_minimal'
     });
 
+    /*
+     * View details modal
+     */
+    $('.btn-details').on('click', function (e) {
+        var target = $(e.target);
+        var url = target.data('url');
+        $.ajax(url, {})
+            .success(function (response) {
+                var $modal = $('#details-modal');
+                $modal.find('.modal-dialog').html(response);
+                $modal.modal('show');
+
+                //Read image timestamp from meta
+                //$('.image-timestamp').imageMeta({});
+            });
+    });
+
 });
+
 function fix_sidebar() {
     //Make sure the body tag has the .fixed class
     if (!$("body").hasClass("fixed")) {

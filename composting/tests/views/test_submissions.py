@@ -94,3 +94,11 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         response = self.testapp.post(url)
         self.assertEqual(response.status_code, 302)
         self.assertActionMatches(response.location, 'monthly-waste-density')
+        response.follow()
+
+    def test_show(self):
+        monthly_density = MonthlyDensity.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(monthly_density.id,))
+        response = self.testapp.post(url)
+        self.assertEqual(response.status_code, 200)

@@ -1,0 +1,76 @@
+{% extends 'base_show_modal.jinja2' %}
+{% block body %}
+<table class="table">
+  <tbody>
+  <tr>
+    <th style="width: 30%">Question</th>
+    <th>Response</th>
+  </tr>
+  <tr>
+    <td>Recorded At</td>
+    <td>{{ report.datetime|datetime }}</td>
+  </tr>
+  <tr>
+    <td>Submitted At</td>
+    <td>{{ report._submission_time|datetime('%Y-%m-%dT%H:%M:%S') }}</td>
+  </tr>
+  <tr>
+    <td>Vehicle Reg. #</td>
+    <td>{{ report.vehicle_number }}</td>
+  </tr>
+  <tr>
+    <td>Photo of Vehicle Reg. #</td>
+    <td>
+      {% if report.vehicle_photo %}
+        <img class="image-timestamp"
+             src="{{ image_url_base }}{{ report.vehicle_photo }}"/>
+      {% endif %}
+    </td>
+  </tr>
+  <tr>
+    <td>Skip #</td>
+    <td>{{ report.skip_no }}</td>
+  </tr>
+  <tr>
+    <td>Skip Type</td>
+    <td>{{ report.skip_type }}</td>
+  </tr>
+  <tr>
+    <td>Skip Source</td>
+    <td>{{ report.skip_source }}</td>
+  </tr>
+  <tr>
+    <td>Is this a compressor truck?</td>
+    <td>{{ report.compressor_truck }}</td>
+  </tr>
+  {% if report.waste_height is defined %}
+    <tr>
+      <td>Waste Height</td>
+      <td>{{ report.waste_height }}m</td>
+    </tr>
+  {% endif %}
+  <tr>
+    <td>Volume</td>
+    <td>{% if submission.volume is not none %}{{ submission.volume }}m
+      <sup>3</sup>{% endif %}</td>
+  </tr>
+  <tr>
+    <td>Remarks</td>
+    <td>{{ report.remarks }}</td>
+  </tr>
+  <tr>
+    <td>Location</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Clerks Signature</td>
+    <td>
+      {% if report.clerk_signature %}
+        <img class="image-timestamp"
+             src="{{ image_url_base }}{{ report.clerk_signature }}"/>
+      {% endif %}
+    </td>
+  </tr>
+  </tbody>
+</table>
+{% endblock %}

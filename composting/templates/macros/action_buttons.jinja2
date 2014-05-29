@@ -1,0 +1,26 @@
+{% from 'action_button_class_from_status.jinja2' import action_button_class_from_status %}
+{% macro action_buttons (request, submission) -%}
+{% set status = submission.status %}
+{% if submission.can_approve(request) %}
+  {% set action = 'approve' %}
+  {% set label = 'Approve' %}
+{% elif submission.can_reject(request) %}
+  {% set action = 'reject' %}
+  {% set label = 'Reject' %}
+{% elif submission.can_unapprove(request) %}
+  {% set action = 'unapprove' %}
+  {% set label = 'Unapprove' %}
+{% elif submission.can_reapprove(request) %}
+  {% set action = 'approve' %}
+  {% set label = 'Reapprove' %}
+{% else %}
+  {% set action = none %}
+{% endif %}
+{% if action is not none %}
+  <button type="submit"
+          class="btn {{ action_button_class_from_status(status) }} btn-xs"
+          formaction="{{ request.route_url('submissions', traverse=(submission.id, action)) }}">
+    {{ label }}
+  </button>
+{% endif %}
+{%- endmacro %}

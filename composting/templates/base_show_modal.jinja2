@@ -1,0 +1,16 @@
+{% from 'macros/action_buttons.jinja2' import action_buttons %}
+{% set report = submission.json_data %}
+<form method="post">
+  <div class="modal-content">
+    <div class="modal-header">
+      {{ action_buttons(request, submission) }}
+      <button type="button" class="btn btn-sm btn-default pull-right"
+              data-dismiss="modal">
+        Close
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 0">
+      {% block body %}{% endblock %}
+    </div>
+  </div>
+</form>

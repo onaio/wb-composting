@@ -1,8 +1,10 @@
+import urlparse
+
 from pyramid.view import view_defaults, view_config
 from pyramid.response import Response
 
 from dashboard.views.base import BaseView
-from composting.models import Municipality
+from dashboard.constants import XFORM_ID_STRING
 from composting.models.submission import Submission, ISubmission
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.views.helpers import selections_from_request
@@ -28,7 +30,7 @@ class Submissions(BaseView):
     def list(self):
         model = self.request.context
         municipality = model.__parent__
-        self.request.override_renderer = model.renderer
+        self.request.override_renderer = model.renderer()
 
         # statuses
         all_statuses = [Submission.PENDING, Submission.APPROVED,
@@ -68,3 +70,18 @@ class Submissions(BaseView):
     def unapprove(self):
         self.request.new_status = Submission.PENDING
         return Response(None)
+
+    @view_config(name='', renderer='submission_show.jinja2')
+    def show(self):
+        submission = self.request.context
+        self.request.override_renderer = submission.renderer('show')
+        image_url_base = urlparse.urljoin(
+            'https://ona.io',
+            "attachment/small?media_file={}/attachments/".format("wb_composting"))
+
+        data = {}
+        return {
+            'submission': submission,
+            'data': data,
+            'image_url_base': image_url_base
+        }

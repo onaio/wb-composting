@@ -80,7 +80,7 @@
                       class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
                   </td>
                   <td>
-                    <a class="btn btn-default btn-xs">View</a>
+                    <a class="btn btn-default btn-xs" data-formid="1932">View</a>
                     {% if monthly_waste.can_approve(request) %}
                       {% set action = 'approve' %}
                       {% set label = 'Approve' %}
@@ -127,6 +127,7 @@
   <script src="{{ request.static_url('composting:static/js/datetimepicker/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>
 {% endblock %}
 {% block jquery_ready %}
+  super()
   var month_picker = $(".month-selector").datetimepicker( {
     format: "MMM, YYYY",
     viewMode: "months",

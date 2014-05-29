@@ -82,10 +82,9 @@ class Submission(Base):
         return DBSession.query(cls)\
             .filter(*criterion)
 
-    @property
-    def renderer(self):
-        return "{}_list.jinja2".format(
-            self.__mapper_args__['polymorphic_identity'])
+    def renderer(self, type='list'):
+        return "{}_{}.jinja2".format(
+            self.__mapper_args__['polymorphic_identity'], type)
 
     @classmethod
     def date_from_json(cls, json_data):
