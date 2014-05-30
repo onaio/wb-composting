@@ -75,7 +75,7 @@ class Municipalities(BaseView):
             'municipality': municipality,
             'items': items,
             'average_density': average_density,
-            'selected_date': date.strftime("%b, %Y")
+            'selected_date': date
         }
 
     @view_config(name='skips', renderer='skips.jinja2')
