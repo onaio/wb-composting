@@ -81,7 +81,6 @@
                       class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
                   </td>
                   <td>
-                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(daily_waste.id,)) }}" data-account="wb_composting" data-formid="1911" data-id="{{ report._id }}">View</a>
                     {{ action_buttons(request, daily_waste) }}
                   </td>
                 </tr>
