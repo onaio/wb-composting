@@ -123,10 +123,28 @@
     <!-- /.content -->
   </aside><!-- /.right-side -->
   <!-- Modal -->
-  <div class="modal fade" id="details-modal" tabindex="-1" data-role="dialog"
+  <div class="modal fade" id="details-modal" tabindex="-1" data-role="dialog" data-backdrop="static"
+       aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog"></div>
+  </div>
+  <div class="modal fade" id="loading-modal" tabindex="-1" data-role="dialog" data-backdrop="static"
        aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+                    aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">Please Wait ...</h4>
+          </div>
+          <div class="modal-body">
+            <div class="progress progress-striped active">
+              <div class="progress-bar progress-bar-primary" role="progressbar"
+                   aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                   style="width: 100%">
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 {% endblock wrapper %}

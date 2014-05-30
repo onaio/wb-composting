@@ -175,11 +175,16 @@ $(function() {
     $('.btn-details').on('click', function (e) {
         var target = $(e.target);
         var url = target.data('url');
+        var $loadingModal = $('#loading-modal');
+        var $detailsModal = $('#details-modal');
+        // get progress bar content from loading modal and clone it
+        var $loadingContent = $loadingModal.find('.modal-content').clone();
+        $detailsModal.find('.modal-dialog').html($loadingContent);
+        $detailsModal.modal('show');
         $.ajax(url, {})
             .success(function (response) {
-                var $modal = $('#details-modal');
-                $modal.find('.modal-dialog').html(response);
-                $modal.modal('show');
+                $detailsModal.find('.modal-dialog').html(response);
+                $detailsModal.modal('show');
 
                 //Read image timestamp from meta
                 //$('.image-timestamp').imageMeta({});
