@@ -30,11 +30,6 @@ class MonthlyDensity(Submission):
     # required min. number of monthly densities to allow calculating average
     THRESHOLD_MIN = 5
 
-    @classmethod
-    def date_from_json(cls, json_data):
-        return date_string_to_date(
-            json_data[cls.DATE_FIELD], cls.DATE_FORMAT)
-
     @property
     def time(self):
         # todo: stick to one convention for the name likely date
