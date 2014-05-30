@@ -33,7 +33,8 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
             raise ValueError("No xform class mapping to '{}'".format(xform_id))
         else:
             # determine the date the data is in reference of
-            date = klass.date_from_json(json_payload)
+            date = klass.datetime_from_json(
+                json_payload, klass.DATE_FIELD, klass.DATE_FORMAT).date()
             return klass(
                 xform_id=json_payload[XFORM_ID_STRING],
                 json_data=json_payload,
