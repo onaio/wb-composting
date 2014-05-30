@@ -182,12 +182,15 @@ $(function() {
         $detailsModal.find('.modal-dialog').html($loadingContent);
         $detailsModal.modal('show');
         $.ajax(url, {})
-            .success(function (response) {
+            .done(function (response) {
                 $detailsModal.find('.modal-dialog').html(response);
                 $detailsModal.modal('show');
 
                 //Read image timestamp from meta
                 //$('.image-timestamp').imageMeta({});
+            }).fail(function (e) {
+                $detailsModal.modal('hide');
+                alert("An error occurred: " + e.statusText)
             });
     });
 
