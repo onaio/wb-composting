@@ -127,7 +127,7 @@
   <script src="{{ request.static_url('composting:static/js/datetimepicker/bootstrap-datetimepicker.min.js') }}" type="text/javascript"></script>
 {% endblock %}
 {% block jquery_ready %}
-  super()
+  {{ super() }}
   var month_picker = $(".month-selector").datetimepicker( {
     format: "MMM, YYYY",
     viewMode: "months",

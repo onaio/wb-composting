@@ -85,13 +85,11 @@
         {% endblock %}
         <script>
           jQuery(document).ready(function () {
-            {% block jquery_ready %}
-
-            {% endblock %}
+            {%- block jquery_ready -%}
+            {%- endblock -%}
           });
         </script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- END JAVASCRIPTS -->
-
     </body>
 </html>
