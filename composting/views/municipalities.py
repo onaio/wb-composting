@@ -52,7 +52,7 @@ class Municipalities(BaseView):
         municipality = self.request.context
 
         # parse date from request if any
-        date_string = self.request.GET.get('month')
+        date_string = self.request.GET.get('period')
         if date_string:
             try:
                 date = datetime.datetime.strptime(date_string, '%Y-%m')
@@ -75,7 +75,7 @@ class Municipalities(BaseView):
             'municipality': municipality,
             'items': items,
             'average_density': average_density,
-            'selected_date': date
+            'date': date
         }
 
     @view_config(name='skips', renderer='skips.jinja2')

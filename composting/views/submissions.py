@@ -53,6 +53,21 @@ class Submissions(BaseView):
             'statuses': statuses
         }
 
+    @view_config(name='', renderer='submission_show.jinja2')
+    def show(self):
+        submission = self.request.context
+        self.request.override_renderer = submission.renderer('show')
+        image_url_base = urlparse.urljoin(
+            'https://ona.io',
+            "attachment/small?media_file={}/attachments/".format("wb_composting"))
+
+        data = {}
+        return {
+            'submission': submission,
+            'data': data,
+            'image_url_base': image_url_base
+        }
+
     @view_config(name='approve', request_method='POST',
                  wrapper='update_status_wrapper')
     def approve(self):
@@ -70,18 +85,3 @@ class Submissions(BaseView):
     def unapprove(self):
         self.request.new_status = Submission.PENDING
         return Response(None)
-
-    @view_config(name='', renderer='submission_show.jinja2')
-    def show(self):
-        submission = self.request.context
-        self.request.override_renderer = submission.renderer('show')
-        image_url_base = urlparse.urljoin(
-            'https://ona.io',
-            "attachment/small?media_file={}/attachments/".format("wb_composting"))
-
-        data = {}
-        return {
-            'submission': submission,
-            'data': data,
-            'image_url_base': image_url_base
-        }

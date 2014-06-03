@@ -23,11 +23,11 @@ class TestMunicipalities(IntegrationTestBase):
         result = self.views.index()
         self.assertEqual(result['municipality'], self.municipality)
 
-    def test_monthly_density_list_returns_items_for_requested_date(self):
+    def test_monthly_density_list_returns_items_for_requested_period(self):
         # today's date for this test
         self.request.context = self.municipality
         self.request.GET = MultiDict([
-            ('month', '2014-01')
+            ('period', '2014-01')
         ])
         result = self.views.monthly_density_list()
         self.assertEqual(len(result['items']), 3)
