@@ -22,7 +22,7 @@ class DailyWaste(Submission):
     WASTE_HEIGHT = 'waste_height'
 
     # list url suffix
-    LIST_URL_SUFFIX = 'daily-waste'
+    LIST_ACTION_NAME = 'daily-waste'
 
     # cached values
     _volume = None

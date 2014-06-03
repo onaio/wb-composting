@@ -11,3 +11,5 @@ class MonthlyWasteComposition(Submission):
     }
     DATE_FIELD = 'month_year'
     DATE_FORMAT = '%Y-%m-%d'
+
+    LIST_ACTION_NAME = 'monthly-solid-waste-composition'

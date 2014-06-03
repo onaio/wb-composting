@@ -27,10 +27,10 @@ def update_status(context, request):
         raise ValueError(
             "You must set request.new_status to the desired value")
 
-    if not hasattr(context.__class__, 'LIST_URL_SUFFIX'):
+    if not hasattr(context.__class__, 'LIST_ACTION_NAME'):
         raise ValueError(
-            "You must set 'LIST_URL_SUFFIX' on '{}'".format(context.__class__))
-    action = context.__class__.LIST_URL_SUFFIX
+            "You must set 'LIST_ACTION_NAME' on '{}'".format(context.__class__))
+    action = context.__class__.LIST_ACTION_NAME
 
     municipality_id = context.municipality_submission.municipality_id
     context.status = request.new_status

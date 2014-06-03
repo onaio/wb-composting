@@ -23,7 +23,7 @@ class MonthlyDensity(Submission):
     EMPTY_WEIGHT_FIELD = 'empty_weight'
 
     # list url suffix
-    LIST_URL_SUFFIX = 'monthly-waste-density'
+    LIST_ACTION_NAME = 'monthly-waste-density'
 
     # required min. number of monthly densities to allow calculating average
     THRESHOLD_MIN = 5
