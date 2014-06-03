@@ -162,3 +162,10 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities', traverse=(self.municipality.id, 'profile'))
         result = self.testapp.get(url)
         self.assertEqual(result.status_code, 200)
+
+    def test_list_monthly_waste_composition(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'monthly-solid-waste-composition'))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)

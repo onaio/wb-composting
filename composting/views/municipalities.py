@@ -11,6 +11,7 @@ from composting.libs.utils import get_month_start_end
 from composting.views.helpers import selections_from_request
 from composting.models import Municipality, DailyWaste, Submission, Skip
 from composting.models.monthly_density import MonthlyDensity
+from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.forms import SkipForm, SiteProfileForm
 
@@ -77,6 +78,38 @@ class Municipalities(BaseView):
             'average_density': average_density,
             'date': date
         }
+
+    @view_config(
+        name='monthly-solid-waste-composition',
+        renderer='monthly_waste_composition_list.jinja2')
+    def monthly_waste_composition_list(self):
+        municipality = self.request.context
+
+        # parse date from request if any
+        date_string = self.request.GET.get('period')
+        if date_string:
+            try:
+                date = datetime.datetime.strptime(date_string, '%Y-%m')
+            except ValueError:
+                return HTTPBadRequest("Couldn't understand the date format")
+        else:
+            date = datetime.datetime.now()
+
+        # determine the date ranges
+        start, end = get_month_start_end(date)
+        criterion = and_(
+            MonthlyWasteComposition.date >= start,
+            MonthlyWasteComposition.date <= end)
+        municipality_submissions = MunicipalitySubmission.get_items(
+            municipality, MonthlyWasteComposition, criterion)
+        items = [s for ms, s in municipality_submissions]
+
+        return {
+            'municipality': municipality,
+            'items': items,
+            'date': date
+        }
+
 
     @view_config(name='skips', renderer='skips.jinja2')
     def skips(self):
