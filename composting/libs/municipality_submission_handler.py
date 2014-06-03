@@ -5,6 +5,7 @@ from composting import constants
 from composting.models.base import DBSession
 from composting.models.municipality import Municipality
 from composting.models.monthly_density import MonthlyDensity
+from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.daily_waste import DailyWaste
 from composting.models.municipality_submission import MunicipalitySubmission
 
@@ -13,14 +14,16 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
     # mapping of id strings to classes
     XFORM_CLASS_MAPPING = {
         constants.MONTHLY_WASTE_DENSITY_FORM: MonthlyDensity,
-        constants.DAILY_WASTE_REGISTER_FORM: DailyWaste
+        constants.DAILY_WASTE_REGISTER_FORM: DailyWaste,
+        constants.MONTHLY_WASTE_COMPOSITION_FORM: MonthlyWasteComposition
     }
 
     @staticmethod
     def can_handle(json_payload):
         return json_payload[XFORM_ID_STRING] in [
             constants.MONTHLY_WASTE_DENSITY_FORM,
-            constants.DAILY_WASTE_REGISTER_FORM
+            constants.DAILY_WASTE_REGISTER_FORM,
+            constants.MONTHLY_WASTE_COMPOSITION_FORM
         ]
 
     @staticmethod
