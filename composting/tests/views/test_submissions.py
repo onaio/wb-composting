@@ -4,6 +4,7 @@ from pyramid.response import Response
 from composting.models import Municipality, Submission
 from composting.models.daily_waste import DailyWaste
 from composting.models.monthly_density import MonthlyDensity
+from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.views.submissions import Submissions
 from composting.tests.test_base import IntegrationTestBase, FunctionalTestBase
 
@@ -53,6 +54,13 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_show_daily_waste(self):
+        monthly_density = DailyWaste.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(monthly_density.id,))
+        response = self.testapp.post(url)
+        self.assertEqual(response.status_code, 200)
+
     def assertActionMatches(self, location, action):
         self.assertEqual(
             location,
@@ -95,10 +103,3 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         self.assertEqual(response.status_code, 302)
         self.assertActionMatches(response.location, 'monthly-waste-density')
         response.follow()
-
-    def test_show_daily_waste(self):
-        monthly_density = DailyWaste.newest()
-        url = self.request.route_path(
-            'submissions', traverse=(monthly_density.id,))
-        response = self.testapp.post(url)
-        self.assertEqual(response.status_code, 200)

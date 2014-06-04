@@ -50,9 +50,13 @@
             {% endif %}
           </a>
         </li>
-        <li class="">
-          <a href="#">
-            <span>Monthly Waste Composition</span>
+        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'monthly-solid-waste-composition')) %}
+        <li class="{% if request.is_current_path(path) %}active{% endif %}">
+          <a href="{{ path }}">
+            <span>Monthly Solid Waste Composition</span>
+            {% if municipality.num_actionable_monthly_waste_composition > 0 %}
+            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_monthly_waste_composition }}</small>
+            {% endif %}
           </a>
         </li>
         <li class="">

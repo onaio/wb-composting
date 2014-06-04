@@ -12,6 +12,7 @@ from composting.models.base import DBSession, Base, ModelFactory
 from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
 from composting.models.monthly_density import MonthlyDensity
+from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.skip import Skip
 from composting.models.municipality_submission import (
             MunicipalitySubmission)
@@ -31,6 +32,7 @@ class Municipality(Base):
         Submission.status == Submission.REJECTED)
     _num_actionable_daily_wastes = None
     _num_actionable_monthly_waste = None
+    _num_actionable_monthly_waste_composition = None
 
     factories = {
         #'monthly-waste-density': MonthlyDensity
@@ -47,21 +49,30 @@ class Municipality(Base):
             model.__parent__ = self
             return model
 
+    def actionable_items_count(self, submission_subclass):
+        return MunicipalitySubmission.get_items_query(
+            self, submission_subclass, self.actionable_criterion)\
+            .count()
+
     @property
     def num_actionable_daily_wastes(self):
         self._num_actionable_daily_wastes = self._num_actionable_daily_wastes\
-            or MunicipalitySubmission.get_items_query(
-                self, DailyWaste, self.actionable_criterion)\
-            .count()
+            or self.actionable_items_count(DailyWaste)
         return self._num_actionable_daily_wastes
 
     @property
     def num_actionable_monthly_waste(self):
         self._num_actionable_monthly_waste = (
             self._num_actionable_monthly_waste
-            or MunicipalitySubmission.get_items_query(
-                self, MonthlyDensity, self.actionable_criterion).count())
+            or self.actionable_items_count(MonthlyDensity))
         return self._num_actionable_monthly_waste
+
+    @property
+    def num_actionable_monthly_waste_composition(self):
+        self._num_actionable_monthly_waste_composition = (
+            self._num_actionable_monthly_waste_composition
+            or self.actionable_items_count(MonthlyWasteComposition))
+        return self._num_actionable_monthly_waste_composition
 
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\

@@ -11,6 +11,7 @@ from composting.libs.utils import get_month_start_end
 from composting.views.helpers import selections_from_request
 from composting.models import Municipality, DailyWaste, Submission, Skip
 from composting.models.monthly_density import MonthlyDensity
+from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.forms import SkipForm, SiteProfileForm
 
@@ -52,7 +53,7 @@ class Municipalities(BaseView):
         municipality = self.request.context
 
         # parse date from request if any
-        date_string = self.request.GET.get('month')
+        date_string = self.request.GET.get('period')
         if date_string:
             try:
                 date = datetime.datetime.strptime(date_string, '%Y-%m')
@@ -68,15 +69,58 @@ class Municipalities(BaseView):
             MonthlyDensity.date <= end)
         municipality_submissions = MunicipalitySubmission.get_items(
             municipality, MonthlyDensity, criterion)
-        items = [s for ms, s in municipality_submissions]
+        monthly_densities = [s for ms, s in municipality_submissions]
         average_density = MonthlyDensity.get_average_density(date)
 
         return {
             'municipality': municipality,
-            'items': items,
+            'items': monthly_densities,
             'average_density': average_density,
-            'selected_date': date
+            'date': date
         }
+
+    @view_config(
+        name='monthly-solid-waste-composition',
+        renderer='monthly_waste_composition_list.jinja2')
+    def monthly_waste_composition_list(self):
+        municipality = self.request.context
+
+        # parse date from request if any
+        date_string = self.request.GET.get('period')
+        if date_string:
+            try:
+                date = datetime.datetime.strptime(date_string, '%Y-%m')
+            except ValueError:
+                return HTTPBadRequest("Couldn't understand the date format")
+        else:
+            date = datetime.datetime.now()
+
+        # determine the date ranges
+        start, end = get_month_start_end(date)
+        criterion = and_(
+            MonthlyWasteComposition.date >= start,
+            MonthlyWasteComposition.date <= end)
+        municipality_submissions = MunicipalitySubmission.get_items(
+            municipality, MonthlyWasteComposition, criterion)
+        monthly_waste_compositions = [s for ms, s in municipality_submissions]
+
+        # calculate means and percentages
+        total_waste_mean = MonthlyWasteComposition.get_total_waste_mean(
+            monthly_waste_compositions)
+        means = MonthlyWasteComposition.get_means(
+            monthly_waste_compositions)
+        percentages = MonthlyWasteComposition.get_percentages(
+            monthly_waste_compositions)
+
+        return {
+            'municipality': municipality,
+            'items': monthly_waste_compositions,
+            'date': date,
+            'total_waste_mean': total_waste_mean,
+            'means': means,
+            'percentages': percentages
+        }
+
 
     @view_config(name='skips', renderer='skips.jinja2')
     def skips(self):

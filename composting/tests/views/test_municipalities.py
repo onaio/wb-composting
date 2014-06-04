@@ -23,11 +23,11 @@ class TestMunicipalities(IntegrationTestBase):
         result = self.views.index()
         self.assertEqual(result['municipality'], self.municipality)
 
-    def test_monthly_density_list_returns_items_for_requested_date(self):
+    def test_monthly_density_list_returns_items_for_requested_period(self):
         # today's date for this test
         self.request.context = self.municipality
         self.request.GET = MultiDict([
-            ('month', '2014-01')
+            ('period', '2014-01')
         ])
         result = self.views.monthly_density_list()
         self.assertEqual(len(result['items']), 3)
@@ -53,7 +53,7 @@ class TestMunicipalities(IntegrationTestBase):
     def test_monthly_density_list_when_bad_date_requested(self):
         self.request.context = self.municipality
         self.request.GET = MultiDict([
-            ('month', '2014')
+            ('period', '2014')
         ])
         result = self.views.monthly_density_list()
         self.assertIsInstance(result, HTTPBadRequest)
@@ -162,3 +162,10 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities', traverse=(self.municipality.id, 'profile'))
         result = self.testapp.get(url)
         self.assertEqual(result.status_code, 200)
+
+    def test_list_monthly_waste_composition(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'monthly-solid-waste-composition'))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)

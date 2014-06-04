@@ -1,9 +1,7 @@
 from zope.interface import implementer
-from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound
 
-from dashboard.libs.utils import (
-    date_string_to_date, date_string_to_time, date_string_to_month)
+from dashboard.libs.utils import date_string_to_time, date_string_to_month
 
 from composting import constants
 from composting.libs.utils import get_month_start_end
@@ -25,7 +23,7 @@ class MonthlyDensity(Submission):
     EMPTY_WEIGHT_FIELD = 'empty_weight'
 
     # list url suffix
-    LIST_URL_SUFFIX = 'monthly-waste-density'
+    LIST_ACTION_NAME = 'monthly-waste-density'
 
     # required min. number of monthly densities to allow calculating average
     THRESHOLD_MIN = 5
