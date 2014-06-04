@@ -30,7 +30,6 @@ class MonthlyDensity(Submission):
 
     @property
     def time(self):
-        # todo: stick to one convention for the name likely date
         return date_string_to_time(
             self.json_data[self.DATE_FIELD])
 

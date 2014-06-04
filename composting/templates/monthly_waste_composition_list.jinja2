@@ -42,7 +42,7 @@
                 <tr>
                   <td>{{ submission.date|format_date(request) }}</td>
                   <td>{{ report.skip_number }}</td>
-                  <td>{{ submission.total_waste|format_decimal(request) }} </td>
+                  <td><strong>{{ submission.total_waste|format_decimal(request) }}</strong></td>
                   <td>{{ report.wood_products }}</td>
                   <td>{{ report.paper_pulp }}</td>
                   <td>{{ report.food_waste }}</td>

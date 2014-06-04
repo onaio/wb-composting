@@ -62,7 +62,6 @@ class DailyWaste(Submission):
 
     @property
     def time(self):
-        # todo: stick to one field name likely date
         return date_string_to_time(self.json_data[self.DATE_FIELD])
 
     @property
