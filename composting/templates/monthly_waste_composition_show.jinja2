@@ -17,8 +17,8 @@
     <td>{{ locale_submission_time|format_date(request) }} {{ locale_submission_time|format_time(request) }}</td>
   </tr>
   <tr>
-    <td>Month/Year</td>
-    <td>{{ submission.date|format_date(request, 'MMMM, yyyy') }}</td>
+    <td>Date</td>
+    <td>{{ submission.date|format_date(request) }}</td>
   </tr>
   <tr>
     <td>Skip #</td>
