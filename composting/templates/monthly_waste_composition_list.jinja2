@@ -69,7 +69,7 @@
               <tfoot>
                 <tr>
                   <td class="text-right" colspan="2"><strong>Mean</strong></td>
-                  <td><strong>{{ total_waste_mean }}</strong></td>
+                  <td><strong>{{ format_decimal_if_not_none(total_waste_mean, request) }}</strong></td>
                   <td><strong>{{ format_decimal_if_not_none(means.wood_products, request) }}</strong></td>
                   <td><strong>{{ format_decimal_if_not_none(means.paper_pulp, request) }}</strong></td>
                   <td><strong>{{ format_decimal_if_not_none(means.food_waste, request) }}</strong></td>
