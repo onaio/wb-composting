@@ -1,4 +1,7 @@
 {% extends 'base_monthly_list.jinja2' %}
+{% macro format_percent_if_not_none (value, request) -%}
+  {% if value is not none %}{{ value|format_percent(request) }}{% endif %}
+{% endmacro %}
 {% block title %}Monthly Solid Waste Composition{% endblock %}
 {% block content %}
   {{ super() }}
@@ -12,7 +15,7 @@
         <div class="box-body table-responsive no-padding">
           <form method="post">
             <table class="table table-hover table-bordered">
-              <tbody>
+              <thead>
               <tr>
                 <th>Date</th>
                 <th>Skip #</th>
@@ -22,18 +25,21 @@
                 <th style="width: 8%">Food and Food waste (kg)</th>
                 <th style="width: 8%">Garden, yard and park waste (kg)</th>
                 <th style="width: 8%">Textiles (kg)</th>
-                <th style="width: 8%">Glass, plastics, metal and inert (kg)</th>
+                <th style="width: 8%">Glass, plastics, metal and inert (kg)
+                </th>
                 <th>Remarks</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
+              </thead>
+              <tbody>
               {% for submission in items|sort %}
                 {% set report = submission.json_data %}
                 {% set status = submission.status %}
                 <tr>
                   <td>{{ submission.date|format_date(request) }}</td>
                   <td>{{ report.skip_number }}</td>
-                  <td>{{ total_waste }} </td>
+                  <td>{{ submission.total_waste|format_decimal(request) }} </td>
                   <td>{{ report.wood_products }}</td>
                   <td>{{ report.paper_pulp }}</td>
                   <td>{{ report.food_waste }}</td>
@@ -60,24 +66,24 @@
               <tfoot>
                 <tr>
                   <td class="text-right" colspan="2"><strong>Mean</strong></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td><strong>{{ total_waste_mean }}</strong></td>
+                  <td><strong>{{ means.wood_products }}</strong></td>
+                  <td><strong>{{ means.paper_pulp }}</strong></td>
+                  <td><strong>{{ means.food_waste }}</strong></td>
+                  <td><strong>{{ means.garden_yard_waste }}</strong></td>
+                  <td><strong>{{ means.textiles }}</strong></td>
+                  <td><strong>{{ means.glass_plastics_metal }}</strong></td>
                   <td colspan="3"></td>
                 </tr>
                 <tr>
                   <td class="text-right" colspan="2"><strong>%</strong></td>
                   <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td><strong>{{ format_percent_if_not_none(percentages.wood_products, request) }}</strong></td>
+                  <td><strong>{{ format_percent_if_not_none(percentages.paper_pulp, request) }}</strong></td>
+                  <td><strong>{{ format_percent_if_not_none(percentages.food_waste, request) }}</strong></td>
+                  <td><strong>{{ format_percent_if_not_none(percentages.garden_yard_waste, request) }}</strong></td>
+                  <td><strong>{{ format_percent_if_not_none(percentages.textiles, request) }}</strong></td>
+                  <td><strong>{{ format_percent_if_not_none(percentages.glass_plastics_metal, request) }}</strong></td>
                   <td colspan="3"></td>
                 </tr>
               </tfoot>

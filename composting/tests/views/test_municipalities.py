@@ -53,7 +53,7 @@ class TestMunicipalities(IntegrationTestBase):
     def test_monthly_density_list_when_bad_date_requested(self):
         self.request.context = self.municipality
         self.request.GET = MultiDict([
-            ('month', '2014')
+            ('period', '2014')
         ])
         result = self.views.monthly_density_list()
         self.assertIsInstance(result, HTTPBadRequest)

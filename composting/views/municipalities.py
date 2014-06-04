@@ -69,12 +69,12 @@ class Municipalities(BaseView):
             MonthlyDensity.date <= end)
         municipality_submissions = MunicipalitySubmission.get_items(
             municipality, MonthlyDensity, criterion)
-        items = [s for ms, s in municipality_submissions]
+        monthly_densities = [s for ms, s in municipality_submissions]
         average_density = MonthlyDensity.get_average_density(date)
 
         return {
             'municipality': municipality,
-            'items': items,
+            'items': monthly_densities,
             'average_density': average_density,
             'date': date
         }
@@ -102,12 +102,23 @@ class Municipalities(BaseView):
             MonthlyWasteComposition.date <= end)
         municipality_submissions = MunicipalitySubmission.get_items(
             municipality, MonthlyWasteComposition, criterion)
-        items = [s for ms, s in municipality_submissions]
+        monthly_waste_compositions = [s for ms, s in municipality_submissions]
+
+        # calculate means and percentages
+        total_waste_mean = MonthlyWasteComposition.get_total_waste_mean(
+            monthly_waste_compositions)
+        means = MonthlyWasteComposition.get_means(
+            monthly_waste_compositions)
+        percentages = MonthlyWasteComposition.get_percentages(
+            monthly_waste_compositions)
 
         return {
             'municipality': municipality,
-            'items': items,
-            'date': date
+            'items': monthly_waste_compositions,
+            'date': date,
+            'total_waste_mean': total_waste_mean,
+            'means': means,
+            'percentages': percentages
         }
 
 
