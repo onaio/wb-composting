@@ -8,12 +8,17 @@
   </tr>
   <tr>
     <td>Recorded At</td>
-    <td>{{ submission.date|format_date(request) }}</td>
+    {% set end_time = submission.end_time %}
+    <td>{{ end_time|format_date(request) }} {{ end_time|format_time(request) }}</td>
   </tr>
   <tr>
     <td>Submitted At</td>
     {% set locale_submission_time = submission.locale_submission_time() %}
     <td>{{ locale_submission_time|format_date(request) }} {{ locale_submission_time|format_time(request) }}</td>
+  </tr>
+  <tr>
+    <td>Month/Year</td>
+    <td>{{ submission.date|format_date(request, 'MMMM, yyyy') }}</td>
   </tr>
   <tr>
     <td>Skip #</td>

@@ -1,4 +1,3 @@
-import pytz
 from zope.interface import Interface
 
 from sqlalchemy.orm.exc import NoResultFound
@@ -12,6 +11,7 @@ from sqlalchemy import (
 )
 
 from composting.constants import SUBMISSION_TIME
+from composting.libs.utils import get_locale_time_from_utc_time
 from dashboard.libs.utils import date_string_to_datetime, default_date_format
 
 from composting.models.base import Base, DBSession, ModelFactory
@@ -108,17 +108,15 @@ class Submission(Base):
 
     @property
     def end_time(self):
-        return self.time_data(Submission.END_FIELD)
+        return Submission.datetime_from_json(self.json_data, self.END_FIELD)
 
-    def locale_submission_time(self, tzname="Africa/Kampala"):
+    def locale_submission_time(self):
         """
         Convert the submission time, which is in UTC to the specified locale
         """
-        timezone = pytz.timezone(tzname)
         submission_time = self.datetime_from_json(
             self.json_data, SUBMISSION_TIME, '%Y-%m-%dT%H:%M:%S')
-        submission_time = pytz.utc.localize(submission_time)
-        return submission_time.astimezone(timezone)
+        return get_locale_time_from_utc_time(submission_time)
 
 
 class SubmissionFactory(ModelFactory):
