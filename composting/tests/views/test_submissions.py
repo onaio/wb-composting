@@ -54,7 +54,7 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_show_daily_waste(self):
+    def test_daily_waste_show(self):
         monthly_density = DailyWaste.newest()
         url = self.request.route_path(
             'submissions', traverse=(monthly_density.id,))
@@ -103,3 +103,10 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         self.assertEqual(response.status_code, 302)
         self.assertActionMatches(response.location, 'monthly-waste-density')
         response.follow()
+
+    def test_monthly_waste_composition_show(self):
+        monthly_waste = MonthlyWasteComposition.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(monthly_waste.id,))
+        response = self.testapp.post(url)
+        self.assertEqual(response.status_code, 200)

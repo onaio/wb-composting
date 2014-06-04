@@ -2,6 +2,9 @@
 {% macro format_percent_if_not_none (value, request) -%}
   {% if value is not none %}{{ value|format_percent(request) }}{% endif %}
 {% endmacro %}
+{% macro format_decimal_if_not_none (value, request) -%}
+  {% if value is not none %}{{ value|format_decimal(request) }}{% endif %}
+{% endmacro %}
 {% block title %}Monthly Solid Waste Composition{% endblock %}
 {% block content %}
   {{ super() }}
@@ -67,12 +70,12 @@
                 <tr>
                   <td class="text-right" colspan="2"><strong>Mean</strong></td>
                   <td><strong>{{ total_waste_mean }}</strong></td>
-                  <td><strong>{{ means.wood_products }}</strong></td>
-                  <td><strong>{{ means.paper_pulp }}</strong></td>
-                  <td><strong>{{ means.food_waste }}</strong></td>
-                  <td><strong>{{ means.garden_yard_waste }}</strong></td>
-                  <td><strong>{{ means.textiles }}</strong></td>
-                  <td><strong>{{ means.glass_plastics_metal }}</strong></td>
+                  <td><strong>{{ format_decimal_if_not_none(means.wood_products, request) }}</strong></td>
+                  <td><strong>{{ format_decimal_if_not_none(means.paper_pulp, request) }}</strong></td>
+                  <td><strong>{{ format_decimal_if_not_none(means.food_waste, request) }}</strong></td>
+                  <td><strong>{{ format_decimal_if_not_none(means.garden_yard_waste, request) }}</strong></td>
+                  <td><strong>{{ format_decimal_if_not_none(means.textiles, request) }}</strong></td>
+                  <td><strong>{{ format_decimal_if_not_none(means.glass_plastics_metal, request) }}</strong></td>
                   <td colspan="3"></td>
                 </tr>
                 <tr>
