@@ -34,6 +34,7 @@ class Municipality(Base):
     _num_actionable_daily_wastes = None
     _num_actionable_monthly_waste = None
     _num_actionable_monthly_waste_composition = None
+    _num_actionable_windrow_monitoring = None
 
     factories = {
         'daily-waste': DailyWaste,
@@ -75,6 +76,13 @@ class Municipality(Base):
             self._num_actionable_monthly_waste_composition
             or self.actionable_items_count(MonthlyWasteComposition))
         return self._num_actionable_monthly_waste_composition
+
+    @property
+    def num_actionable_windrow_monitoring(self):
+        self._num_actionable_windrow_monitoring = (
+            self._num_actionable_windrow_monitoring
+            or self.actionable_items_count(WindrowMonitoring))
+        return self._num_actionable_windrow_monitoring
 
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\

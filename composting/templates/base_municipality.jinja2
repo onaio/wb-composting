@@ -69,9 +69,13 @@
             <span>Monthly Density of Rejects from Sieving</span>
           </a>
         </li>
-        <li class="">
-          <a href="#">
+        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'windrow-monitoring')) %}
+        <li class="{% if request.is_current_path(path) %}active{% endif %}">
+          <a href="{{ path }}">
             <span>Windrow Monitoring</span>
+            {% if municipality.num_actionable_windrow_monitoring > 0 %}
+            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_windrow_monitoring }}</small>
+            {% endif %}
           </a>
         </li>
         <li class="">
