@@ -1,0 +1,3 @@
+{% macro yes_no_message(value, yes_msg, no_msg) %}
+  {% if value == 'yes' %}{{ yes_msg }}{% else %}{{ no_msg }}{% endif %}
+{% endmacro %}

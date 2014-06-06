@@ -1,0 +1,90 @@
+{% extends 'base_show_modal.jinja2' %}
+{% block body %}
+<table class="table">
+  <tbody>
+  <tr>
+    <th style="width: 30%">Question</th>
+    <th>Response</th>
+  </tr>
+  <tr>
+    <td>Recorded At</td>
+    {% set end_time = submission.end_time %}
+    <td>{{ end_time|format_date(request) }} {{ end_time|format_time(request) }}</td>
+  </tr>
+  <tr>
+    <td>Submitted At</td>
+    {% set locale_submission_time = submission.locale_submission_time() %}
+    <td>{{ locale_submission_time|format_date(request) }} {{ locale_submission_time|format_time(request) }}</td>
+  </tr>
+  <tr>
+    <td>Date</td>
+    <td>{{ submission.date|format_date(request) }}</td>
+  </tr>
+  <tr>
+    <td>Windrow #</td>
+    <td>{{ submission.windrow_no }}kgs</td>
+  </tr>
+  <tr>
+    <td>Week #</td>
+    <td>{{ submission.week_no }}kgs</td>
+  </tr>
+  <tr>
+    <td>Temperature 1</td>
+    <td>{{ report['monitoring_group/t1'] }} <sup>o</sup>C</td>
+  </tr>
+  <tr>
+    <td>Temperature 2</td>
+    <td>{{ report['monitoring_group/t2'] }} <sup>o</sup>C</td>
+  </tr>
+  <tr>
+    <td>Temperature 3</td>
+    <td>{{ report['monitoring_group/t3'] }} <sup>o</sup>C</td>
+  </tr>
+  <tr>
+    <td>Temperature 4</td>
+    <td>{{ report['monitoring_group/t4'] }} <sup>o</sup>C</td>
+  </tr>
+  <tr>
+    <td>Temperature 5</td>
+    <td>{{ report['monitoring_group/t5'] }} <sup>o</sup>C</td>
+  </tr>
+  <tr>
+    <td>Oxygen 1</td>
+    <td>{{ report['monitoring_group/o1'] }} %</td>
+  </tr>
+  <tr>
+    <td>Oxygen 2</td>
+    <td>{{ report['monitoring_group/o2'] }} %</td>
+  </tr>
+  <tr>
+    <td>Oxygen 3</td>
+    <td>{{ report['monitoring_group/o3'] }} %</td>
+  </tr>
+  <tr>
+    <td>Oxygen 4</td>
+    <td>{{ report['monitoring_group/o4'] }} %</td>
+  </tr>
+  <tr>
+    <td>Oxygen 5</td>
+    <td>{{ report['monitoring_group/o5'] }} %</td>
+  </tr>
+  <tr>
+    <td>Remarks</td>
+    <td>{{ report.remarks }}</td>
+  </tr>
+  <tr>
+    <td>Location</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Clerks Signature</td>
+    <td>
+      {% if report.clerk_signature %}
+        <img class="image-timestamp"
+             src="{{ image_url_base }}{{ report.clerk_signature }}"/>
+      {% endif %}
+    </td>
+  </tr>
+  </tbody>
+</table>
+{% endblock %}

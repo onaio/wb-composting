@@ -15,7 +15,8 @@ from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.skip import Skip
 from composting.models.municipality_submission import (
-            MunicipalitySubmission)
+    MunicipalitySubmission)
+from composting.models.windrow_monitoring import WindrowMonitoring
 
 
 class Municipality(Base):
@@ -35,16 +36,17 @@ class Municipality(Base):
     _num_actionable_monthly_waste_composition = None
 
     factories = {
-        #'monthly-waste-density': MonthlyDensity
-        'daily-waste': DailyWaste
+        'daily-waste': DailyWaste,
+        'windrow-monitoring': WindrowMonitoring
     }
 
     def __getitem__(self, item):
         try:
-            model = self.factories[item](self.request)
+            klass = self.factories[item]
         except KeyError:
             raise
         else:
+            model = klass(self.request)
             model.__name__ = str(item)
             model.__parent__ = self
             return model

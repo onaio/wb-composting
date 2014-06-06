@@ -5,6 +5,7 @@ from composting.models import Municipality, Submission
 from composting.models.daily_waste import DailyWaste
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
+from composting.models.windrow_monitoring import WindrowMonitoring
 from composting.views.submissions import Submissions
 from composting.tests.test_base import IntegrationTestBase, FunctionalTestBase
 
@@ -58,7 +59,7 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         monthly_density = DailyWaste.newest()
         url = self.request.route_path(
             'submissions', traverse=(monthly_density.id,))
-        response = self.testapp.post(url)
+        response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
 
     def assertActionMatches(self, location, action):
@@ -108,5 +109,20 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         monthly_waste = MonthlyWasteComposition.newest()
         url = self.request.route_path(
             'submissions', traverse=(monthly_waste.id,))
-        response = self.testapp.post(url)
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_windrow_monitoring_list(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'windrow-monitoring'),
+            _query={Submission.PENDING: '1', Submission.REJECTED: '1'})
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_windrow_monitoring_show(self):
+        monthly_waste = WindrowMonitoring.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(monthly_waste.id,))
+        response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
