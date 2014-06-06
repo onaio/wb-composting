@@ -8,6 +8,7 @@ from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.daily_waste import DailyWaste
 from composting.models.municipality_submission import MunicipalitySubmission
+from composting.models.windrow_monitoring import WindrowMonitoring
 
 
 class MunicipalitySubmissionHandler(SubmissionHandler):
@@ -15,7 +16,8 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
     XFORM_CLASS_MAPPING = {
         constants.MONTHLY_WASTE_DENSITY_FORM: MonthlyDensity,
         constants.DAILY_WASTE_REGISTER_FORM: DailyWaste,
-        constants.MONTHLY_WASTE_COMPOSITION_FORM: MonthlyWasteComposition
+        constants.MONTHLY_WASTE_COMPOSITION_FORM: MonthlyWasteComposition,
+        WindrowMonitoring.XFORM_ID: WindrowMonitoring
     }
 
     @staticmethod

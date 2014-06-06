@@ -49,7 +49,6 @@ class TestDailyWasteSubmissionHandling(TestBase):
 class TestMonthlyDensitySubmissionHandling(TestDailyWasteSubmissionHandling):
     klass = MonthlyDensity
     xform_id = constants.MONTHLY_WASTE_DENSITY_FORM
-    #date_string = '2014-04-21T10:34:03.000'
 
 
 class TestMonthlyWasteCompositionSubmissionHandling(
