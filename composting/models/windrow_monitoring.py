@@ -1,15 +1,13 @@
 from zope.interface import implementer
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy import (
     Column,
     Integer,
     String,
-    Index,
     ForeignKey,
 )
-from sqlalchemy.orm import relationship, backref
 
+from composting.models.base import RootFactory
 from composting.models.submission import Submission, ISubmission
 
 
@@ -34,3 +32,8 @@ class WindrowMonitoring(Submission):
     WEEK_NO_FIELD = 'week_no'
 
     LIST_ACTION_NAME = 'windrow-monitoring'
+
+
+class WindrowMonitoringFactory(RootFactory):
+    def __getitem__(self, item):
+        raise KeyError

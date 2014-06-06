@@ -1,0 +1,79 @@
+{% extends 'base_municipality.jinja2' %}
+{% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
+{% from 'macros/action_buttons.jinja2' import action_buttons %}
+{% from 'macros.jinja2' import yes_no_message %}
+{% block title %}Windrow Details{% endblock %}
+{% block description %}List of daily waste register records{% endblock %}
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+{% block content %}
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title"> Windrow {{ windrow_no}}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+          <form method="post">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th rowspan="2" class="text-center">Week #</th>
+                  <th colspan="5">Temperature (<sup>o</sup>C)</th>
+                  <th colspan="5">Oxygen (%)</th>
+                  <th rowspan="2" style="width: 10%">Was the windrow turned?</th>
+                  <th rowspan="2" style="width: 10%">Was moisture added?</th>
+                  <th rowspan="2" style="width: 12%"></th>
+                </tr>
+                <tr>
+                  <th>T1</th>
+                  <th>T2</th>
+                  <th>T3</th>
+                  <th>T4</th>
+                  <th>T5</th>
+                  <th>O1</th>
+                  <th>O2</th>
+                  <th>O3</th>
+                  <th>O4</th>
+                  <th>O5</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for group in windrow_records|groupby('week_no')|sort(False) %}
+                {% for windrow_record in group.list %}
+                  {% set report = windrow_record.json_data %}
+                  {% set status = windrow_record.status %}
+                  <tr>
+                    {% if loop.index0 == 0 %}
+                      <td rowspan="{{ group.list|count }}" class="text-center"><strong>{{ group.grouper }}</strong></td>
+                    {% endif %}
+                    <td>{{ report['monitoring_group/t1'] }}</td>
+                    <td>{{ report['monitoring_group/t2'] }}</td>
+                    <td>{{ report['monitoring_group/t3'] }}</td>
+                    <td>{{ report['monitoring_group/t4'] }}</td>
+                    <td>{{ report['monitoring_group/t5'] }}</td>
+                    <td>{{ report['monitoring_group/o1'] }}</td>
+                    <td>{{ report['monitoring_group/o2'] }}</td>
+                    <td>{{ report['monitoring_group/o3'] }}</td>
+                    <td>{{ report['monitoring_group/o4'] }}</td>
+                    <td>{{ report['monitoring_group/o5'] }}</td>
+                    <td>{{ yes_no_message(report.windrow_turned, "Yes", "No") }}</td>
+                    <td>{{ yes_no_message(report.moisture_added, "Yes", "No") }}</td>
+                    <td>
+                      <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(windrow_record.id,)) }}">View</a>
+                      {{ action_buttons(request, windrow_record) }}
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+{% endblock %}

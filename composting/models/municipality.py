@@ -6,7 +6,6 @@ from sqlalchemy import (
     Float,
     or_
 )
-from sqlalchemy.orm import contains_eager
 
 from composting.models.base import DBSession, Base, ModelFactory
 from composting.models.submission import Submission
@@ -16,7 +15,8 @@ from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.skip import Skip
 from composting.models.municipality_submission import (
     MunicipalitySubmission)
-from composting.models.windrow_monitoring import WindrowMonitoring
+from composting.models.windrow_monitoring import (
+    WindrowMonitoring, WindrowMonitoringFactory)
 
 
 class Municipality(Base):
@@ -38,7 +38,8 @@ class Municipality(Base):
 
     factories = {
         'daily-waste': DailyWaste,
-        'windrow-monitoring': WindrowMonitoring
+        'windrow-monitoring': WindrowMonitoring,
+        'windrows': WindrowMonitoringFactory
     }
 
     def __getitem__(self, item):

@@ -74,7 +74,7 @@
                 {% set report = windrow_record.json_data %}
                 {% set status = windrow_record.status %}
                 <tr>
-                  <td><a href="#">{{ windrow_record.windrow_no }}</a></td>
+                  <td><a href="{{ request.route_url('municipalities', traverse=(municipality.id, 'windrows', '@@', windrow_record.windrow_no)) }}">{{ windrow_record.windrow_no }}</a></td>
                   <td>{{ windrow_record.week_no }}</td>
                   <td>{{ report['monitoring_group/t1'] }}</td>
                   <td>{{ report['monitoring_group/t2'] }}</td>

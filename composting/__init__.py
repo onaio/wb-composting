@@ -20,6 +20,7 @@ from composting.models.base import (
 from composting.models.municipality import MunicipalityFactory
 from composting.models.submission import SubmissionFactory
 from composting.models.skip import SkipFactory
+from composting.models.windrow_monitoring import WindrowMonitoringFactory
 from composting.views.helpers import is_current_path
 
 
