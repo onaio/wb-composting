@@ -1,0 +1,5 @@
+{% extends 'base_show_modal.jinja2' %}
+{% set report = submission.json_data %}
+{% block header %}
+  {{ action_buttons(request, submission) }}
+{% endblock %}

@@ -179,11 +179,17 @@ $(function() {
         var $detailsModal = $('#details-modal');
         // get progress bar content from loading modal and clone it
         var $loadingContent = $loadingModal.find('.modal-content').clone();
-        $detailsModal.find('.modal-dialog').html($loadingContent);
+        var $modalDialog = $detailsModal.find('.modal-dialog');
+        $modalDialog.html($loadingContent);
+        // remove large class if set
+        $modalDialog.removeClass('modal-lg');
         $detailsModal.modal('show');
         $.ajax(url, {})
             .done(function (response) {
-                $detailsModal.find('.modal-dialog').html(response);
+                $modalDialog.html(response);
+                if(target.data('modal-lg')) {
+                    $modalDialog.addClass('modal-lg');
+                }
                 $detailsModal.modal('show');
 
                 //Read image timestamp from meta
