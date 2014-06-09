@@ -1,7 +1,7 @@
 {% extends 'base_municipality.jinja2' %}
 {% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
 {% from 'macros/action_buttons.jinja2' import action_buttons %}
-{% block title %}Register of Daily Rejects Landfilled{% endblock %}
+{% block title %}Monthly Density of Rejects from Sieving{% endblock %}
 {% block breadcrumbs %}
 {% endblock breadcrumbs %}
 {% block content %}
@@ -15,19 +15,25 @@
               <tbody>
               <tr>
                 <th>Date</th>
-                <th>Number of Barrows from Sorting</th>
-                <th>Number of Barrows from Sieving</th>
+                <th>Filled Box Weight (kg)</th>
+                <th>Empty Box Weight (kg)</th>
+                <th>Net Weight (kg)</th>
+                <th>Box Volume (m<sup>3</sup>)</th>
+                <th>Density (kg/m<sup>3</sup>)</th>
                 <th>Remarks</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
-              {% for rejects_landfilled in items %}
-                {% set report = rejects_landfilled.json_data %}
-                {% set status = rejects_landfilled.status %}
+              {% for rejects_from_sieving in items %}
+                {% set report = rejects_from_sieving.json_data %}
+                {% set status = rejects_from_sieving.status %}
                 <tr>
-                  <td>{{ rejects_landfilled.date|format_date(request) }}</td>
-                  <td>{{ report.barrows_number_frm_sorting }}</td>
-                  <td>{{ report.barrows_number_frm_sieving }}</td>
+                  <td>{{ rejects_from_sieving.date|format_date(request, 'MMM, yyyy') }}</td>
+                  <td>{{ report.filled_box_weight }}</td>
+                  <td>{{ report.empty_box_weight }}</td>
+                  <td>{{ rejects_from_sieving.net_weight }}</td>
+                  <td>{{ municipality.box_volume }}</td>
+                  <td>{{ rejects_from_sieving.density(municipality) }}</td>
                   <td>
                     {% if report.remarks %}
                     <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
@@ -39,8 +45,8 @@
                       class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
                   </td>
                   <td>
-                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(rejects_landfilled.id,)) }}">View</a>
-                    {{ action_buttons(request, rejects_landfilled) }}
+                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(rejects_from_sieving.id,)) }}">View</a>
+                    {{ action_buttons(request, rejects_from_sieving) }}
                   </td>
                 </tr>
               {% endfor %}

@@ -12,13 +12,13 @@ from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
-from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 from composting.models.skip import Skip
 from composting.models.municipality_submission import (
     MunicipalitySubmission)
 from composting.models.windrow_monitoring import (
     WindrowMonitoring, WindrowMonitoringFactory)
 from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
+from composting.models.monthly_rejects_density import MonthlyRejectsDensity
 
 
 class Municipality(Base):
@@ -38,12 +38,14 @@ class Municipality(Base):
     _num_actionable_monthly_waste_composition = None
     _num_actionable_windrow_monitoring = None
     _num_actionable_daily_rejects_landfilled = None
+    _num_actionable_monthly_rejects_density = None
 
     factories = {
         DailyWaste.LIST_ACTION_NAME: DailyWaste,
         WindrowMonitoring.LIST_ACTION_NAME: WindrowMonitoring,
         'windrows': WindrowMonitoringFactory,
-        DailyRejectsLandfilled.LIST_ACTION_NAME: DailyRejectsLandfilled
+        DailyRejectsLandfilled.LIST_ACTION_NAME: DailyRejectsLandfilled,
+        MonthlyRejectsDensity.LIST_ACTION_NAME: MonthlyRejectsDensity
     }
 
     def __getitem__(self, item):
@@ -95,6 +97,13 @@ class Municipality(Base):
             self._num_actionable_daily_rejects_landfilled
             or self.actionable_items_count(DailyRejectsLandfilled))
         return self._num_actionable_daily_rejects_landfilled
+
+    @property
+    def num_actionable_monthly_rejects_density(self):
+        self._num_actionable_monthly_rejects_density = (
+            self._num_actionable_monthly_rejects_density
+            or self.actionable_items_count(MonthlyRejectsDensity))
+        return self._num_actionable_monthly_rejects_density
 
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\

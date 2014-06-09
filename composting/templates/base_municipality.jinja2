@@ -68,9 +68,13 @@
             {% endif %}
           </a>
         </li>
-        <li class="">
-          <a href="#">
+        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'density-of-rejects-from-sieving')) %}
+        <li class="{% if request.is_current_path(path) %}active{% endif %}">
+          <a href="{{ path }}">
             <span>Monthly Density of Rejects from Sieving</span>
+            {% if municipality.num_actionable_monthly_rejects_density > 0 %}
+            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_monthly_rejects_density }}</small>
+            {% endif %}
           </a>
         </li>
         {% set path = request.route_path('municipalities', traverse=(municipality.id, 'windrow-monitoring')) %}

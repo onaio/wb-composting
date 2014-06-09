@@ -176,3 +176,10 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             traverse=(self.municipality.id, 'daily-rejects-landfilled'))
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_rejects_density_from_sieving_list(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'density-of-rejects-from-sieving'))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)
