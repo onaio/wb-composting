@@ -121,8 +121,13 @@ class Submission(Base):
 
 class SubmissionFactory(ModelFactory):
     def __getitem__(self, item):
+        from composting.models.municipality_submission import (
+            MunicipalitySubmission)
         try:
-            submission = Submission.get(Submission.id == item)
+            submission = DBSession.query(Submission)\
+                .join(MunicipalitySubmission)\
+                .filter(Submission.id == item)\
+                .one()
         except NoResultFound:
             raise KeyError
         else:
