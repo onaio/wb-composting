@@ -6,6 +6,7 @@ from composting.models.daily_waste import DailyWaste
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.windrow_monitoring import WindrowMonitoring
+from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 from composting.views.submissions import Submissions
 from composting.tests.test_base import IntegrationTestBase, FunctionalTestBase
 
@@ -124,5 +125,12 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         monthly_waste = WindrowMonitoring.newest()
         url = self.request.route_path(
             'submissions', traverse=(monthly_waste.id,))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_daily_rejects_landfilled_show(self):
+        daily_reject = DailyRejectsLandfilled.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(daily_reject.id,))
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)

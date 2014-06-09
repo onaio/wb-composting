@@ -12,11 +12,13 @@ from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
+from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 from composting.models.skip import Skip
 from composting.models.municipality_submission import (
     MunicipalitySubmission)
 from composting.models.windrow_monitoring import (
     WindrowMonitoring, WindrowMonitoringFactory)
+from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 
 
 class Municipality(Base):
@@ -35,11 +37,13 @@ class Municipality(Base):
     _num_actionable_monthly_waste = None
     _num_actionable_monthly_waste_composition = None
     _num_actionable_windrow_monitoring = None
+    _num_actionable_daily_rejects_landfilled = None
 
     factories = {
-        'daily-waste': DailyWaste,
-        'windrow-monitoring': WindrowMonitoring,
-        'windrows': WindrowMonitoringFactory
+        DailyWaste.LIST_ACTION_NAME: DailyWaste,
+        WindrowMonitoring.LIST_ACTION_NAME: WindrowMonitoring,
+        'windrows': WindrowMonitoringFactory,
+        DailyRejectsLandfilled.LIST_ACTION_NAME: DailyRejectsLandfilled
     }
 
     def __getitem__(self, item):
@@ -84,6 +88,13 @@ class Municipality(Base):
             self._num_actionable_windrow_monitoring
             or self.actionable_items_count(WindrowMonitoring))
         return self._num_actionable_windrow_monitoring
+
+    @property
+    def num_actionable_daily_rejects_landfilled(self):
+        self._num_actionable_daily_rejects_landfilled = (
+            self._num_actionable_daily_rejects_landfilled
+            or self.actionable_items_count(DailyRejectsLandfilled))
+        return self._num_actionable_daily_rejects_landfilled
 
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\

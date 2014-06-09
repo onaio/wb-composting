@@ -1,0 +1,57 @@
+{% extends 'base_municipality.jinja2' %}
+{% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
+{% from 'macros/action_buttons.jinja2' import action_buttons %}
+{% block title %}Daily Waste Register{% endblock %}
+{% block description %}List of daily waste register records{% endblock %}
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+{% block content %}
+  {% include 'includes/daily_register_filter_form.jinja2' %}
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-body table-responsive no-padding">
+          <form method="post">
+            <table class="table table-hover">
+              <tbody>
+              <tr>
+                <th>Date</th>
+                <th>Number of Barrows from Sorting</th>
+                <th>Number of Barrows from Sieving</th>
+                <th>Remarks</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+              {% for rejects_landfilled in items %}
+                {% set report = rejects_landfilled.json_data %}
+                {% set status = rejects_landfilled.status %}
+                <tr>
+                  <td>{{ rejects_landfilled.date|format_date(request) }}</td>
+                  <td>{{ report.barrows_number_frm_sorting }}</td>
+                  <td>{{ report.barrows_number_frm_sieving }}</td>
+                  <td>
+                    {% if report.remarks %}
+                    <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
+                      <a href="javascript:;">{{ report.remarks }}</a>
+                    </div>
+                    {% endif %}
+                  </td>
+                  <td><span
+                      class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
+                  </td>
+                  <td>
+                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(rejects_landfilled.id,)) }}">View</a>
+                    {{ action_buttons(request, rejects_landfilled) }}
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+{% endblock %}
