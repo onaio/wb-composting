@@ -22,7 +22,8 @@
   </tr>
   <tr>
     <td>Consumption Since Last Reading</td>
-    <td>{{ submission.consumption_since_last_reading(municipality)|default('-', true) }} kWh</td>
+    {% set consumption_since_last_reading = submission.consumption_since_last_reading(municipality) %}
+    <td>{% if consumption_since_last_reading %}{{ submission.consumption_since_last_reading(municipality) }} kWh{% else %} - {% endif %}</td>
   </tr>
   <tr>
     <td>Bill Reading</td>
