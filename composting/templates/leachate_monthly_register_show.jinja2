@@ -1,0 +1,64 @@
+{% extends 'base_show_details_modal.jinja2' %}
+{% set municipality = submission.municipality_submission.municipality %}
+{% block body %}
+<table class="table">
+  <tbody>
+  <tr>
+    <th style="width: 30%">Question</th>
+    <th>Response</th>
+  </tr>
+  <tr>
+    <td>Recorded At</td>
+    <td>{{ submission.end_time|format_date(request) }} {{ submission.end_time|format_time(request) }}</td>
+  </tr>
+  <tr>
+    <td>Submitted At</td>
+    {% set locale_submission_time = submission.locale_submission_time() %}
+    <td>{{ locale_submission_time|format_date(request) }} {{ locale_submission_time|format_time(request) }}</td>
+  </tr>
+  <tr>
+    <td>Date/Time Before Pumping</td>
+    {% set date_time_b4_pumping = submission.time_data('before_pumping/dateTime_be4_pumping') %}
+    <td>{{ date_time_b4_pumping|format_date(request) }} {{ date_time_b4_pumping|format_time(request) }}</td>
+  </tr>
+  <tr>
+    <td>Freeboard Height Before Pumping</td>
+    <td>{{ report['before_pumping/fbHeight_be4_pumping'] }} m</td>
+  </tr>
+  <tr>
+    <td>Date/Time After Pumping</td>
+    {% set date_time_after_pumping = submission.time_data('after_pumping/dateTime_after_pumping') %}
+    <td>{{ date_time_after_pumping|format_date(request) }} {{ date_time_after_pumping|format_time(request) }}</td>
+  </tr>
+  <tr>
+    <td>Freeboard Height After Pumping</td>
+    <td>{{ report['after_pumping/fbHeight_after_pumping'] }} m</td>
+  </tr>
+  <tr>
+    <td>Net Leachete Height</td>
+    <td>{{ submission.net_height }} m</td>
+  </tr>
+  <tr>
+    <td>Volume</td>
+    <td>{{ submission.volume(municipality) }} m<sup>3</sup></td>
+  </tr>
+  <tr>
+    <td>Remarks</td>
+    <td>{{ report.remarks }}</td>
+  </tr>
+  <tr>
+    <td>Location</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Clerks Signature</td>
+    <td>
+      {% if report.clerk_signature %}
+        <img class="image-timestamp"
+             src="{{ image_url_base }}{{ report.clerk_signature }}"/>
+      {% endif %}
+    </td>
+  </tr>
+  </tbody>
+</table>
+{% endblock %}

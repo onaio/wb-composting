@@ -9,6 +9,7 @@ from composting.models.windrow_monitoring import WindrowMonitoring
 from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 from composting.models.monthly_rejects_density import MonthlyRejectsDensity
 from composting.models.electricity_register import ElectricityRegister
+from composting.models.leachete_monthly_register import LeacheteMonthlyRegister
 from composting.views.submissions import Submissions
 from composting.tests.test_base import IntegrationTestBase, FunctionalTestBase
 
@@ -146,6 +147,13 @@ class TestSubmissionsFunctional(FunctionalTestBase):
 
     def test_municipality_electricity_register_show(self):
         electricity_register = ElectricityRegister.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(electricity_register.id,))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_leachete_monthly_register_show(self):
+        electricity_register = LeacheteMonthlyRegister.newest()
         url = self.request.route_path(
             'submissions', traverse=(electricity_register.id,))
         response = self.testapp.get(url)
