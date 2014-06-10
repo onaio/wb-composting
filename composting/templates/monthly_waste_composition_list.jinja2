@@ -40,7 +40,7 @@
                 {% set report = submission.json_data %}
                 {% set status = submission.status %}
                 <tr>
-                  <td>{{ submission.date|format_date(request) }}</td>
+                  <td>{{ submission.date|format_date(request, 'MMMM, yyyy') }}</td>
                   <td>{{ report.skip_number }}</td>
                   <td><strong>{{ submission.total_waste|format_decimal(request) }}</strong></td>
                   <td>{{ report.wood_products }}</td>
