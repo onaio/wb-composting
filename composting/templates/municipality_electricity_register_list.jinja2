@@ -27,7 +27,7 @@
                 {% set report = reading.json_data %}
                 {% set status = reading.status %}
                 <tr>
-                  <td>{{ reading.date|format_date(request, 'MMM, yyyy') }}</td>
+                  <td>{{ reading.date|format_date(request, 'MMMM, yyyy') }}</td>
                   <td>{{ report.meter_reading }}</td>
                   <td>{{ reading.consumption_since_last_reading(municipality)|default('-', true) }} </td>
                   <td>{{ report.bill_reading }}</td>

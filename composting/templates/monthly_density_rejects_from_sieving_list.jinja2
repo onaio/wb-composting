@@ -28,7 +28,7 @@
                 {% set report = rejects_from_sieving.json_data %}
                 {% set status = rejects_from_sieving.status %}
                 <tr>
-                  <td>{{ rejects_from_sieving.date|format_date(request, 'MMM, yyyy') }}</td>
+                  <td>{{ rejects_from_sieving.date|format_date(request, 'MMMM, yyyy') }}</td>
                   <td>{{ report.filled_box_weight }}</td>
                   <td>{{ report.empty_box_weight }}</td>
                   <td>{{ rejects_from_sieving.net_weight }}</td>
