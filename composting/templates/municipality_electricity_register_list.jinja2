@@ -1,7 +1,7 @@
 {% extends 'base_municipality.jinja2' %}
 {% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
 {% from 'macros/action_buttons.jinja2' import action_buttons %}
-{% block title %}Monthly Density of Rejects from Sieving{% endblock %}
+{% block title %}Municipality Electricity Register{% endblock %}
 {% block breadcrumbs %}
 {% endblock breadcrumbs %}
 {% block content %}
@@ -14,26 +14,24 @@
             <table class="table table-hover">
               <tbody>
               <tr>
-                <th>Date</th>
-                <th>Filled Box Weight (kg)</th>
-                <th>Empty Box Weight (kg)</th>
-                <th>Net Weight (kg)</th>
-                <th>Box Volume (m<sup>3</sup>)</th>
-                <th>Density (kg/m<sup>3</sup>)</th>
+                <th>Month/Year</th>
+                <th>Meter Reading (kWh)</th>
+                <th>Consumption Since Last Reading (kWh)</th>
+                <th>Bill Reading (kWh)</th>
+                <th>Bill Amount (USH)</th>
                 <th>Remarks</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
-              {% for rejects_from_sieving in items %}
-                {% set report = rejects_from_sieving.json_data %}
-                {% set status = rejects_from_sieving.status %}
+              {% for reading in items %}
+                {% set report = reading.json_data %}
+                {% set status = reading.status %}
                 <tr>
-                  <td>{{ rejects_from_sieving.date|format_date(request, 'MMM, yyyy') }}</td>
-                  <td>{{ report.filled_box_weight }}</td>
-                  <td>{{ report.empty_box_weight }}</td>
-                  <td>{{ rejects_from_sieving.net_weight }}</td>
-                  <td>{{ municipality.box_volume }}</td>
-                  <td>{{ rejects_from_sieving.density(municipality) }}</td>
+                  <td>{{ reading.date|format_date(request, 'MMM, yyyy') }}</td>
+                  <td>{{ report.meter_reading }}</td>
+                  <td>{{ reading.consumption_since_last_reading(municipality)|default('-', true) }} </td>
+                  <td>{{ report.bill_reading }}</td>
+                  <td>{{ report.bill_amount|float|format_decimal(request, '#,##0.00') }}</td>
                   <td>
                     {% if report.remarks %}
                     <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
@@ -45,8 +43,8 @@
                       class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
                   </td>
                   <td>
-                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(rejects_from_sieving.id,)) }}">View</a>
-                    {{ action_buttons(request, rejects_from_sieving) }}
+                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(reading.id,)) }}">View</a>
+                    {{ action_buttons(request, reading) }}
                   </td>
                 </tr>
               {% endfor %}

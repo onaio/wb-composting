@@ -11,6 +11,7 @@ from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.windrow_monitoring import WindrowMonitoring
 from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 from composting.models.monthly_rejects_density import MonthlyRejectsDensity
+from composting.models.electricity_register import ElectricityRegister
 
 
 class MunicipalitySubmissionHandler(SubmissionHandler):
@@ -21,7 +22,8 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
         constants.MONTHLY_WASTE_COMPOSITION_FORM: MonthlyWasteComposition,
         WindrowMonitoring.XFORM_ID: WindrowMonitoring,
         DailyRejectsLandfilled.XFORM_ID: DailyRejectsLandfilled,
-        MonthlyRejectsDensity.XFORM_ID: MonthlyRejectsDensity
+        MonthlyRejectsDensity.XFORM_ID: MonthlyRejectsDensity,
+        ElectricityRegister.XFORM_ID: ElectricityRegister
     }
 
     @staticmethod
@@ -31,7 +33,8 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
             constants.DAILY_WASTE_REGISTER_FORM,
             constants.MONTHLY_WASTE_COMPOSITION_FORM,
             DailyRejectsLandfilled.XFORM_ID,
-            MonthlyRejectsDensity.XFORM_ID
+            MonthlyRejectsDensity.XFORM_ID,
+            ElectricityRegister.XFORM_ID
         ]
 
     @staticmethod

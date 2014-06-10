@@ -19,6 +19,7 @@ from composting.models.windrow_monitoring import (
     WindrowMonitoring, WindrowMonitoringFactory)
 from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 from composting.models.monthly_rejects_density import MonthlyRejectsDensity
+from composting.models.electricity_register import ElectricityRegister
 
 
 class Municipality(Base):
@@ -39,13 +40,15 @@ class Municipality(Base):
     _num_actionable_windrow_monitoring = None
     _num_actionable_daily_rejects_landfilled = None
     _num_actionable_monthly_rejects_density = None
+    _num_actionable_electricity_register = None
 
     factories = {
         DailyWaste.LIST_ACTION_NAME: DailyWaste,
         WindrowMonitoring.LIST_ACTION_NAME: WindrowMonitoring,
         'windrows': WindrowMonitoringFactory,
         DailyRejectsLandfilled.LIST_ACTION_NAME: DailyRejectsLandfilled,
-        MonthlyRejectsDensity.LIST_ACTION_NAME: MonthlyRejectsDensity
+        MonthlyRejectsDensity.LIST_ACTION_NAME: MonthlyRejectsDensity,
+        ElectricityRegister.LIST_ACTION_NAME: ElectricityRegister
     }
 
     def __getitem__(self, item):
@@ -104,6 +107,13 @@ class Municipality(Base):
             self._num_actionable_monthly_rejects_density
             or self.actionable_items_count(MonthlyRejectsDensity))
         return self._num_actionable_monthly_rejects_density
+
+    @property
+    def num_actionable_electricity_register(self):
+        self._num_actionable_electricity_register = (
+            self._num_actionable_electricity_register
+            or self.actionable_items_count(ElectricityRegister))
+        return self._num_actionable_electricity_register
 
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\

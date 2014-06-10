@@ -9,6 +9,7 @@ from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 from composting.models.monthly_rejects_density import MonthlyRejectsDensity
+from composting.models.electricity_register import ElectricityRegister
 from composting.tests.test_base import TestBase
 
 
@@ -71,4 +72,11 @@ class TestMonthlyRejectsDensitySubmissionHandling(
         TestDailyWasteSubmissionHandling):
     klass = MonthlyRejectsDensity
     xform_id = MonthlyRejectsDensity.XFORM_ID
+    date_string = '2014-04-21'
+
+
+class TestElectricityRegisterSubmissionHandling(
+        TestDailyWasteSubmissionHandling):
+    klass = ElectricityRegister
+    xform_id = ElectricityRegister.XFORM_ID
     date_string = '2014-04-21'
