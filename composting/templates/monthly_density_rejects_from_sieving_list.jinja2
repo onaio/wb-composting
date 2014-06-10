@@ -24,7 +24,7 @@
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
-              {% for rejects_from_sieving in items %}
+              {% for rejects_from_sieving in items|sort(true, attribute='date') %}
                 {% set report = rejects_from_sieving.json_data %}
                 {% set status = rejects_from_sieving.status %}
                 <tr>

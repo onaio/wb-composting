@@ -27,7 +27,7 @@
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
-              {% for monthly_waste in items|sort %}
+              {% for monthly_waste in items|sort(true, attribute='date') %}
                 {% set report = monthly_waste.json_data %}
                 {% set status = monthly_waste.status %}
                 <tr>

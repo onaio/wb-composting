@@ -23,7 +23,7 @@
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
-              {% for reading in items %}
+              {% for reading in items|sort(true, attribute='date') %}
                 {% set report = reading.json_data %}
                 {% set status = reading.status %}
                 <tr>

@@ -21,7 +21,7 @@
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
-              {% for rejects_landfilled in items %}
+              {% for rejects_landfilled in items|sort(true, attribute='date') %}
                 {% set report = rejects_landfilled.json_data %}
                 {% set status = rejects_landfilled.status %}
                 <tr>
