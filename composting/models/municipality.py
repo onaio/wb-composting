@@ -20,6 +20,7 @@ from composting.models.windrow_monitoring import (
 from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 from composting.models.monthly_rejects_density import MonthlyRejectsDensity
 from composting.models.electricity_register import ElectricityRegister
+from composting.models.leachete_monthly_register import LeacheteMonthlyRegister
 
 
 class Municipality(Base):
@@ -41,6 +42,7 @@ class Municipality(Base):
     _num_actionable_daily_rejects_landfilled = None
     _num_actionable_monthly_rejects_density = None
     _num_actionable_electricity_register = None
+    _num_actionable_leachete_monthly_register = None
 
     factories = {
         DailyWaste.LIST_ACTION_NAME: DailyWaste,
@@ -48,7 +50,8 @@ class Municipality(Base):
         'windrows': WindrowMonitoringFactory,
         DailyRejectsLandfilled.LIST_ACTION_NAME: DailyRejectsLandfilled,
         MonthlyRejectsDensity.LIST_ACTION_NAME: MonthlyRejectsDensity,
-        ElectricityRegister.LIST_ACTION_NAME: ElectricityRegister
+        ElectricityRegister.LIST_ACTION_NAME: ElectricityRegister,
+        LeacheteMonthlyRegister.LIST_ACTION_NAME: LeacheteMonthlyRegister
     }
 
     def __getitem__(self, item):
@@ -114,6 +117,13 @@ class Municipality(Base):
             self._num_actionable_electricity_register
             or self.actionable_items_count(ElectricityRegister))
         return self._num_actionable_electricity_register
+
+    @property
+    def num_actionable_leachete_monthly_register(self):
+        self._num_actionable_leachete_monthly_register = (
+            self._num_actionable_leachete_monthly_register
+            or self.actionable_items_count(LeacheteMonthlyRegister))
+        return self._num_actionable_leachete_monthly_register
 
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\

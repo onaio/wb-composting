@@ -95,9 +95,13 @@
             {% endif %}
           </a>
         </li>
-        <li class="">
-          <a href="#">
+        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'leachete-monthly-register')) %}
+        <li class="{% if request.is_current_path(path) %}active{% endif %}">
+          <a href="{{ path }}">
             <span>Leachate Monthly Register</span>
+            {% if municipality.num_actionable_leachete_monthly_register > 0 %}
+            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_leachete_monthly_register }}</small>
+            {% endif %}
           </a>
         </li>
         <li class="">

@@ -1,0 +1,66 @@
+{% extends 'base_municipality.jinja2' %}
+{% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
+{% from 'macros/action_buttons.jinja2' import action_buttons %}
+{% block title %}Leachete Monthly Register{% endblock %}
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+{% block content %}
+  {% include 'includes/status_filter_form.jinja2' %}
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-body table-responsive no-padding">
+          <form method="post">
+            <table class="table table-hover">
+              <tbody>
+              <tr>
+                <th>Month/Year</th>
+                <th style="width: 12%">Date/Time Before Pumping</th>
+                <th style="width: 10%">Freeboard height before pumping (m)</th>
+                <th style="width: 12%">Date/Time after pumping</th>
+                <th style="width: 10%">Freeboard height after pumping (m)</th>
+                <th>Net height (m)</th>
+                <th style="width: 10%">Volume Accumulated in 24hrs (m<sup>3</sup>)</th>
+                <th>Remarks</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+              {% for leachete in items|sort(true, attribute='date') %}
+                {% set report = leachete.json_data %}
+                {% set status = leachete.status %}
+                <tr>
+                  <td>{{ leachete.date|format_date(request, 'MMMM, yyyy') }}</td>
+                  {% set date_time_b4_pumping = leachete.time_data('before_pumping/dateTime_be4_pumping') %}
+                  <td>{{ date_time_b4_pumping|format_date(request) }} {{ date_time_b4_pumping|format_time(request) }}</td>
+                  <td>{{ report['before_pumping/fbHeight_be4_pumping'] }}</td>
+                  {% set date_time_after_pumping = leachete.time_data('after_pumping/dateTime_after_pumping') %}
+                  <td>{{ date_time_after_pumping|format_date(request) }} {{ date_time_after_pumping|format_time(request) }}</td>
+                  <td>{{ report['after_pumping/fbHeight_after_pumping'] }}</td>
+                  <td>{{ leachete.net_height }}</td>
+                  <td>{{ leachete.volume(municipality) }}</td>
+                  <td>
+                    {% if report.remarks %}
+                    <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
+                      <a href="javascript:;">{{ report.remarks }}</a>
+                    </div>
+                    {% endif %}
+                  </td>
+                  <td><span
+                      class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
+                  </td>
+                  <td>
+                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(leachete.id,)) }}">View</a>
+                    {{ action_buttons(request, leachete) }}
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+{% endblock %}

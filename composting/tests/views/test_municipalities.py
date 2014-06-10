@@ -191,3 +191,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
                       'municipality-electricity-register'))
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_leachete_monthly_register_list(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id,
+                      'leachete-monthly-register'))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)
