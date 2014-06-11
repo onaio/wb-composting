@@ -1,0 +1,46 @@
+{% extends 'base_show_details_modal.jinja2' %}
+{% set municipality = submission.municipality_submission.municipality %}
+{% block rows %}
+  <tr>
+    <td>Date</td>
+    <td>{{ submission.date|format_date(request) }}</td>
+  </tr>
+  <tr>
+    <td>Remarks</td>
+    <td>{{ report.remarks }}</td>
+  </tr>
+  {% if report.bagged_compost == 'no' %}
+  <tr>
+    <td colspan="2"><strong>Bulk Compost Sale</strong></td>
+  </tr>
+  <tr>
+    <td>Compost Length</td>
+    <td>{{ report.compost_length }} m</td>
+  </tr>
+  <tr>
+    <td>Compost Breadth</td>
+    <td>{{ report.compost_width }} m</td>
+  </tr>
+  <tr>
+    <td>Compost Height</td>
+    <td>{{ report.compost_height }} m</td>
+  </tr>
+  <tr>
+    <td>Compost Volume</td>
+    <td>{{ submission.volume }} m<sup>3</sup></td>
+  </tr>
+  <tr>
+    <td>Compost Density</td>
+    <td>{{ submission.density }} t/m<sup>3</sup></td>
+  </tr>
+  <tr>
+    <td>Weight</td>
+    <td>{{ submission.weight }} t</td>
+  </tr>
+  {% else %}
+  <tr>
+    <td>Bagged Compost Sale Weight</td>
+    <td>{{ report.bagged_compost_weight }} t</td>
+  </tr>
+  {% endif %}
+{% endblock %}
