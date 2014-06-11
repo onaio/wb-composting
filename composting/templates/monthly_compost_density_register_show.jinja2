@@ -1,0 +1,28 @@
+{% extends 'base_show_details_modal.jinja2' %}
+{% set municipality = submission.municipality_submission.municipality %}
+{% block rows %}
+  <tr>
+    <td>Month/Year</td>
+    <td>{{ submission.date|format_date(request, 'MMMM, yyyy') }}</td>
+  </tr>
+  <tr>
+    <td>Filled Box Weight</td>
+    <td>{{ report.filled_box_weight }} kg</td>
+  </tr>
+  <tr>
+    <td>Empty Box WeightCompost Breadth</td>
+    <td>{{ report.empty_box_weight }} kg</td>
+  </tr>
+  <tr>
+    <td>Compost Net Weight</td>
+    <td>{{ submission.net_weight }} kg</td>
+  </tr>
+  <tr>
+    <td>Box Volume</td>
+    <td>{{ municipality.boxvolume }} m<sup>3</sup></td>
+  </tr>
+  <tr>
+    <td>Compost Density</td>
+    <td>{{ submission.density(municipality) }} t/m<sup>3</sup></td>
+  </tr>
+{% endblock %}

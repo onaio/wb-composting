@@ -5,10 +5,6 @@
     <td>Date</td>
     <td>{{ submission.date|format_date(request) }}</td>
   </tr>
-  <tr>
-    <td>Remarks</td>
-    <td>{{ report.remarks }}</td>
-  </tr>
   {% if report.bagged_compost == 'no' %}
   <tr>
     <td colspan="2"><strong>Bulk Compost Sale</strong></td>

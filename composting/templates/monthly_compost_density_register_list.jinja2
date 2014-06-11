@@ -14,7 +14,7 @@
             <table class="table table-hover">
               <tbody>
               <tr>
-                <th style="width: 12%">Date</th>
+                <th style="width: 12%">Month/Year</th>
                 <th>Filled Weight (kg)</th>
                 <th>Empty Weight (kg)</th>
                 <th>Net Weight (kg)</th>
@@ -28,7 +28,7 @@
                 {% set report = compost_density.json_data %}
                 {% set status = compost_density.status %}
                 <tr>
-                  <td>{{ compost_density.date|format_date(request) }}</td>
+                  <td>{{ compost_density.date|format_date(request, 'MMMM, yyyy') }}</td>
                   <td>{{ report.filled_box_weight }}</td>
                   <td>{{ report.empty_box_weight }}</td>
                   <td>{{ compost_density.net_weight }}</td>
