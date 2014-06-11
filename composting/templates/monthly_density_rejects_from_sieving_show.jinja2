@@ -1,21 +1,6 @@
 {% extends 'base_show_details_modal.jinja2' %}
 {% set municipality = submission.municipality_submission.municipality %}
-{% block body %}
-<table class="table">
-  <tbody>
-  <tr>
-    <th style="width: 30%">Question</th>
-    <th>Response</th>
-  </tr>
-  <tr>
-    <td>Recorded At</td>
-    <td>{{ submission.end_time|format_date(request) }} {{ submission.end_time|format_time(request) }}</td>
-  </tr>
-  <tr>
-    <td>Submitted At</td>
-    {% set locale_submission_time = submission.locale_submission_time() %}
-    <td>{{ locale_submission_time|format_date(request) }} {{ locale_submission_time|format_time(request) }}</td>
-  </tr>
+{% block rows %}
   <tr>
     <td>Filled Box Weight</td>
     <td>{{ report.filled_box_weight }} kg</td>
@@ -37,23 +22,4 @@
     <td>Density</td>
     <td>{{ submission.density(municipality) }}t</td>
   </tr>
-  <tr>
-    <td>Remarks</td>
-    <td>{{ report.remarks }}</td>
-  </tr>
-  <tr>
-    <td>Location</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Clerks Signature</td>
-    <td>
-      {% if report.clerk_signature %}
-        <img class="image-timestamp"
-             src="{{ image_url_base }}{{ report.clerk_signature }}"/>
-      {% endif %}
-    </td>
-  </tr>
-  </tbody>
-</table>
 {% endblock %}
