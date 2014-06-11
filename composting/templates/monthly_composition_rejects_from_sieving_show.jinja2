@@ -1,0 +1,40 @@
+{% extends 'base_show_details_modal.jinja2' %}
+{% set municipality = submission.municipality_submission.municipality %}
+{% block rows %}
+  <tr>
+    <td>Month/Year</td>
+    <td>{{ submission.date|format_date(request, 'MMMM, yyyy') }}</td>
+  </tr>
+  <tr>
+    <td>Total Mature Compost</td>
+    <td>{{ report.total_mature_compost }} kg ({{ submission.percentage('total_mature_compost')|format_percent(request) }})</td>
+  </tr>
+  <tr>
+    <td>Sieved Compost</td>
+    <td>{{ report.sieved_compost }} kg ({{ submission.percentage('sieved_compost')|format_percent(request) }})</td>
+  </tr>
+  <tr>
+    <td>Wood &amp; Wood Products</td>
+    <td>{{ report.wood_products }} kg ({{ submission.percentage('wood_products')|format_percent(request) }})</td>
+  </tr>
+  <tr>
+    <td>Paper &amp; Pulp</td>
+    <td>{{ report.paper_pulp }} kg ({{ submission.percentage('paper_pulp')|format_percent(request) }})</td>
+  </tr>
+  <tr>
+    <td>Food &amp; Food Waste</td>
+    <td>{{ report.food_waste }} kg ({{ submission.percentage('food_waste')|format_percent(request) }})</td>
+  </tr>
+  <tr>
+    <td>Garden, Yard &amp; Park Waste</td>
+    <td>{{ report.garden_yard_waste }} kg ({{ submission.percentage('garden_yard_waste')|format_percent(request) }})</td>
+  </tr>
+  <tr>
+    <td>Textiles</td>
+    <td>{{ report.textiles }} kg ({{ submission.percentage('textiles')|format_percent(request) }})</td>
+  </tr>
+  <tr>
+    <td>Glass, Plastics, Metal &amp; Inert</td>
+    <td>{{ report.glass_plastics_metal }} kg ({{ submission.percentage('glass_plastics_metal')|format_percent(request) }})</td>
+  </tr>
+{% endblock %}

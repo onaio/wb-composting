@@ -12,6 +12,8 @@ from composting.models.electricity_register import ElectricityRegister
 from composting.models.leachete_monthly_register import LeacheteMonthlyRegister
 from composting.models.compost_sales_register import CompostSalesRegister
 from composting.models.compost_density_register import CompostDensityRegister
+from composting.models.monthly_rejects_composition import (
+    MonthlyRejectsComposition)
 from composting.views.submissions import Submissions
 from composting.tests.test_base import IntegrationTestBase, FunctionalTestBase
 
@@ -172,5 +174,12 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         compost_density = CompostDensityRegister.newest()
         url = self.request.route_path(
             'submissions', traverse=(compost_density.id,))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_monthly_rejects_composition_show(self):
+        rejects_composition = MonthlyRejectsComposition.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(rejects_composition.id,))
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
