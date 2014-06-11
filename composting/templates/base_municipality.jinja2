@@ -104,6 +104,11 @@
             {% endif %}
           </a>
         </li>
+        <li class="">
+          <a href="#">
+            <span>Monthly Composition Density Register</span>
+          </a>
+        </li>
         {% set path = request.route_path('municipalities', traverse=(municipality.id, 'outgoing-compost-sales-register')) %}
         <li class="{% if request.is_current_path(path) %}active{% endif %}">
           <a href="{{ path }}">
