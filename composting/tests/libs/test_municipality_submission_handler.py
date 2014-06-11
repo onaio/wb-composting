@@ -11,6 +11,7 @@ from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
 from composting.models.monthly_rejects_density import MonthlyRejectsDensity
 from composting.models.electricity_register import ElectricityRegister
 from composting.models.leachete_monthly_register import LeacheteMonthlyRegister
+from composting.models.compost_sales_register import CompostSalesRegister
 from composting.tests.test_base import TestBase
 
 
@@ -87,4 +88,11 @@ class TestLeacheteMonthlyRegisterSubmissionHandling(
         TestDailyWasteSubmissionHandling):
     klass = LeacheteMonthlyRegister
     xform_id = LeacheteMonthlyRegister.XFORM_ID
+    date_string = '2014-04-21'
+
+
+class TestCompostSalesRegisterSubmissionHandling(
+        TestDailyWasteSubmissionHandling):
+    klass = CompostSalesRegister
+    xform_id = CompostSalesRegister.XFORM_ID
     date_string = '2014-04-21'

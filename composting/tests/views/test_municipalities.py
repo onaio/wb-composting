@@ -199,3 +199,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
                       'leachete-monthly-register'))
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_compost_sales_register_list(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id,
+                      'outgoing-compost-sales-register'))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)

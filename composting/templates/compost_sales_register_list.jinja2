@@ -1,0 +1,83 @@
+{% extends 'base_municipality.jinja2' %}
+{% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
+{% from 'macros/action_buttons.jinja2' import action_buttons %}
+{% block title %}Daily Outgoing Compost Sales Register{% endblock %}
+{% block description %}List of daily waste register records{% endblock %}
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+{% block content %}
+  {% include 'includes/status_filter_form.jinja2' %}
+
+  <div class="row">
+    <div class="col-xs-12">
+      {% for group in items|groupby('date')|sort(true) %}
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">{{ group.grouper|format_date(request) }}</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+          <form method="post">
+            <table class="table table-hover table-bordered">
+              <tbody>
+              <tr>
+                <th rowspan="2">Vehicle #</th>
+                <th colspan="6" class="text-center">Bulk Compost Sale</th>
+                <th rowspan="2" style="width: 8%">Bagged Compost Sale (t)</th>
+                <th rowspan="2">Invoice #</th>
+                <th rowspan="2">Location of Supply</th>
+                <th rowspan="2">Distance (km)</th>
+                <th rowspan="2">Remarks</th>
+                <th rowspan="2">Status</th>
+                <th rowspan="2">Actions</th>
+              </tr>
+              <tr>
+                <th style="width: 6%">Length (m)</th>
+                <th style="width: 6%">Breadth (m)</th>
+                <th style="width: 6%">Height (m)</th>
+                <th style="width: 6%">Volume (m<sup>3</sup>)</th>
+                <th style="width: 6%">Density (t/m<sup>3</sup>)</th>
+                <th style="width: 6%">Tons</th>
+              </tr>
+              {% for compost_sale in group.list %}
+                {% set report = compost_sale.json_data %}
+                {% set status = compost_sale.status %}
+                {% set tonnage = compost_sale.tonnage %}
+                <tr>
+                  <td>{{ report.vehicle_number }}</td>
+                  <td>{{ report.compost_length|default('-', true) }}</td>
+                  <td>{{ report.compost_width|default('-', true) }}</td>
+                  <td>{{ report.compost_height|default('-', true) }}</td>
+                  <td>{{ compost_sale.volume|default('-', true) }}</td>
+                  <td>{{ compost_sale.density|default('-', true) }}</td>
+                  <td>{{ compost_sale.weight|default('-', true) }}</td>
+                  <td>{{ report.bagged_compost_weight|default('-', true) }}</td>
+                  <td>{{ report.invoice_number }}</td>
+                  <td>{{ report.supply_location }}</td>
+                  <td>{{ report.supply_distance }}</td>
+                  <td>
+                    {% if report.remarks %}
+                    <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
+                      <a href="javascript:;">{{ report.remarks }}</a>
+                    </div>
+                    {% endif %}
+                  </td>
+                  <td><span class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
+                  </td>
+                  <td>
+                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(compost_sale.id,)) }}">View</a>
+                    {{ action_buttons(request, compost_sale) }}
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
