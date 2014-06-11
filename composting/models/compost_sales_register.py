@@ -21,6 +21,7 @@ class CompostSalesRegister(Submission):
     COMPOST_LENGTH_FIELD = 'compost_length'
     COMPOST_WIDTH_FIELD = 'compost_width'
     COMPOST_HEIGHT_FIELD = 'compost_height'
+    BAGGED_COMPOST_WEIGHT_FIELD = 'bagged_compost_weight'
 
     LIST_ACTION_NAME = 'outgoing-compost-sales-register'
 
@@ -60,6 +61,10 @@ class CompostSalesRegister(Submission):
         return self._density
 
     def weight(self, municipality):
+        # if compost was bagged, return weight directly
+        if self.json_data[self.IS_BAGGED_COMPOST_FIELD] == 'yes':
+            return float(self.json_data[self.BAGGED_COMPOST_WEIGHT_FIELD])
+
         volume = self.volume
         density = self.density(municipality)
         if volume is None or density is None:

@@ -43,15 +43,16 @@
                 {% set report = compost_sale.json_data %}
                 {% set status = compost_sale.status %}
                 {% set tonnage = compost_sale.tonnage %}
+                {% set is_bagged = report.bagged_compost =='yes' %}
                 <tr>
                   <td>{{ report.vehicle_number }}</td>
                   <td>{{ report.compost_length|default('-', true) }}</td>
                   <td>{{ report.compost_width|default('-', true) }}</td>
                   <td>{{ report.compost_height|default('-', true) }}</td>
                   <td>{{ compost_sale.volume|default('-', true) }}</td>
-                  <td>{{ compost_sale.density(municipality)|default('-', true) }}</td>
+                  <td>{% if not is_bagged %}{{ compost_sale.density(municipality)|default('-', true) }}{% else %} - {% endif %}</td>
                   {% set weight = compost_sale.weight(municipality) %}
-                  <td>{% if weight %}{{ weight|format_decimal(request, '#,##0.####') }}{% else %} - {% endif %}</td>
+                  <td>{% if not is_bagged and weight is not none %}{{ weight|format_decimal(request, '#,##0.####') }}{% else %} - {% endif %}</td>
                   <td>{{ report.bagged_compost_weight|default('-', true) }}</td>
                   <td>{{ report.invoice_number }}</td>
                   <td>{{ report.supply_location }}</td>

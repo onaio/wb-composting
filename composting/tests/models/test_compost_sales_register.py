@@ -66,17 +66,6 @@ class TestCompostSalesRegister(TestBase):
         weight = compost_sale.weight(municipality)
         self.assertAlmostEqual(weight, 864.0/1000)  # div to convert to tonnes
 
-    def test_weight_calculation_returns_none_if_bagged(self):
-        self.setup_test_data()
-        municipality = Municipality.get(Municipality.name == "Mukono")
-        compost_sale = CompostSalesRegister(
-            date=datetime.datetime(2013, 01, 01),
-            json_data={
-                'bagged_compost': 'yes',
-            })
-        weight = compost_sale.weight(municipality)
-        self.assertIsNone(weight)
-
     def test_weight_calculation_returns_none_if_density_is_none(self):
         self.setup_test_data()
         municipality = Municipality.get(Municipality.name == "Mukono")
@@ -90,3 +79,15 @@ class TestCompostSalesRegister(TestBase):
             })
         weight = compost_sale.weight(municipality)
         self.assertIsNone(weight)
+
+    def test_weight_calculation_returns_bagged_weight_if_bagged(self):
+        self.setup_test_data()
+        municipality = Municipality.get(Municipality.name == "Mukono")
+        compost_sale = CompostSalesRegister(
+            date=datetime.datetime(2013, 01, 01),
+            json_data={
+                'bagged_compost': 'yes',
+                'bagged_compost_weight': '1.5'
+            })
+        weight = compost_sale.weight(municipality)
+        self.assertEqual(weight, 1.5)

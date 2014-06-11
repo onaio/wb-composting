@@ -29,15 +29,10 @@
     <td>Compost Density</td>
     <td>{{ submission.density(municipality) }} kg/m<sup>3</sup></td>
   </tr>
+  {% endif %}
   <tr>
     <td>Weight</td>
     {% set weight = submission.weight(municipality) %}
     <td>{% if weight %}{{ weight|format_decimal(request, '#,##0.####') }} t{% else %} - {% endif %}</td>
   </tr>
-  {% else %}
-  <tr>
-    <td>Bagged Compost Sale Weight</td>
-    <td>{{ report.bagged_compost_weight }} t</td>
-  </tr>
-  {% endif %}
 {% endblock %}
