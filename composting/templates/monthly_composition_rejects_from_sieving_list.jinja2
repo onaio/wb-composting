@@ -1,0 +1,92 @@
+{% extends 'base_municipality.jinja2' %}
+{% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
+{% from 'macros/action_buttons.jinja2' import action_buttons %}
+{% block title %}Monthly Composition of Rejects from Sieving{% endblock %}
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+{% block content %}
+  {% include 'includes/status_filter_form.jinja2' %}
+  <form method="post">
+    <div class="row">
+      <div class="col-xs-12">
+          <div class="box">
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                  <th rowspan="3" style="width: 7%">Month/Year</th>
+                  <th rowspan="3" style="width: 7%">Units</th>
+                  <th rowspan="3" style="width: 7%">Total Mature Compost (kg)</th>
+                  <th rowspan="3" style="width: 7%">Sieved Compost (kg)</th>
+                  <th colspan="6" class="text-center">REJECTS</th>
+                  <th rowspan="3">Remarks</th>
+                  <th rowspan="3">Status</th>
+                  <th rowspan="3">Actions</th>
+                </tr>
+                <tr>
+                  <th rowspan="2"  style="width: 7%">Wood &amp; Wood Products (kg)</th>
+                  <th style="width: 7%">Paper &amp; Pulp (kg)</th>
+                  <th style="width: 7%">Food &amp; Food Waste (kg)</th>
+                  <th style="width: 7%">Garden, Yard &amp; Park Waste (kg)</th>
+                  <th rowspan="2" style="width: 7%">Textiles (kg)</th>
+                  <th rowspan="2" style="width: 7%">Glass, Plastics, Metal &amp; Inert (kg)</th>
+                </tr>
+                <tr>
+                  <th colspan="3" style="width: 7%" class="text-center">Partially Decomposed &amp; Earth Material</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items|sort(true, attribute='date') %}
+                {% set report = item.json_data %}
+                {% set status = item.status %}
+                <tr>
+                  <td rowspan="2">{{ item.date|format_date(request, 'MMMM, yyyy') }}</td>
+                  <td><strong>KGS</strong></td>
+                  <td>{{ report.total_mature_compost }}</td>
+                  <td>{{ report.sieved_compost }}</td>
+                  <td>{{ report.wood_products }}</td>
+                  <td>{{ report.paper_pulp }}</td>
+                  <td>{{ report.food_waste }}</td>
+                  <td>{{ report.garden_yard_waste }}</td>
+                  <td>{{ report.textiles }}</td>
+                  <td>{{ report.glass_plastics_metal }}</td>
+                  <td rowspan="2">
+                    {% if report.remarks %}
+                    <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
+                      <a href="javascript:;">{{ report.remarks }}</a>
+                    </div>
+                    {% endif %}
+                  </td>
+                  <td rowspan="2"><span
+                      class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
+                  </td>
+                  <td rowspan="2">
+                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(item.id,)) }}">View</a>
+                    {{ action_buttons(request, item) }}
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>%</strong></td>
+                  <td>{{ item.percentage('total_mature_compost')|format_percent(request) }}</td>
+                  <td>{{ item.percentage('sieved_compost')|format_percent(request) }}</td>
+                  <td>{{ item.percentage('wood_products')|format_percent(request) }}</td>
+                  <td>{{ item.percentage('paper_pulp')|format_percent(request) }}</td>
+                  <td>{{ item.percentage('food_waste')|format_percent(request) }}</td>
+                  <td>{{ item.percentage('garden_yard_waste')|format_percent(request) }}</td>
+                  <td>{{ item.percentage('textiles')|format_percent(request) }}</td>
+                  <td>{{ item.percentage('glass_plastics_metal')|format_percent(request) }}</td>
+                </tr>
+                <tr>
+                  <td colspan="13"></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      </div>
+    </div>
+  </form>
+{% endblock %}

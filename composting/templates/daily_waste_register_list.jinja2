@@ -19,7 +19,7 @@
         <div class="box-body table-responsive no-padding">
           <form method="post">
             <table class="table table-hover">
-              <tbody>
+              <thead>
               <tr>
                 <th>Time</th>
                 <th>Vehicle #</th>
@@ -32,6 +32,8 @@
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
+              </thead>
+              <tbody>
               {% for daily_waste in group.list %}
                 {% set report = daily_waste.json_data %}
                 {% set status = daily_waste.status %}

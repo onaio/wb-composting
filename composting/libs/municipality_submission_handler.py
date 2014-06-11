@@ -15,6 +15,8 @@ from composting.models.electricity_register import ElectricityRegister
 from composting.models.leachete_monthly_register import LeacheteMonthlyRegister
 from composting.models.compost_sales_register import CompostSalesRegister
 from composting.models.compost_density_register import CompostDensityRegister
+from composting.models.monthly_rejects_composition import (
+    MonthlyRejectsComposition)
 
 
 class MunicipalitySubmissionHandler(SubmissionHandler):
@@ -29,7 +31,8 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
         ElectricityRegister.XFORM_ID: ElectricityRegister,
         LeacheteMonthlyRegister.XFORM_ID: LeacheteMonthlyRegister,
         CompostSalesRegister.XFORM_ID: CompostSalesRegister,
-        CompostDensityRegister.XFORM_ID: CompostDensityRegister
+        CompostDensityRegister.XFORM_ID: CompostDensityRegister,
+        MonthlyRejectsComposition.XFORM_ID: MonthlyRejectsComposition
     }
 
     @staticmethod
@@ -43,7 +46,8 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
             ElectricityRegister.XFORM_ID,
             LeacheteMonthlyRegister.XFORM_ID,
             CompostSalesRegister.XFORM_ID,
-            CompostDensityRegister.XFORM_ID
+            CompostDensityRegister.XFORM_ID,
+            MonthlyRejectsComposition.XFORM_ID
         ]
 
     @staticmethod
