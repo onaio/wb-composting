@@ -36,7 +36,7 @@
                 <th style="width: 6%">Breadth (m)</th>
                 <th style="width: 6%">Height (m)</th>
                 <th style="width: 6%">Volume (m<sup>3</sup>)</th>
-                <th style="width: 6%">Density (t/m<sup>3</sup>)</th>
+                <th style="width: 6%">Density (kg/m<sup>3</sup>)</th>
                 <th style="width: 6%">Tons</th>
               </tr>
               {% for compost_sale in group.list %}
@@ -49,8 +49,9 @@
                   <td>{{ report.compost_width|default('-', true) }}</td>
                   <td>{{ report.compost_height|default('-', true) }}</td>
                   <td>{{ compost_sale.volume|default('-', true) }}</td>
-                  <td>{{ compost_sale.density|default('-', true) }}</td>
-                  <td>{{ compost_sale.weight|default('-', true) }}</td>
+                  <td>{{ compost_sale.density(municipality)|default('-', true) }}</td>
+                  {% set weight = compost_sale.weight(municipality) %}
+                  <td>{% if weight %}{{ weight|format_decimal(request, '#,##0.####') }}{% else %} - {% endif %}</td>
                   <td>{{ report.bagged_compost_weight|default('-', true) }}</td>
                   <td>{{ report.invoice_number }}</td>
                   <td>{{ report.supply_location }}</td>

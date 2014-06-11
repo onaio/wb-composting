@@ -27,11 +27,12 @@
   </tr>
   <tr>
     <td>Compost Density</td>
-    <td>{{ submission.density }} t/m<sup>3</sup></td>
+    <td>{{ submission.density(municipality) }} kg/m<sup>3</sup></td>
   </tr>
   <tr>
     <td>Weight</td>
-    <td>{{ submission.weight }} t</td>
+    {% set weight = submission.weight(municipality) %}
+    <td>{% if weight %}{{ weight|format_decimal(request, '#,##0.####') }} t{% else %} - {% endif %}</td>
   </tr>
   {% else %}
   <tr>
