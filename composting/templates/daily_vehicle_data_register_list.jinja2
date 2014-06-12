@@ -35,8 +35,8 @@
                 <tr>
                   <td>{{ record.date|format_date(request) }}</td>
                   <td>{{ report.vehicle_number }}</td>
-                  <td>{{ report.sod_odometer_reading }}</td>
-                  <td>{{ report.eod_odometer_reading }}</td>
+                  <td>{{ report.sod_odometer_reading|float|format_decimal(request, '#,##0.0') }}</td>
+                  <td>{{ report.eod_odometer_reading|float|format_decimal(request, '#,##0.0') }}</td>
                   <td>{{ report.operation_hours }}</td>
                   <td>{% if fuel_purchased %}{{ report.fuel_purchased_liters }}{% else %} - {% endif %}</td>
                   <td>{% if fuel_purchased %}{{ report.bill_reference }}{% else %} - {% endif %}</td>

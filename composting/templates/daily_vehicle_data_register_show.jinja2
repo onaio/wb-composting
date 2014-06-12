@@ -1,0 +1,53 @@
+{% extends 'base_show_details_modal.jinja2' %}
+{% set municipality = submission.municipality_submission.municipality %}
+{% block rows %}
+  {% set fuel_purchased = report.fuel_purchased == 'yes' %}
+  <tr>
+    <td>Date</td>
+    <td>{{ submission.date|format_date(request) }}</td>
+  </tr>
+  <tr>
+    <td>Vehicle #</td>
+    <td>{{ report.vehicle_number }}</td>
+  </tr>
+  <tr>
+    <td>Odometer Readings at Start of the Day</td>
+    <td>{{ report.sod_odometer_reading|float|format_decimal(request, '#,##0.0') }} kms</td>
+  </tr>
+  <tr>
+    <td>Odometer Readings at End of the Day</td>
+    <td>{{ report.eod_odometer_reading|float|format_decimal(request, '#,##0.0') }} kms</td>
+  </tr>
+  <tr>
+    <td>Hours of Operation</td>
+    <td>{{ report.operation_hours }}</td>
+  </tr>
+  <tr>
+    <td>Hours of Operation</td>
+    <td>{{ report.operation_hours }}</td>
+  </tr>
+  {% if fuel_purchased %}
+  <tr>
+    <td><strong>Fuel Purchase Details</strong></td>
+  </tr>
+  <tr>
+    <td>Amount of Fuel Purchased</td>
+    <td>{{ report.fuel_purchased_liters }} litres</td>
+  </tr>
+  <tr>
+    <td>Bill Reference #</td>
+    <td>{{ report.bill_reference }}</td>
+  </tr>
+  <tr>
+    <td>Bill Photo</td>
+    <td>
+      <img class="image-timestamp"
+             src="{{ image_url_base }}{{ report.bill_photo }}"/>
+    </td>
+  </tr>
+  {% else %}
+  <tr>
+    <td><strong>Fuel Was NOT Purchased</strong></td>
+  </tr>
+  {% endif %}
+{% endblock %}
