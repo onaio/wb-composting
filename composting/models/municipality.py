@@ -25,6 +25,7 @@ from composting.models.compost_sales_register import CompostSalesRegister
 from composting.models.compost_density_register import CompostDensityRegister
 from composting.models.monthly_rejects_composition import (
     MonthlyRejectsComposition)
+from composting.models.daily_vehicle_register import DailyVehicleDataRegister
 
 
 class Municipality(Base):
@@ -50,6 +51,7 @@ class Municipality(Base):
     _num_actionable_compost_sales_register = None
     _num_actionable_compost_density_register = None
     _num_actionable_monthly_rejects_composition = None
+    _num_actionable_daily_vehicle_register = None
 
     factories = {
         DailyWaste.LIST_ACTION_NAME: DailyWaste,
@@ -61,7 +63,8 @@ class Municipality(Base):
         LeacheteMonthlyRegister.LIST_ACTION_NAME: LeacheteMonthlyRegister,
         CompostDensityRegister.LIST_ACTION_NAME: CompostDensityRegister,
         CompostSalesRegister.LIST_ACTION_NAME: CompostSalesRegister,
-        MonthlyRejectsComposition.LIST_ACTION_NAME: MonthlyRejectsComposition
+        MonthlyRejectsComposition.LIST_ACTION_NAME: MonthlyRejectsComposition,
+        DailyVehicleDataRegister.LIST_ACTION_NAME: DailyVehicleDataRegister
     }
 
     def __getitem__(self, item):
@@ -155,6 +158,13 @@ class Municipality(Base):
             self._num_actionable_monthly_rejects_composition
             or self.actionable_items_count(MonthlyRejectsComposition))
         return self._num_actionable_monthly_rejects_composition
+
+    @property
+    def num_actionable_daily_vehicle_register(self):
+        self._num_actionable_daily_vehicle_register = (
+            self._num_actionable_daily_vehicle_register
+            or self.actionable_items_count(DailyVehicleDataRegister))
+        return self._num_actionable_daily_vehicle_register
 
     def get_skips(self, *criterion):
         return DBSession.query(Skip)\

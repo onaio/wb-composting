@@ -223,3 +223,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
                       'monthly-rejects-composition-from-sieving'))
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_daily_vehicle_register_list(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id,
+                      'daily-vehicle-data-register'))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)

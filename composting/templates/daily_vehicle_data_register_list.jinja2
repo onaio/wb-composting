@@ -1,0 +1,68 @@
+{% extends 'base_municipality.jinja2' %}
+{% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
+{% from 'macros/action_buttons.jinja2' import action_buttons %}
+{% block title %}Daily Vehicle Data Register{% endblock %}
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+{% block content %}
+  {% include 'includes/status_filter_form.jinja2' %}
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-body table-responsive no-padding">
+          <form method="post">
+            <table class="table table-hover table-bordered">
+              <tbody>
+              <tr>
+                <th rowspan="2" style="width: 8%">Date</th>
+                <th rowspan="2" style="width: 8%">Vehicle #</th>
+                <th colspan="2" class="text-center">Odometer Readings</th>
+                <th rowspan="2" style="width: 6%">Hours of Operation</th>
+                <th rowspan="2" style="width: 8%">Fuel Purchased (l)</th>
+                <th rowspan="2" style="width: 8%">Bill Reference</th>
+                <th rowspan="2" style="width: 8%">Remarks</th>
+                <th rowspan="2" style="width: 6%">Status</th>
+                <th rowspan="2" style="width: 8%">Actions</th>
+              </tr>
+              <tr>
+                <th  style="width: 8%">At Start</th>
+                <th  style="width: 8%">At End</th>
+              </tr>
+              {% for record in items|sort(true, attribute='date') %}
+                {% set report = record.json_data %}
+                {% set status = record.status %}
+                {% set fuel_purchased = report.fuel_purchased == 'yes' %}
+                <tr>
+                  <td>{{ record.date|format_date(request) }}</td>
+                  <td>{{ report.vehicle_number }}</td>
+                  <td>{{ report.sod_odometer_reading }}</td>
+                  <td>{{ report.eod_odometer_reading }}</td>
+                  <td>{{ report.operation_hours }}</td>
+                  <td>{% if fuel_purchased %}{{ report.fuel_purchased_liters }}{% else %} - {% endif %}</td>
+                  <td>{% if fuel_purchased %}{{ report.bill_reference }}{% else %} - {% endif %}</td>
+                  <td>
+                    {% if report.remarks %}
+                    <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
+                      <a href="javascript:;">{{ report.remarks }}</a>
+                    </div>
+                    {% endif %}
+                  </td>
+                  <td><span
+                      class="label {{ badge_class_from_status(status) }}">{{ status }}</span>
+                  </td>
+                  <td>
+                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(record.id,)) }}">View</a>
+                    {{ action_buttons(request, record) }}
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+  </div>
+{% endblock %}
