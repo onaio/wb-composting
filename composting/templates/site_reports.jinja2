@@ -13,12 +13,13 @@
       <div class="box box-primary">
         <div class="box-body">
           <form class="form-inline" data-role="form" id="filter-form" method="get">
-            <input type="hidden" name="period" />
+            <input type="hidden" name="start" />
+            <input type="hidden" name="end" />
             <div class="form-group">
               <div class=" col-md-3 input-group date month-selector">
                 <!-- date range picker -->
                 <button class="btn btn-default pull-right" id="daterange-btn">
-                  <i class="fa fa-calendar"></i> Date range picker
+                  <i class="fa fa-calendar"></i> {% if label is not none %}{{ label }}{% else %}{{ start|format_date(request) }}{% if start != end %} - {{ end|format_date(request) }}{% endif %}{% endif %}
                   <i class="fa fa-caret-down"></i>
                 </button>
                 <!-- /date range picker -->
@@ -37,11 +38,10 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Date Range</h3>
+          <h3 class="box-title">{{ start|format_date(request) }}{% if start != end %} - {{ end|format_date(request) }}{% endif %}</h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
-
         </div>
         <!-- /.box-body -->
       </div>
@@ -66,11 +66,15 @@
           'This Month': [moment().startOf('month'), moment().endOf('month')],
           'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
         },
-        startDate: moment().subtract('days', 29),
-        endDate: moment()
+        startDate: moment('{{ start|format_date(request, 'yyyy-MM-d') }}'),
+        endDate: moment('{{ end|format_date(request, 'yyyy-MM-d') }}')
       },
       function (start, end) {
-        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        var start_date = start.format('YYYY-MM-DD');
+        var end_date = end.format('YYYY-MM-DD');
+        $('#filter-form :input[name=start]').val(start_date);
+        $('#filter-form :input[name=end]').val(end_date);
+        $('#filter-form').submit();
       }
   );
 {%- endblock -%}

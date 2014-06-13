@@ -201,7 +201,8 @@ class Municipalities(BaseView):
         municipality = self.request.context
 
         # default to start and end of current month
-        default_start, default_end = get_month_start_end(datetime.date.today())
+        today = datetime.date.today()
+        default_start, default_end = get_month_start_end(today)
 
         try:
             start = date_from_string_or_default(
@@ -211,16 +212,40 @@ class Municipalities(BaseView):
 
         try:
             end = date_from_string_or_default(
-                self.request.GET, 'end', default_start)
+                self.request.GET, 'end', default_end)
         except ValueError:
             raise HTTPBadRequest("Couldn't parse end date")
 
+        # lets not go beyond the current date
+        end = min(today, end)
+
         # start must be less than or equal to end
         if start > end:
-            raise HTTPBadRequest("Start date cannot be greater than end date")
+            start = end
+
+        # not necessary but pretty format the date range when we can
+        if start == default_start and end == default_end:
+            label = "This Month"
+        elif (today - start).days == 1:
+            label = "Yesterday"
+        elif end == today:
+            time_labels = [
+                # if start and end are the same, the label is today
+                (lambda dt: dt.days == 0, "Today"),
+                # if timedelta between start and end is less than 31 days,
+                # last # days
+                (lambda dt:  1 < dt.days < 30, "Last {} days")
+            ]
+            time_delta = today - start
+            labels = [l for f, l in time_labels if f(time_delta)]
+            label = labels[0].format(time_delta.days + 1)\
+                if len(labels) == 1 else None
+        else:
+            label = None
 
         return {
             'municipality': municipality,
             'start': start,
-            'end': end
+            'end': end,
+            'label': label
         }

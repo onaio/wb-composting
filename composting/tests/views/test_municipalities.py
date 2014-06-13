@@ -131,18 +131,20 @@ class TestMunicipalities(IntegrationTestBase):
         self.request.context = self.municipality
         result = self.views.site_reports()
         start, end = get_month_start_end(datetime.date.today())
+        # if end is beyond today's date, end with be set to today
+        today = datetime.date.today()
+        end = today if end > today else end
         self.assertEqual(start, result['start'])
         self.assertEqual(end, result['end'])
 
-    def test_site_reports_sets_uses_specified_start_end(
-            self):
+    def test_site_reports_sets_uses_specified_start_end(self):
         self.request.context = self.municipality
         self.request.GET = MultiDict([
-            ('start', '2014-06-14'),
-            ('end',   '2014-06-15'),
+            ('start', '2014-06-12'),
+            ('end',   '2014-06-13'),
         ])
         result = self.views.site_reports()
-        start, end = datetime.date(2014, 6, 14), datetime.date(2014, 6, 15)
+        start, end = datetime.date(2014, 6, 12), datetime.date(2014, 6, 13)
         self.assertEqual(start, result['start'])
         self.assertEqual(end, result['end'])
 
@@ -162,13 +164,14 @@ class TestMunicipalities(IntegrationTestBase):
         ])
         self.assertRaises(HTTPBadRequest, self.views.site_reports)
 
-    def test_site_reports_raises_bad_request_if_start_gt_end(self):
+    def test_site_reports_sets_start_to_end_if_start_gt_end(self):
         self.request.context = self.municipality
         self.request.GET = MultiDict([
             ('start', '2014-06-16'),
-            ('end',   '2014-06-15'),
+            ('end',   '2014-06-13'),
         ])
-        self.assertRaises(HTTPBadRequest, self.views.site_reports)
+        result = self.views.site_reports()
+        self.assertEqual(result['start'], datetime.date(2014, 6, 13))
 
 
 class TestMunicipalitiesFunctional(FunctionalTestBase):
