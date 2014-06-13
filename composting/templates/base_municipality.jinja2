@@ -32,6 +32,11 @@
             <span>Overview</span>
           </a>
         </li>
+        <li class="">
+          <a href="{{ request.route_url('municipalities', traverse=(municipality.id, 'reports')) }}">
+            <span>Site Reports</span>
+          </a>
+        </li>
         {% set path = request.route_path('municipalities', traverse=(municipality.id, 'daily-waste')) %}
         <li class="{% if request.is_current_path(path) %}active{% endif %}">
           <a href="{{ path }}">

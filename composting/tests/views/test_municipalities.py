@@ -1,13 +1,14 @@
+import datetime
 from webob.multidict import MultiDict
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from pyramid import testing
 
-from composting.tests.test_base import (
-    IntegrationTestBase, FunctionalTestBase)
-
+from composting.libs.utils import get_month_start_end
 from composting.models import Municipality, Skip
 from composting.views.municipalities import Municipalities
 from composting.forms import SkipForm
+from composting.tests.test_base import (
+    IntegrationTestBase, FunctionalTestBase)
 
 
 class TestMunicipalities(IntegrationTestBase):
@@ -125,6 +126,50 @@ class TestMunicipalities(IntegrationTestBase):
         municipality = Municipality.get(Skip.id == municipality_id)
         self.assertEqual(municipality.name, "Mukono Municipality")
 
+    def test_site_reports_sets_start_end_to_current_month_if_not_specified(
+            self):
+        self.request.context = self.municipality
+        result = self.views.site_reports()
+        start, end = get_month_start_end(datetime.date.today())
+        self.assertEqual(start, result['start'])
+        self.assertEqual(end, result['end'])
+
+    def test_site_reports_sets_uses_specified_start_end(
+            self):
+        self.request.context = self.municipality
+        self.request.GET = MultiDict([
+            ('start', '2014-06-14'),
+            ('end',   '2014-06-15'),
+        ])
+        result = self.views.site_reports()
+        start, end = datetime.date(2014, 6, 14), datetime.date(2014, 6, 15)
+        self.assertEqual(start, result['start'])
+        self.assertEqual(end, result['end'])
+
+    def test_site_reports_raises_bad_request_if_bad_start(self):
+        self.request.context = self.municipality
+        self.request.GET = MultiDict([
+            ('start', '2014-06'),
+            ('end',   '2014-06-15'),
+        ])
+        self.assertRaises(HTTPBadRequest, self.views.site_reports)
+
+    def test_site_reports_raises_bad_request_if_bad_end(self):
+        self.request.context = self.municipality
+        self.request.GET = MultiDict([
+            ('start', '2014-06-15'),
+            ('end',   '2014-06'),
+        ])
+        self.assertRaises(HTTPBadRequest, self.views.site_reports)
+
+    def test_site_reports_raises_bad_request_if_start_gt_end(self):
+        self.request.context = self.municipality
+        self.request.GET = MultiDict([
+            ('start', '2014-06-16'),
+            ('end',   '2014-06-15'),
+        ])
+        self.assertRaises(HTTPBadRequest, self.views.site_reports)
+
 
 class TestMunicipalitiesFunctional(FunctionalTestBase):
     def setUp(self):
@@ -229,5 +274,12 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities',
             traverse=(self.municipality.id,
                       'daily-vehicle-data-register'))
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_site_reports(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'reports'))
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)

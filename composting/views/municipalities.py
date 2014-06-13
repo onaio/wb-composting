@@ -187,3 +187,40 @@ class Municipalities(BaseView):
             'municipality': municipality,
             'form': form
         }
+
+    @view_config(name='reports', renderer='site_reports.jinja2')
+    def site_reports(self):
+        def date_from_string_or_default(
+                data, key, default, date_format='%Y-%m-%d'):
+            try:
+                date_string = data[key]
+            except KeyError:
+                return default
+            return datetime.datetime.strptime(date_string, date_format).date()
+
+        municipality = self.request.context
+
+        # default to start and end of current month
+        default_start, default_end = get_month_start_end(datetime.date.today())
+
+        try:
+            start = date_from_string_or_default(
+                self.request.GET, 'start', default_start)
+        except ValueError:
+            raise HTTPBadRequest("Couldn't parse start date")
+
+        try:
+            end = date_from_string_or_default(
+                self.request.GET, 'end', default_start)
+        except ValueError:
+            raise HTTPBadRequest("Couldn't parse end date")
+
+        # start must be less than or equal to end
+        if start > end:
+            raise HTTPBadRequest("Start date cannot be greater than end date")
+
+        return {
+            'municipality': municipality,
+            'start': start,
+            'end': end
+        }
