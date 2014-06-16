@@ -42,6 +42,41 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
+         <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+              <th style="width: 10%"></th>
+              <th style="width: 20%">Parameter</th>
+              <th style="width: 10%">Unit</th>
+              <th style="width: 10%">Value</th>
+              <th colspan="2">Comments</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td rowspan="4">MWS</td>
+              <td>Volume of MSW processed</td>
+              <td>m<sup>3</sup></td>
+              <td>{{ municipality.volume_of_msw_processed(start, end)|format_decimal(request) }}</td>
+              <td style="width: 25%">Consistency with normal monthly supply</td>
+              <td><!-- comments --></td>
+            </tr>
+            <tr>
+              <td>Quantity of MSW processed</td>
+              <td>Tonnes</td>
+              <td><!-- value --></td>
+              <td class="in-active"></td>
+              <td class="in-active"></td>
+            </tr>
+            <tr>
+              <td>Number of trucks having delivered MSW</td>
+              <td class="in-active"></td>
+              <td><!-- value --></td>
+              <td>Consistency with normal activity</td>
+              <td><!-- comments --></td>
+            </tr>
+            </tbody>
+          </table>
         </div>
         <!-- /.box-body -->
       </div>

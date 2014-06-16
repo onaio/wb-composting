@@ -190,6 +190,9 @@ class Municipality(Base):
         self.leachete_tank_length = leachete_tank_length
         self.leachete_tank_width = leachete_tank_width
 
+    def volume_of_msw_processed(self, start_date, end_date):
+        return 0
+
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
         return request.route_url(

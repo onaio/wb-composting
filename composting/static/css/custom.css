@@ -4,3 +4,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.table td.in-active {
+    background-color: #f5f5f5;
+}

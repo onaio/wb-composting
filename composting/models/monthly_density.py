@@ -73,7 +73,7 @@ class MonthlyDensity(Submission):
         if len(monthly_densities) < 1:
             raise ValueError("You must provide at least 1 monthly density")
         return (reduce(
-            lambda accum, x: x.density + accum, monthly_densities, 0)
+            lambda a, x: x.density + a, monthly_densities, 0)
             / len(monthly_densities))
 
     @classmethod
