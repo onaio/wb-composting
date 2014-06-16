@@ -16,13 +16,14 @@ from dashboard.libs.submission_handler import (
     submission_handler_manager)
 
 from composting import main, hook_submission_handlers
-from composting import constants
+from composting.security import pwd_context
 from composting.libs.municipality_submission_handler import (
     MunicipalitySubmissionHandler)
 from composting.models.base import (
     DBSession,
     Base)
 from composting.models import Municipality, Submission, Skip
+from composting.models.user import User
 
 
 SETTINGS_FILE = 'test.ini'
@@ -82,6 +83,8 @@ class TestBase(unittest.TestCase):
         testing.tearDown()
 
     def setup_test_data(self):
+        admin = User(username='admin', password='admin')
+        manager = User(username='manager', password='manager')
         municipality = Municipality(name="Mukono")
         skip_a = Skip(
             municipality=municipality, skip_type='A', small_length=20,
@@ -89,7 +92,7 @@ class TestBase(unittest.TestCase):
         submission_handler_manager.clear()
         hook_submission_handlers()
         with transaction.manager:
-            DBSession.add_all([municipality, skip_a])
+            DBSession.add_all([admin, manager, municipality, skip_a])
             for status, raw_json in self.submissions:
                 json_payload = json.loads(raw_json)
                 handler_class = submission_handler_manager.find_handler(
@@ -105,6 +108,7 @@ class TestBase(unittest.TestCase):
 class IntegrationTestBase(TestBase):
     def setUp(self):
         super(IntegrationTestBase, self).setUp()
+        pwd_context.load_path('test.ini')
         self.config.include('composting')
         self.request = testing.DummyRequest()
 
