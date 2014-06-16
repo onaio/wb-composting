@@ -10,6 +10,7 @@ from dashboard.views.base import BaseView
 from composting.libs.utils import get_month_start_end
 from composting.views.helpers import selections_from_request
 from composting.models import Municipality, DailyWaste, Submission, Skip
+from composting.models.municipality import MunicipalityFactory
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.municipality_submission import MunicipalitySubmission
@@ -18,8 +19,16 @@ from composting.forms import SkipForm, SiteProfileForm
 
 @view_defaults(route_name='municipalities', context=Municipality)
 class Municipalities(BaseView):
+    @view_config(context=MunicipalityFactory,
+                 renderer='municipalities_list.jinja2')
+    def list(self):
+        municipalities = Municipality.all()
+        return {
+            'municipalities': municipalities
+        }
+
     @view_config(name='', renderer='overview.jinja2')
-    def index(self):
+    def show(self):
         municipality = self.request.context
         return {
             'municipality': municipality

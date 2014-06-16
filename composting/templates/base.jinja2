@@ -43,7 +43,7 @@
                 <div class="navbar-right">
                     <ul class="nav navbar-nav">
                         <!-- Tasks: style can be found in dropdown.less -->
-                        {% block extra_navs %}{% endblock %}
+                        {% block top_nav %}{% endblock %}
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -71,7 +71,13 @@
             </nav>
         </header>
         <div class="wrapper row-offcanvas row-offcanvas-left">
-            {% block wrapper %}{% endblock wrapper %}
+
+                  {% block side_nav %}{% endblock %}
+
+              <!-- Right side column. Contains the navbar and content of the page -->
+              <aside class="right-side">
+                {% block main_column %}{% endblock %}
+              </aside><!-- /.right-side -->
         </div><!-- ./wrapper -->
 
 

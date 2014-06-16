@@ -19,9 +19,13 @@ class TestMunicipalities(IntegrationTestBase):
         self.views = Municipalities(self.request)
         self.municipality = Municipality.get(Municipality.name == "Mukono")
 
-    def test_index(self):
+    def test_list(self):
+        result = self.views.list()
+        self.assertIn('municipalities', result)
+
+    def test_show(self):
         self.request.context = self.municipality
-        result = self.views.index()
+        result = self.views.show()
         self.assertEqual(result['municipality'], self.municipality)
 
     def test_monthly_density_list_returns_items_for_requested_period(self):
@@ -180,7 +184,19 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         self.setup_test_data()
         self.municipality = Municipality.get(Municipality.name == "Mukono")
 
-    def test_index(self):
+    def test_list_if_user_with_list_privileges(self):
+        url = self.request.route_path(
+            'municipalities', traverse=())
+        result = self.testapp.get(url)
+        self.assertEqual(result.status_code, 200)
+
+    def test_list_if_user_without_list_privileges(self):
+        url = self.request.route_path(
+            'municipalities', traverse=())
+        result = self.testapp.get(url)
+        self.assertEqual(result.status_code, 200)
+
+    def test_show(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id,))
         result = self.testapp.get(url)
