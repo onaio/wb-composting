@@ -72,6 +72,7 @@ class TestBase(unittest.TestCase):
         registry = Registry()
         registry.settings = settings
         self.config = testing.setUp(registry=registry)
+        pwd_context.load_path('test.ini')
         # setup db
         DBSession.configure(bind=engine)
         Base.metadata.bind = engine
@@ -108,7 +109,6 @@ class TestBase(unittest.TestCase):
 class IntegrationTestBase(TestBase):
     def setUp(self):
         super(IntegrationTestBase, self).setUp()
-        pwd_context.load_path('test.ini')
         self.config.include('composting')
         self.request = testing.DummyRequest()
 
