@@ -1,13 +1,10 @@
+from sqlalchemy.orm.exc import NoResultFound
 from passlib.context import CryptContext
 
 
 pwd_context = CryptContext()
 
-USERS = {
-    1: 'admin',
-    2: 'bob',
-    3: 'billy'
-}
+
 GROUPS = {
     1: ['g:su', 'u:1'],
     2: ['g:supervisors', 'u:2'],
@@ -15,8 +12,11 @@ GROUPS = {
 }
 
 
-def group_finder(userid, request):
-    if userid in USERS:
-        return GROUPS.get(userid, [])
-    else:
+def group_finder(user_id, request):
+    from composting.models.user import User
+    try:
+        user = User.get(User.id == user_id)
+    except NoResultFound:
         return None
+    else:
+        return ['u:{}'.format(user.id)]
