@@ -114,9 +114,9 @@ class IntegrationTestBase(TestBase):
 
 
 class FunctionalTestBase(IntegrationTestBase):
-    def _login_user(self, userid):
+    def _login_user(self, user_id):
         policy = self.testapp.app.registry.queryUtility(IAuthenticationPolicy)
-        headers = policy.remember(self.request, userid)
+        headers = policy.remember(self.request, user_id)
         cookie_parts = dict(headers)['Set-Cookie'].split('; ')
         cookie = filter(
             lambda i: i.split('=')[0] == 'auth_tkt', cookie_parts)[0]

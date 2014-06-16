@@ -2,7 +2,7 @@ from webob.multidict import MultiDict
 from pyramid.httpexceptions import HTTPFound
 from pyramid import testing
 
-from composting.views.auth import sign_in
+from composting.views.auth import sign_in, sign_out
 from composting.tests.test_base import IntegrationTestBase, FunctionalTestBase
 
 
@@ -22,3 +22,13 @@ class TestAuthViewsFunctional(FunctionalTestBase):
         url = self.request.route_path('auth', action='sign-in')
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_sign_out(self):
+        self._login_user(1)
+        url = self.request.route_path('auth', action='sign-out')
+        response = self.testapp.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.location,
+            self.request.route_url('auth', action='sign-in'))
+        response.follow()

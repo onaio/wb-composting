@@ -1,4 +1,5 @@
-from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
+from pyramid.security import (
+    NO_PERMISSION_REQUIRED, remember, forget)
 from pyramid.httpexceptions import HTTPForbidden, HTTPFound
 from pyramid.response import Response
 from pyramid.view import (
@@ -54,3 +55,10 @@ def sign_in(request):
                 # we're still here set the error message
                 request.session.flash(u"Invalid username or password", 'error')
     return {}
+
+@view_config(route_name='auth', match_param='action=sign-out')
+def sign_out(request):
+    headers = forget(request)
+    return HTTPFound(
+        request.route_url(
+            'auth', action='sign-in'), headers=headers)
