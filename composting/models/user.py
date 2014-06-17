@@ -2,7 +2,8 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
-    Boolean
+    Boolean,
+    ForeignKey
 )
 from sqlalchemy.orm import relationship, synonym
 
@@ -16,6 +17,10 @@ class User(Base):
     username = Column(String(100), nullable=False, unique=True)
     pwd = Column(String(255), nullable=True)
     active = Column(Boolean, nullable=False, server_default='false')
+    group = Column(String, nullable=False, server_default='sm')
+    municipality_id = Column(
+        Integer, ForeignKey('municipalities.id'), nullable=True)
+    municipality = relationship('Municipality')
 
     @property
     def password(self):
