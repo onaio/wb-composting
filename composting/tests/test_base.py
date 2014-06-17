@@ -84,9 +84,11 @@ class TestBase(unittest.TestCase):
         testing.tearDown()
 
     def setup_test_data(self):
-        admin = User(username='admin', password='admin', active=True)
-        manager = User(username='manager', password='manager', active=True)
+        admin = User(id=1, username='admin', password='admin', active=True,
+                     group='nema')
         municipality = Municipality(name="Mukono")
+        manager = User(id=2, username='manager', password='manager',
+                       active=True, group='sm', municipality=municipality)
         skip_a = Skip(
             municipality=municipality, skip_type='A', small_length=20,
             large_length=30, small_breadth=10, large_breadth=16)

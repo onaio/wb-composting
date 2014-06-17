@@ -1,3 +1,4 @@
+from pyramid.security import Allow, ALL_PERMISSIONS, Authenticated
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import (
     Column,
@@ -7,6 +8,7 @@ from sqlalchemy import (
     or_
 )
 
+from composting import security
 from composting.models.base import DBSession, Base, ModelFactory
 from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
@@ -66,6 +68,18 @@ class Municipality(Base):
         MonthlyRejectsComposition.LIST_ACTION_NAME: MonthlyRejectsComposition,
         DailyVehicleDataRegister.LIST_ACTION_NAME: DailyVehicleDataRegister
     }
+
+    def __acl__(self):
+        # users who have the p:municipality-edit permission and the
+        # p:municipality-show:<id>
+        # in their effective principal's def can edit and show
+        return [
+            (Allow, security.MUNICIPALITY_SHOW_ANY.key, 'show'),
+            (Allow, security.MUNICIPALITY_SHOW_OWN.key.format(
+                self.id), 'show'),
+            (Allow, security.MUNICIPALITY_EDIT_ANY.key, 'edit'),
+            (Allow, security.MUNICIPALITY_EDIT_OWN.key.format(self.id), 'edit')
+        ]
 
     def __getitem__(self, item):
         try:
@@ -200,6 +214,10 @@ class Municipality(Base):
 
 
 class MunicipalityFactory(ModelFactory):
+    __acl__ = [
+        (Allow, security.MUNICIPALITY_LIST.key, 'list')
+    ]
+
     def __getitem__(self, item):
         try:
             record = Municipality.get(Municipality.id == item)

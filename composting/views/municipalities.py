@@ -1,12 +1,12 @@
 import datetime
 
-from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden
 from pyramid.view import view_defaults, view_config
 from deform import Form, ValidationFailure, Button
 from sqlalchemy import and_
-
 from dashboard.views.base import BaseView
 
+from composting import security
 from composting.libs.utils import get_month_start_end
 from composting.views.helpers import selections_from_request
 from composting.models import Municipality, DailyWaste, Submission, Skip
@@ -22,6 +22,18 @@ class Municipalities(BaseView):
     @view_config(context=MunicipalityFactory,
                  renderer='municipalities_list.jinja2')
     def list(self):
+        # if doest have lis permissions, determine the user's municipality and
+        # redirect, if we cant determine, their municipality, throw a 403
+        if not self.request.has_permission('list', self.request.context):
+            municipality = self.request.user.municipality
+            if municipality:
+                return HTTPFound(
+                    self.request.route_url(
+                        'municipalities', traverse=(municipality.id,)))
+            else:
+                return HTTPForbidden(
+                    "You don't have permissions to access this page and you do"
+                    " not belong to any Municipality")
         municipalities = Municipality.all()
         return {
             'municipalities': municipalities

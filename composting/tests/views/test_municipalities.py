@@ -1,9 +1,10 @@
 import datetime
 from webob.multidict import MultiDict
-from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden
 from pyramid import testing
 
 from composting.libs.utils import get_month_start_end
+from composting.models.user import User
 from composting.models import Municipality, Skip
 from composting.views.municipalities import Municipalities
 from composting.forms import SkipForm
@@ -19,9 +20,22 @@ class TestMunicipalities(IntegrationTestBase):
         self.views = Municipalities(self.request)
         self.municipality = Municipality.get(Municipality.name == "Mukono")
 
-    def test_list(self):
+    def test_list_when_has_list_permission(self):
+        self.config.testing_securitypolicy(userid='admin', permissive=True)
         result = self.views.list()
         self.assertIn('municipalities', result)
+
+    def test_list_when_has_not_list_permission_and_has_municipality(self):
+        self.request.user = User(municipality=Municipality(id=1))
+        self.config.testing_securitypolicy(userid='manager', permissive=False)
+        result = self.views.list()
+        self.assertIsInstance(result, HTTPFound)
+
+    def test_list_when_has_not_list_permission_and_has_no_municipality(self):
+        self.request.user = User()
+        self.config.testing_securitypolicy(userid='manager', permissive=False)
+        result = self.views.list()
+        self.assertIsInstance(result, HTTPForbidden)
 
     def test_show(self):
         self.request.context = self.municipality
@@ -184,68 +198,71 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         self.setup_test_data()
         self.municipality = Municipality.get(Municipality.name == "Mukono")
 
-    def test_list_if_user_with_list_privileges(self):
+    def test_list(self):
         url = self.request.route_path(
             'municipalities', traverse=())
-        result = self.testapp.get(url)
-        self.assertEqual(result.status_code, 200)
-
-    def test_list_if_user_without_list_privileges(self):
-        url = self.request.route_path(
-            'municipalities', traverse=())
-        result = self.testapp.get(url)
-        self.assertEqual(result.status_code, 200)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)
 
     def test_show(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id,))
-        result = self.testapp.get(url)
+        headers = self._login_user(1)
+        result = self.testapp.get(url, headers=headers)
         self.assertEqual(result.status_code, 200)
 
     def test_monthly_density_list(self):
         url = self.request.route_path(
             'municipalities',
             traverse=(self.municipality.id, 'monthly-waste-density'))
-        result = self.testapp.get(url)
-        self.assertEqual(result.status_code, 200)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)
 
     def test_skips(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'skips'))
-        result = self.testapp.get(url)
-        self.assertEqual(result.status_code, 200)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)
 
     def test_create_skip_get(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'create-skip'))
-        result = self.testapp.get(url)
-        self.assertEqual(result.status_code, 200)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)
 
     def test_site_profile_get(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'profile'))
-        result = self.testapp.get(url)
-        self.assertEqual(result.status_code, 200)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)
 
     def test_list_monthly_waste_composition(self):
         url = self.request.route_path(
             'municipalities',
             traverse=(self.municipality.id, 'monthly-solid-waste-composition'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_daily_rejects_landfilled_list(self):
         url = self.request.route_path(
             'municipalities',
             traverse=(self.municipality.id, 'daily-rejects-landfilled'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_rejects_density_from_sieving_list(self):
         url = self.request.route_path(
             'municipalities',
             traverse=(self.municipality.id, 'density-of-rejects-from-sieving'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_municipality_electricity_register_list(self):
@@ -253,7 +270,8 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities',
             traverse=(self.municipality.id,
                       'municipality-electricity-register'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_leachete_monthly_register_list(self):
@@ -261,7 +279,8 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities',
             traverse=(self.municipality.id,
                       'leachete-monthly-register'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_compost_sales_register_list(self):
@@ -269,7 +288,8 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities',
             traverse=(self.municipality.id,
                       'outgoing-compost-sales-register'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_compost_density_register_list(self):
@@ -277,7 +297,8 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities',
             traverse=(self.municipality.id,
                       'monthly-compost-density-register'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_monthly_rejects_composition_list(self):
@@ -285,7 +306,8 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities',
             traverse=(self.municipality.id,
                       'monthly-rejects-composition-from-sieving'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_daily_vehicle_register_list(self):
@@ -293,12 +315,14 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
             'municipalities',
             traverse=(self.municipality.id,
                       'daily-vehicle-data-register'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_site_reports(self):
         url = self.request.route_path(
             'municipalities',
             traverse=(self.municipality.id, 'reports'))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
