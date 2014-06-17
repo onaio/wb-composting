@@ -21,6 +21,7 @@ def upgrade():
     sa.Column('username', sa.String(length=100), nullable=False),
     sa.Column('pwd', sa.String(length=255), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=False, server_default='false'),
+    sa.UniqueConstraint('username'),
     sa.PrimaryKeyConstraint('id')
     )
     ### end Alembic commands ###

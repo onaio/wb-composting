@@ -18,7 +18,7 @@ def forbidden(context, request):
     if not request.user:
         return Response(
             render_view(
-                context, request, 'login', secure=False), status=401)
+                context, request, 'sign_in', secure=False), status=401)
     # otherwise, raise HTTPForbidden
     return HTTPForbidden()
 
@@ -27,7 +27,7 @@ def forbidden(context, request):
              match_param='action=sign-in',
              permission=NO_PERMISSION_REQUIRED,
              renderer='sign_in.jinja2')
-@view_config(name='login',
+@view_config(name='sign_in',
              context=HTTPForbidden,
              permission=NO_PERMISSION_REQUIRED,
              renderer='sign_in.jinja2')
@@ -55,6 +55,7 @@ def sign_in(request):
                 # we're still here set the error message
                 request.session.flash(u"Invalid username or password", 'error')
     return {}
+
 
 @view_config(route_name='auth', match_param='action=sign-out')
 def sign_out(request):

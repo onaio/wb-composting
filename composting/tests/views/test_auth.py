@@ -24,9 +24,10 @@ class TestAuthViewsFunctional(FunctionalTestBase):
         self.assertEqual(response.status_code, 200)
 
     def test_sign_out(self):
-        self._login_user(1)
+        self.setup_test_data()
+        headers = self._login_user(1)
         url = self.request.route_path('auth', action='sign-out')
-        response = self.testapp.get(url)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.location,
