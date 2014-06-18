@@ -22,7 +22,7 @@ class Municipalities(BaseView):
     @view_config(context=MunicipalityFactory,
                  renderer='municipalities_list.jinja2')
     def list(self):
-        # if doest have lis permissions, determine the user's municipality and
+        # if doest have list permissions, determine the user's municipality and
         # redirect, if we cant determine, their municipality, throw a 403
         if not self.request.has_permission('list', self.request.context):
             municipality = self.request.user.municipality
@@ -39,7 +39,7 @@ class Municipalities(BaseView):
             'municipalities': municipalities
         }
 
-    @view_config(name='', renderer='overview.jinja2')
+    @view_config(name='', renderer='overview.jinja2', permission='show')
     def show(self):
         municipality = self.request.context
         return {
@@ -69,7 +69,8 @@ class Municipalities(BaseView):
 
     @view_config(
         name='monthly-waste-density',
-        renderer='monthly_waste_density_list.jinja2')
+        renderer='monthly_waste_density_list.jinja2',
+        permission='show')
     def monthly_density_list(self):
         municipality = self.request.context
 
@@ -102,7 +103,8 @@ class Municipalities(BaseView):
 
     @view_config(
         name='monthly-solid-waste-composition',
-        renderer='monthly_waste_composition_list.jinja2')
+        renderer='monthly_waste_composition_list.jinja2',
+        permission='show')
     def monthly_waste_composition_list(self):
         municipality = self.request.context
 

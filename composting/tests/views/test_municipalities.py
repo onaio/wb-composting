@@ -212,6 +212,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         result = self.testapp.get(url, headers=headers)
         self.assertEqual(result.status_code, 200)
 
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
+
     def test_monthly_density_list(self):
         url = self.request.route_path(
             'municipalities',
@@ -219,6 +224,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
 
     def test_skips(self):
         url = self.request.route_path(
@@ -241,13 +251,18 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
-    def test_list_monthly_waste_composition(self):
+    def test_monthly_waste_composition_list(self):
         url = self.request.route_path(
             'municipalities',
             traverse=(self.municipality.id, 'monthly-solid-waste-composition'))
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
 
     def test_daily_rejects_landfilled_list(self):
         url = self.request.route_path(
@@ -257,6 +272,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
+
     def test_rejects_density_from_sieving_list(self):
         url = self.request.route_path(
             'municipalities',
@@ -264,6 +284,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
 
     def test_municipality_electricity_register_list(self):
         url = self.request.route_path(
@@ -273,6 +298,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
 
     def test_leachete_monthly_register_list(self):
         url = self.request.route_path(
@@ -292,6 +322,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
+
     def test_compost_density_register_list(self):
         url = self.request.route_path(
             'municipalities',
@@ -300,6 +335,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
 
     def test_monthly_rejects_composition_list(self):
         url = self.request.route_path(
@@ -310,6 +350,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
+
     def test_daily_vehicle_register_list(self):
         url = self.request.route_path(
             'municipalities',
@@ -318,6 +363,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
 
     def test_site_reports(self):
         url = self.request.route_path(

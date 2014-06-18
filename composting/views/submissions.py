@@ -26,15 +26,21 @@ def override_submission_renderer(event):
 @view_defaults(route_name='submissions', context=ISubmission)
 class Submissions(BaseView):
     @view_config(
-        route_name='municipalities', name='', renderer='string')
+        route_name='municipalities',
+        name='',
+        renderer='string',
+        permission='show')
     def list(self):
         model = self.request.context
         municipality = model.__parent__
+
+        # get the renderer from the model
         self.request.override_renderer = model.renderer()
 
         # statuses
-        all_statuses = [Submission.PENDING, Submission.APPROVED,
-                    Submission.REJECTED]
+        all_statuses = [Submission.PENDING,
+                        Submission.APPROVED,
+                        Submission.REJECTED]
         status_selections = selections_from_request(
             self.request,
             all_statuses,
