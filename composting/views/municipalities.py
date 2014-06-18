@@ -183,7 +183,8 @@ class Municipalities(BaseView):
             'form': form
         }
 
-    @view_config(name='profile', renderer='edit_profile.jinja2')
+    @view_config(name='profile', renderer='edit_profile.jinja2',
+                 permission='edit')
     def edit_profile(self):
         municipality = self.request.context
         form = Form(

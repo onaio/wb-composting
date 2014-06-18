@@ -237,7 +237,7 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
-    def test_skips_when_site_manager_user(self):
+    def test_skips_when_current_site_user(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'skips'))
         # test that users with p:municipality-show:<id> permission are allowed
@@ -245,7 +245,7 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         result = self.testapp.get(url, headers=headers)
         self.assertEqual(result.status_code, 200)
 
-    def test_skips_when_other_site_manager_user(self):
+    def test_skips_when_other_site_user(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'skips'))
         # test that users with p:municipality-show:<id> for a different
@@ -260,25 +260,38 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
-    def test_create_skip_get_when_site_manager_user(self):
+    def test_create_skip_get_when_current_site_user(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'create-skip'))
         headers = self._login_user(2)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
-    def test_create_skip_get_when_other_site_manager_user(self):
+    def test_create_skip_get_when_other_site_user(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'create-skip'))
         headers = self._login_user(3)
         self.testapp.get(url, headers=headers, status=403)
 
-    def test_site_profile_get(self):
+    def test_site_profile_get_when_admin_user(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'profile'))
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+    def test_site_profile_get_when_current_site_user(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'profile'))
+        headers = self._login_user(2)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+    def test_site_profile_get_when_other_site_user(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'profile'))
+        headers = self._login_user(3)
+        self.testapp.get(url, headers=headers, status=403)
 
     def test_monthly_waste_composition_list(self):
         url = self.request.route_path(
