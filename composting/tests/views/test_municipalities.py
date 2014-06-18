@@ -141,7 +141,7 @@ class TestMunicipalities(IntegrationTestBase):
             result.location,
             self.request.route_url(
                 'municipalities', traverse=(municipality_id, 'profile')))
-        municipality = Municipality.get(Skip.id == municipality_id)
+        municipality = Municipality.get(Municipality.id == municipality_id)
         self.assertEqual(municipality.name, "Mukono Municipality")
 
     def test_site_reports_sets_start_end_to_current_month_if_not_specified(
