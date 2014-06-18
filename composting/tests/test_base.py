@@ -87,15 +87,20 @@ class TestBase(unittest.TestCase):
         admin = User(id=1, username='admin', password='admin', active=True,
                      group='nema')
         municipality = Municipality(name="Mukono")
+        other_municipality = Municipality(name="Jinja")
         manager = User(id=2, username='manager', password='manager',
                        active=True, group='sm', municipality=municipality)
+        other_manager = User(
+            id=3, username='jinja_manager', password='manager', active=True,
+            group='sm', municipality=other_municipality)
         skip_a = Skip(
             municipality=municipality, skip_type='A', small_length=20,
             large_length=30, small_breadth=10, large_breadth=16)
         submission_handler_manager.clear()
         hook_submission_handlers()
         with transaction.manager:
-            DBSession.add_all([admin, manager, municipality, skip_a])
+            DBSession.add_all(
+                [admin, manager, municipality, skip_a, other_manager])
             for status, raw_json in self.submissions:
                 json_payload = json.loads(raw_json)
                 handler_class = submission_handler_manager.find_handler(

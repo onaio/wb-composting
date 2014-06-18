@@ -230,19 +230,48 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         result = self.testapp.get(url, headers=headers)
         self.assertEqual(result.status_code, 200)
 
-    def test_skips(self):
+    def test_skips_when_admin_user(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'skips'))
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
-    def test_create_skip_get(self):
+    def test_skips_when_site_manager_user(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'skips'))
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
+
+    def test_skips_when_other_site_manager_user(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'skips'))
+        # test that users with p:municipality-show:<id> for a different
+        # municipality are denied
+        headers = self._login_user(3)
+        self.testapp.get(url, headers=headers, status=403)
+
+    def test_create_skip_get_when_admin_user(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'create-skip'))
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+    def test_create_skip_get_when_site_manager_user(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'create-skip'))
+        headers = self._login_user(2)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_skip_get_when_other_site_manager_user(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'create-skip'))
+        headers = self._login_user(3)
+        self.testapp.get(url, headers=headers, status=403)
 
     def test_site_profile_get(self):
         url = self.request.route_path(

@@ -145,7 +145,7 @@ class Municipalities(BaseView):
         }
 
 
-    @view_config(name='skips', renderer='skips.jinja2')
+    @view_config(name='skips', renderer='skips.jinja2', permission='show')
     def skips(self):
         municipality = self.request.context
         skips = municipality.get_skips()
@@ -154,7 +154,8 @@ class Municipalities(BaseView):
             'municipality': municipality,
         }
 
-    @view_config(name='create-skip', renderer='create_skip.jinja2')
+    @view_config(name='create-skip', renderer='create_skip.jinja2',
+                 permission='edit')
     def create_skip(self):
         municipality = self.request.context
         form = Form(
