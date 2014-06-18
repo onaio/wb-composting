@@ -1,0 +1,35 @@
+{% extends 'base.jinja2' %}
+{% block title %}Municipalities{% endblock %}
+{% block main_column %}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+     {{ self.title() }}
+  </h1>
+  <ol class="breadcrumb">
+    {% block breadcrumbs %}{% endblock %}
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  {% include 'includes/alerts.jinja2' %}
+  <div class="row">
+    {% for municipality in municipalities|sort(attribute='name') %}
+    <div class="col-md-4">
+      <!-- Primary tile -->
+      <div class="box box-solid bg-aqua">
+        <div class="box-header">
+          <h3 class="box-title"><a href="{{ request.route_url('municipalities', traverse=(municipality.id,)) }}">{{ municipality.name }}</a></h3>
+        </div>
+        <div class="box-body">
+          <p>Site Manager: Mr James Smith
+          <br/>Data Entry Clerk: Mr Jane Doe</p>
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<!-- /.content -->
+{% endblock %}

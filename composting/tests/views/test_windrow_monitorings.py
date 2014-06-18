@@ -12,9 +12,25 @@ class TestWindrowMonitoringsFunctional(FunctionalTestBase):
         self.setup_test_data()
         self.municipality = Municipality.get(Municipality.name == "Mukono")
 
-    def test_show(self):
+    def test_show_for_admin_user(self):
         url = self.request.route_path(
             'municipalities',
             traverse=(self.municipality.id, 'windrows', '@@', 'W5-5/12/2014',))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+    def test_show_for_current_site_user(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'windrows', '@@', 'W5-5/12/2014',))
+        headers = self._login_user(2)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+    def test_show_for_other_site_user(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'windrows', '@@', 'W5-5/12/2014',))
+        headers = self._login_user(3)
+        self.testapp.get(url, headers=headers, status=403)

@@ -16,13 +16,14 @@ from dashboard.libs.submission_handler import (
     submission_handler_manager)
 
 from composting import main, hook_submission_handlers
-from composting import constants
+from composting.security import pwd_context
 from composting.libs.municipality_submission_handler import (
     MunicipalitySubmissionHandler)
 from composting.models.base import (
     DBSession,
     Base)
 from composting.models import Municipality, Submission, Skip
+from composting.models.user import User
 
 
 SETTINGS_FILE = 'test.ini'
@@ -71,6 +72,7 @@ class TestBase(unittest.TestCase):
         registry = Registry()
         registry.settings = settings
         self.config = testing.setUp(registry=registry)
+        pwd_context.load_path('test.ini')
         # setup db
         DBSession.configure(bind=engine)
         Base.metadata.bind = engine
@@ -82,14 +84,23 @@ class TestBase(unittest.TestCase):
         testing.tearDown()
 
     def setup_test_data(self):
+        admin = User(id=1, username='admin', password='admin', active=True,
+                     group='nema')
         municipality = Municipality(name="Mukono")
+        other_municipality = Municipality(name="Jinja")
+        manager = User(id=2, username='manager', password='manager',
+                       active=True, group='sm', municipality=municipality)
+        other_manager = User(
+            id=3, username='jinja_manager', password='manager', active=True,
+            group='sm', municipality=other_municipality)
         skip_a = Skip(
             municipality=municipality, skip_type='A', small_length=20,
             large_length=30, small_breadth=10, large_breadth=16)
         submission_handler_manager.clear()
         hook_submission_handlers()
         with transaction.manager:
-            DBSession.add_all([municipality, skip_a])
+            DBSession.add_all(
+                [admin, manager, municipality, skip_a, other_manager])
             for status, raw_json in self.submissions:
                 json_payload = json.loads(raw_json)
                 handler_class = submission_handler_manager.find_handler(
@@ -110,9 +121,9 @@ class IntegrationTestBase(TestBase):
 
 
 class FunctionalTestBase(IntegrationTestBase):
-    def _login_user(self, userid):
+    def _login_user(self, user_id):
         policy = self.testapp.app.registry.queryUtility(IAuthenticationPolicy)
-        headers = policy.remember(self.request, userid)
+        headers = policy.remember(self.request, user_id)
         cookie_parts = dict(headers)['Set-Cookie'].split('; ')
         cookie = filter(
             lambda i: i.split('=')[0] == 'auth_tkt', cookie_parts)[0]

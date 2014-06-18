@@ -56,19 +56,39 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         self.setup_test_data()
         self.municipality = Municipality.get(Municipality.name == "Mukono")
 
-    def test_daily_waste_list(self):
+    def test_submission_list_when_admin_user(self):
         url = self.request.route_path(
             'municipalities',
             traverse=(self.municipality.id, 'daily-waste'),
             _query={Submission.PENDING: '1', Submission.REJECTED: '1'})
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
+        # also tests daily-waste response status
         self.assertEqual(response.status_code, 200)
+
+    def test_submission_list_when_current_site_user(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'daily-waste'),
+            _query={Submission.PENDING: '1', Submission.REJECTED: '1'})
+        headers = self._login_user(2)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+    def test_submission_list_when_other_site_user(self):
+        url = self.request.route_path(
+            'municipalities',
+            traverse=(self.municipality.id, 'daily-waste'),
+            _query={Submission.PENDING: '1', Submission.REJECTED: '1'})
+        headers = self._login_user(3)
+        self.testapp.get(url, headers=headers, status=403)
 
     def test_daily_waste_show(self):
         monthly_density = DailyWaste.newest()
         url = self.request.route_path(
             'submissions', traverse=(monthly_density.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def assertActionMatches(self, location, action):
@@ -82,43 +102,48 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         daily_waste = DailyWaste.newest()
         url = self.request.route_path(
             'submissions', traverse=(daily_waste.id, 'approve'))
-        response = self.testapp.post(url)
+        headers = self._login_user(1)
+        response = self.testapp.post(url, headers=headers)
         self.assertEqual(response.status_code, 302)
         self.assertActionMatches(response.location, 'daily-waste')
-        response.follow()
+        response.follow(headers=headers)
 
     def test_reject_daily_waste(self):
         daily_waste = DailyWaste.newest()
         url = self.request.route_path(
             'submissions', traverse=(daily_waste.id, 'reject'))
-        response = self.testapp.post(url)
+        headers = self._login_user(1)
+        response = self.testapp.post(url, headers=headers)
         self.assertEqual(response.status_code, 302)
         self.assertActionMatches(response.location, 'daily-waste')
-        response.follow()
+        response.follow(headers=headers)
 
     def test_unapprove_daily_waste(self):
         daily_waste = DailyWaste.newest()
         url = self.request.route_path(
             'submissions', traverse=(daily_waste.id, 'unapprove'))
-        response = self.testapp.post(url)
+        headers = self._login_user(1)
+        response = self.testapp.post(url, headers=headers)
         self.assertEqual(response.status_code, 302)
         self.assertActionMatches(response.location, 'daily-waste')
-        response.follow()
+        response.follow(headers=headers)
 
     def test_approve_monthly_waste_density(self):
         monthly_density = MonthlyDensity.newest()
         url = self.request.route_path(
             'submissions', traverse=(monthly_density.id, 'approve'))
-        response = self.testapp.post(url)
+        headers = self._login_user(1)
+        response = self.testapp.post(url, headers=headers)
         self.assertEqual(response.status_code, 302)
         self.assertActionMatches(response.location, 'monthly-waste-density')
-        response.follow()
+        response.follow(headers=headers)
 
     def test_monthly_waste_composition_show(self):
         monthly_waste = MonthlyWasteComposition.newest()
         url = self.request.route_path(
             'submissions', traverse=(monthly_waste.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_windrow_monitoring_list(self):
@@ -126,68 +151,78 @@ class TestSubmissionsFunctional(FunctionalTestBase):
             'municipalities',
             traverse=(self.municipality.id, 'windrow-monitoring'),
             _query={Submission.PENDING: '1', Submission.REJECTED: '1'})
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_windrow_monitoring_show(self):
         monthly_waste = WindrowMonitoring.newest()
         url = self.request.route_path(
             'submissions', traverse=(monthly_waste.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_daily_rejects_landfilled_show(self):
         daily_reject = DailyRejectsLandfilled.newest()
         url = self.request.route_path(
             'submissions', traverse=(daily_reject.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_density_of_rejects_from_sieving_show(self):
         rejects_density = MonthlyRejectsDensity.newest()
         url = self.request.route_path(
             'submissions', traverse=(rejects_density.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_municipality_electricity_register_show(self):
         electricity_register = ElectricityRegister.newest()
         url = self.request.route_path(
             'submissions', traverse=(electricity_register.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_leachete_monthly_register_show(self):
         electricity_register = LeacheteMonthlyRegister.newest()
         url = self.request.route_path(
             'submissions', traverse=(electricity_register.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_compost_sales_register_show(self):
         compost_sale = CompostSalesRegister.newest()
         url = self.request.route_path(
             'submissions', traverse=(compost_sale.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_compost_density_register_show(self):
         compost_density = CompostDensityRegister.newest()
         url = self.request.route_path(
             'submissions', traverse=(compost_density.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_monthly_rejects_composition_show(self):
         rejects_composition = MonthlyRejectsComposition.newest()
         url = self.request.route_path(
             'submissions', traverse=(rejects_composition.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_daily_vehicle_data_register_show(self):
         rejects_composition = DailyVehicleDataRegister.newest()
         url = self.request.route_path(
             'submissions', traverse=(rejects_composition.id,))
-        response = self.testapp.get(url)
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)

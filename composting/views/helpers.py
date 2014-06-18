@@ -1,5 +1,9 @@
+from pyramid.security import authenticated_userid
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
+from sqlalchemy.orm.exc import NoResultFound
+
+from composting.models.user import User
 
 
 def selections_from_request(request, selection_list, comparator, defaults):
@@ -47,3 +51,12 @@ def is_current_path(request, path):
     on URLs
     """
     return request.environ['PATH_INFO'] == path
+
+
+# @todo: move to dashboard
+def get_request_user(request):
+    user_id = authenticated_userid(request)
+    try:
+        return User.get(User.id == user_id)
+    except NoResultFound:
+        return None

@@ -6,7 +6,7 @@ from composting.models.windrow_monitoring import (
     WindrowMonitoring, WindrowMonitoringFactory)
 
 
-@view_defaults(route_name='municipalities')
+@view_defaults(route_name='municipalities', permission='show')
 class WindrowMonitorings(BaseView):
     @view_config(
         name='',

@@ -1,5 +1,5 @@
 {% extends 'base.jinja2' %}
-{% block extra_navs %}
+{% block top_nav %}
   {% set path = request.route_path('municipalities', traverse=(municipality.id, 'skips')) %}
   <li class="tasks-menu">
     <a href="{{ path }}" class="{% if request.is_current_path(path) %}active{% endif %}">
@@ -15,8 +15,8 @@
     </a>
   </li>
 {% endblock %}
-{% block wrapper %}
-  <!-- Left side column. contains the logo and sidebar -->
+{% block side_nav %}
+<!-- Left side column. contains the logo and sidebar -->
   <aside class="left-side sidebar-offcanvas">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -149,9 +149,8 @@
     </section>
     <!-- /.sidebar -->
   </aside>
-
-  <!-- Right side column. Contains the navbar and content of the page -->
-  <aside class="right-side">
+{% endblock %}
+{% block main_column %}
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
@@ -172,7 +171,7 @@
       {% block content %}{% endblock content %}
     </section>
     <!-- /.content -->
-  </aside><!-- /.right-side -->
+
   <!-- Modal -->
   <div class="modal fade" id="details-modal" tabindex="-1" data-role="dialog" data-backdrop="static"
        aria-labelledby="myModalLabel" aria-hidden="true">
@@ -198,4 +197,4 @@
         </div>
     </div>
   </div>
-{% endblock wrapper %}
+{% endblock %}

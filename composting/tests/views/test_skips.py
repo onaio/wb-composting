@@ -47,5 +47,6 @@ class TestSkipsFunctional(FunctionalTestBase):
     def test_edit_skip_get(self):
         skip = Skip.newest()
         url = self.request.route_path('skips', traverse=(skip.id, 'edit'))
-        response = self.testapp.get(url)
+        headers = self._login_user(2)
+        response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)

@@ -21,7 +21,7 @@ from composting.models.municipality import MunicipalityFactory
 from composting.models.submission import SubmissionFactory
 from composting.models.skip import SkipFactory
 from composting.models.windrow_monitoring import WindrowMonitoringFactory
-from composting.views.helpers import is_current_path
+from composting.views.helpers import is_current_path, get_request_user
 
 
 def main(global_config, **settings):
@@ -41,6 +41,7 @@ def main(global_config, **settings):
                                     hashalg='sha512'))
 
     config.set_authorization_policy(ACLAuthorizationPolicy())
+    config.set_default_permission('authenticated')
 
     logging.config.fileConfig(
         global_config['__file__'], disable_existing_loggers=False)
@@ -66,6 +67,7 @@ def includeme(config):
     hook_submission_handlers()
 
     # request methods
+    config.add_request_method(get_request_user, 'user', reify=True)
     config.add_request_method(is_current_path)
 
     # pyramid_jinja2 is already included by Dashboard
@@ -73,6 +75,7 @@ def includeme(config):
 
     config.add_static_view('static', 'composting:static', cache_max_age=3600)
     config.add_route('default', '/')
+    config.add_route('auth', '/auth/{action}')
     config.add_route('municipalities', '/municipalities/*traverse',
                      factory=MunicipalityFactory)
     config.add_route('submissions', '/submissions/*traverse',

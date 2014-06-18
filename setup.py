@@ -57,5 +57,6 @@ setup(name='WBComposting',
       main = composting:main
       [console_scripts]
       initialize_WBComposting_db = composting.scripts.initializedb:main
+      createuser = composting.scripts.createuser:main
       """,
       )
