@@ -211,7 +211,9 @@ class Municipalities(BaseView):
             'form': form
         }
 
-    @view_config(name='reports', renderer='site_reports.jinja2')
+    @view_config(name='reports',
+                 renderer='site_reports.jinja2',
+                 permission='show')
     def site_reports(self):
         def date_from_string_or_default(
                 data, key, default, date_format='%Y-%m-%d'):

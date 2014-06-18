@@ -376,3 +376,8 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+        # test that users with p:municipality-show:<id> permission are allowed
+        headers = self._login_user(2)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
