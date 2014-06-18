@@ -56,6 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.inventory_path = "ansible/development"
     ansible.playbook = "ansible/composting.yml"
+    ansible.limit = 'all' # Disable default limit (required with Vagrant 1.5+)
   #  ansible.sudo = true
   #  ansible.raw_arguments = ['-l composting']
   #  ansible.verbose = 'vvv'
