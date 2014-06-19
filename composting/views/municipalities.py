@@ -1,16 +1,15 @@
 import datetime
 
-from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from pyramid.view import view_defaults, view_config
 from deform import Form, ValidationFailure, Button
 from sqlalchemy import and_
+
 from dashboard.views.base import BaseView
 
-from composting import security
 from composting.libs.utils import get_month_start_end
 from composting.views.helpers import selections_from_request
 from composting.models import Municipality, DailyWaste, Submission, Skip
-from composting.models.municipality import MunicipalityFactory
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.municipality_submission import MunicipalitySubmission
@@ -19,28 +18,9 @@ from composting.forms import SkipForm, SiteProfileForm
 
 @view_defaults(route_name='municipalities', context=Municipality)
 class Municipalities(BaseView):
-    @view_config(context=MunicipalityFactory,
-                 renderer='municipalities_list.jinja2')
-    def list(self):
-        # if doest have list permissions, determine the user's municipality and
-        # redirect, if we cant determine, their municipality, throw a 403
-        if not self.request.has_permission('list', self.request.context):
-            municipality = self.request.user.municipality
-            if municipality:
-                return HTTPFound(
-                    self.request.route_url(
-                        'municipalities', traverse=(municipality.id,)))
-            else:
-                return HTTPForbidden(
-                    "You don't have permissions to access this page and you do"
-                    " not belong to any Municipality")
-        municipalities = Municipality.all()
-        return {
-            'municipalities': municipalities
-        }
 
-    @view_config(name='', renderer='overview.jinja2', permission='show')
-    def show(self):
+    @view_config(name='', renderer='overview.jinja2')
+    def index(self):
         municipality = self.request.context
         return {
             'municipality': municipality
@@ -69,8 +49,7 @@ class Municipalities(BaseView):
 
     @view_config(
         name='monthly-waste-density',
-        renderer='monthly_waste_density_list.jinja2',
-        permission='show')
+        renderer='monthly_waste_density_list.jinja2')
     def monthly_density_list(self):
         municipality = self.request.context
 
@@ -103,8 +82,7 @@ class Municipalities(BaseView):
 
     @view_config(
         name='monthly-solid-waste-composition',
-        renderer='monthly_waste_composition_list.jinja2',
-        permission='show')
+        renderer='monthly_waste_composition_list.jinja2')
     def monthly_waste_composition_list(self):
         municipality = self.request.context
 
@@ -144,8 +122,7 @@ class Municipalities(BaseView):
             'percentages': percentages
         }
 
-
-    @view_config(name='skips', renderer='skips.jinja2', permission='show')
+    @view_config(name='skips', renderer='skips.jinja2')
     def skips(self):
         municipality = self.request.context
         skips = municipality.get_skips()
@@ -154,8 +131,7 @@ class Municipalities(BaseView):
             'municipality': municipality,
         }
 
-    @view_config(name='create-skip', renderer='create_skip.jinja2',
-                 permission='edit')
+    @view_config(name='create-skip', renderer='create_skip.jinja2')
     def create_skip(self):
         municipality = self.request.context
         form = Form(
@@ -183,8 +159,7 @@ class Municipalities(BaseView):
             'form': form
         }
 
-    @view_config(name='profile', renderer='edit_profile.jinja2',
-                 permission='edit')
+    @view_config(name='profile', renderer='edit_profile.jinja2')
     def edit_profile(self):
         municipality = self.request.context
         form = Form(
@@ -213,9 +188,39 @@ class Municipalities(BaseView):
             'form': form
         }
 
-    @view_config(name='reports',
-                 renderer='site_reports.jinja2',
-                 permission='show')
+    @view_config(name='create', renderer='edit_profile.jinja2')
+    def create_profile(self):
+        municipality = Municipality(box_volume=0.0,
+                                    wheelbarrow_volume=0.0,
+                                    leachete_tank_length=0.0,
+                                    leachete_tank_width=0.0)
+        form = Form(
+            SiteProfileForm().bind(
+                request=self.request),
+            buttons=('Save', Button(name='cancel', type='button')),
+            appstruct=municipality.appstruct)
+        if self.request.method == "POST":
+            data = self.request.POST.items()
+            try:
+                values = form.validate(data)
+            except ValidationFailure:
+                self.request.session.flash(
+                    u"Please fix the errors indicated below.", "error")
+            else:
+                municipality.update(**values)
+                municipality.save()
+                self.request.session.flash(
+                    u"Your changes have been saved.", "success")
+                return HTTPFound(
+                    self.request.route_url(
+                        'municipalities',
+                        traverse=(municipality.id, 'profile')))
+        return {
+            'municipality': municipality,
+            'form': form
+        }
+
+    @view_config(name='reports', renderer='site_reports.jinja2')
     def site_reports(self):
         def date_from_string_or_default(
                 data, key, default, date_format='%Y-%m-%d'):
@@ -261,7 +266,7 @@ class Municipalities(BaseView):
                 (lambda dt: dt.days == 0, "Today"),
                 # if timedelta between start and end is less than 31 days,
                 # last # days
-                (lambda dt:  1 < dt.days < 30, "Last {} days")
+                (lambda dt: 1 < dt.days < 30, "Last {} days")
             ]
             time_delta = today - start
             labels = [l for f, l in time_labels if f(time_delta)]
