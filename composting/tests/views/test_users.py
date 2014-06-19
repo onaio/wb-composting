@@ -17,6 +17,26 @@ class TestUsers(IntegrationTestBase):
         self.views = Users(self.request)
         self.municipality = Municipality.get(Municipality.name == "Mukono")
 
+    def test_toggle_doenst_allow_deactivating_own_account(self):
+        user = User.get(User.username == 'admin')
+        self.request.user = user
+        self.request.context = user
+        response = self.views.toggle_status()
+        self.assertIsInstance(response, HTTPFound)
+        self.assertEqual(
+            response.location, self.request.route_url('users', traverse=()))
+
+    def test_toggle_toggles_user_status(self):
+        self.request.user = User.get(User.username == 'admin')
+        self.request.context = User.get(User.username == 'manager')
+        self.assertEqual(User.get(User.username == 'manager').active, True)
+        response = self.views.toggle_status()
+        user = User.get(User.username == 'manager')
+        self.assertEqual(user.active, False)
+        self.assertIsInstance(response, HTTPFound)
+        self.assertEqual(
+            response.location, self.request.route_url('users', traverse=()))
+
 
 class TestUsersFunctional(FunctionalTestBase):
     def setUp(self):

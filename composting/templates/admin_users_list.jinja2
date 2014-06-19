@@ -36,7 +36,7 @@
                   <td>{{ user.group|friendly_group_name(request) }}</td>
                   <td>{{ (user.municipality and user.municipality.name) or '-' }}</td>
                   <td>
-                    <button type="submit" class="btn btn-{% if user.active %}success{% else %}warning{% endif %} btn-xs" formaction="{{ request.route_url('users', traverse=(user.id, 'toggle-status')) }}" data-toggle="tooltip" data-placement="left" title="Click to {{ (user.active and "Deactivate") or "Activate" }}">{{ (user.active and "Active") or "Inactive" }}</button>
+                    <button type="submit" {% if request.user == user %}disabled="disabled"{% endif %} class="btn btn-{% if user.active %}success{% else %}warning{% endif %} btn-xs" formaction="{{ request.route_url('users', traverse=(user.id, 'toggle-status')) }}" data-toggle="tooltip" data-placement="left" title="Click to {{ (user.active and "Deactivate") or "Activate" }}">{{ (user.active and "Active") or "Inactive" }}</button>
                   </td>
                   <td>
                     <a class="btn btn-default btn-xs" href="{{ request.route_path('users', traverse=(user.id, 'edit')) }}">Edit</a>
