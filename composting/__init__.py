@@ -8,7 +8,7 @@ from sqlalchemy import engine_from_config
 
 from dashboard.libs.submission_handler import submission_handler_manager
 
-from composting.security import group_finder, pwd_context
+from composting.security import group_finder, pwd_context, friendly_group_name
 from composting.libs.municipality_submission_handler import (
     MunicipalitySubmissionHandler)
 from composting.libs.windrow_monitoring_handler import (
@@ -18,6 +18,7 @@ from composting.models.base import (
     Base,
 )
 from composting.models.municipality import MunicipalityFactory
+from composting.models.user import UserFactory
 from composting.models.submission import SubmissionFactory
 from composting.models.skip import SkipFactory
 from composting.models.windrow_monitoring import WindrowMonitoringFactory
@@ -63,6 +64,9 @@ def includeme(config):
     config.include('dashboard')
     config.commit()
 
+    config.get_jinja2_environment().filters['friendly_group_name'] =\
+        friendly_group_name
+
     # hook up our submission handlers
     hook_submission_handlers()
 
@@ -82,4 +86,6 @@ def includeme(config):
                      factory=SubmissionFactory)
     config.add_route('skips', '/skips/*traverse',
                      factory=SkipFactory)
+    config.add_route('users', '/users/*traverse',
+                     factory=UserFactory)
     config.scan()

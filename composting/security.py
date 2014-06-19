@@ -36,6 +36,8 @@ WB = KeyValue('wb', "World Bank")
 ENV_OFFICER = KeyValue('env_officer', "Environmental Officer")
 SITE_MANAGER = KeyValue('sm', "Site Manager")
 
+GROUPS = [NEMA, WB, ENV_OFFICER, SITE_MANAGER]
+
 
 GROUP_PERMISSIONS = {
     WB.key:           [MUNICIPALITY_LIST.key, MUNICIPALITY_SHOW_ANY.key,
@@ -71,3 +73,8 @@ def group_finder(user_id, request):
         effective_principals.extend(permissions)
 
         return effective_principals
+
+
+def friendly_group_name(group_key, request):
+    group = filter(lambda g: g.key == group_key, GROUPS)[0]
+    return group.label

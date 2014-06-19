@@ -6,8 +6,9 @@ from sqlalchemy import (
     ForeignKey
 )
 from sqlalchemy.orm import relationship, synonym
+from sqlalchemy.orm.exc import NoResultFound
 
-from composting.models.base import DBSession, Base, ModelFactory
+from composting.models.base import Base, ModelFactory
 from composting.security import pwd_context
 
 
@@ -39,3 +40,16 @@ class User(Base):
         if len(password) > 255:
             return False
         return pwd_context.verify(password, self.pwd)
+
+
+class UserFactory(ModelFactory):
+    def __getitem__(self, item):
+        try:
+            record = User.get(User.id == item)
+        except NoResultFound:
+            raise KeyError
+        else:
+            record.__name__ = item
+            record.__parent__ = self
+            record.request = self.request
+            return record

@@ -20,7 +20,7 @@ from composting.forms import SkipForm, SiteProfileForm
 @view_defaults(route_name='municipalities', context=Municipality)
 class Municipalities(BaseView):
     @view_config(context=MunicipalityFactory,
-                 renderer='municipalities_list.jinja2')
+                 renderer='admin_municipalities_list.jinja2')
     def list(self):
         # if doest have list permissions, determine the user's municipality and
         # redirect, if we cant determine, their municipality, throw a 403
