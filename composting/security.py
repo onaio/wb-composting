@@ -30,6 +30,10 @@ MUNICIPALITY_EDIT_OWN = KeyValue(
     'p:municipality-edit:{}',
     "Only Edit Their Own Municipality's Details")
 
+# User Permissions
+USER_MANAGE_ALL = KeyValue(
+    'p:user-manage', "Manage All Users")
+
 
 NEMA = KeyValue('nema', "NEMA")
 WB = KeyValue('wb', "World Bank")
@@ -43,7 +47,7 @@ GROUP_PERMISSIONS = {
     WB.key:           [MUNICIPALITY_LIST.key, MUNICIPALITY_SHOW_ANY.key,
                        MUNICIPALITY_EDIT_ANY.key],
     NEMA.key:         [MUNICIPALITY_LIST.key, MUNICIPALITY_SHOW_ANY.key,
-                       MUNICIPALITY_EDIT_ANY.key],
+                       MUNICIPALITY_EDIT_ANY.key, USER_MANAGE_ALL.key],
     ENV_OFFICER.key:  [MUNICIPALITY_SHOW_OWN.key, MUNICIPALITY_EDIT_OWN.key],
     SITE_MANAGER.key: [MUNICIPALITY_SHOW_OWN.key, MUNICIPALITY_EDIT_OWN.key]
 }

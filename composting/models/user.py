@@ -1,3 +1,4 @@
+from pyramid.security import Allow, ALL_PERMISSIONS, Authenticated
 from sqlalchemy import (
     Column,
     Integer,
@@ -8,6 +9,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship, synonym
 from sqlalchemy.orm.exc import NoResultFound
 
+from composting.security import USER_MANAGE_ALL
 from composting.models.base import Base, ModelFactory
 from composting.security import pwd_context
 
@@ -43,6 +45,10 @@ class User(Base):
 
 
 class UserFactory(ModelFactory):
+    __acl__ = [
+        (Allow, USER_MANAGE_ALL.key, 'manage')
+    ]
+
     def __getitem__(self, item):
         try:
             record = User.get(User.id == item)

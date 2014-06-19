@@ -5,7 +5,7 @@ from dashboard.views.base import BaseView
 from composting.models.user import User, UserFactory
 
 
-@view_defaults(route_name='users', context=User)
+@view_defaults(route_name='users', context=User, permission='manage')
 class Users(BaseView):
     @view_config(context=UserFactory, renderer='admin_users_list.jinja2')
     def list(self):

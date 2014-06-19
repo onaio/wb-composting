@@ -1,4 +1,4 @@
-from pyramid.security import Allow, ALL_PERMISSIONS, Authenticated
+from pyramid.security import Allow
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import (
     Column,

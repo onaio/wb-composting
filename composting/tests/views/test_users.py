@@ -44,8 +44,13 @@ class TestUsersFunctional(FunctionalTestBase):
         self.setup_test_data()
         self.municipality = Municipality.get(Municipality.name == "Mukono")
 
-    def test_list(self):
+    def test_list_when_nema_user(self):
         url = self.request.route_path('users', traverse=())
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+    def test_list_when_municipality_user(self):
+        url = self.request.route_path('users', traverse=())
+        headers = self._login_user(2)
+        self.testapp.get(url, headers=headers, status=403)
