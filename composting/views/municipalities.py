@@ -39,7 +39,8 @@ class Municipalities(BaseView):
             'municipalities': municipalities
         }
 
-    @view_config(name='', renderer='overview.jinja2', permission='show')
+    @view_config(name='', renderer='municipality_overview.jinja2',
+                 permission='show')
     def show(self):
         municipality = self.request.context
         return {
