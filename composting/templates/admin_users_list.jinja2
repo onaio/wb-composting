@@ -1,0 +1,57 @@
+{% extends 'base_admin.jinja2' %}
+{% block title %}Users{% endblock %}
+{% block main_column %}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+     {{ self.title() }}
+  </h1>
+  <ol class="breadcrumb">
+    {% block breadcrumbs %}{% endblock %}
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  {% include 'includes/alerts.jinja2' %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box">
+        <div class="box-body table-responsive no-padding">
+          <form method="post">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Municipality</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for user in users|sort(true, attribute='id') %}
+              {% set is_current_user = request.user == user %}
+                <tr>
+                  <td>{{ user.username }}</td>
+                  <td>{{ user.group|friendly_group_name(request) }}</td>
+                  <td>{{ (user.municipality and user.municipality.name) or '-' }}</td>
+                  <td>
+                    <button type="submit" {% if is_current_user %}disabled="disabled"{% endif %} class="btn btn-{% if user.active %}success{% else %}warning{% endif %} btn-xs" formaction="{{ request.route_url('users', traverse=(user.id, 'toggle-status')) }}" data-toggle="tooltip" data-placement="left" title="Click to {{ (user.active and "Deactivate") or "Activate" }}">{{ (user.active and "Active") or "Inactive" }}</button>
+                  </td>
+                  <td>
+                    <a class="btn btn-default btn-xs" {% if is_current_user %}disabled="disabled"{% endif %} href="{{ request.route_path('users', traverse=(user.id, 'edit')) }}">Edit</a>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+{% endblock %}

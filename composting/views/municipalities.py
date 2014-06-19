@@ -20,7 +20,7 @@ from composting.forms import SkipForm, SiteProfileForm
 class Municipalities(BaseView):
 
     @view_config(context=MunicipalityFactory,
-                 renderer='municipalities_list.jinja2')
+                 renderer='admin_municipalities_list.jinja2')
     def list(self):
         # if doest have list permissions, determine the user's municipality and
         # redirect, if we cant determine, their municipality, throw a 403
@@ -39,7 +39,8 @@ class Municipalities(BaseView):
             'municipalities': municipalities
         }
 
-    @view_config(name='', renderer='overview.jinja2', permission='show')
+    @view_config(name='', renderer='municipality_overview.jinja2',
+                 permission='show')
     def show(self):
         municipality = self.request.context
         return {

@@ -1,0 +1,27 @@
+{% extends 'base.jinja2' %}
+{% block top_nav %}
+{% endblock %}
+{% block side_nav %}
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="left-side sidebar-offcanvas">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu">
+        <li class="">
+          <a href="{{ request.route_url('municipalities', traverse=()) }}">
+            <span>Municipalities</span>
+          </a>
+        </li>
+        <li class="">
+          <a href="{{ request.route_url('users', traverse=()) }}">
+            <span>Users</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+{% endblock %}

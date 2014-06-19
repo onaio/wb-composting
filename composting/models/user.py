@@ -1,3 +1,4 @@
+from pyramid.security import Allow, ALL_PERMISSIONS, Authenticated
 from sqlalchemy import (
     Column,
     Integer,
@@ -6,8 +7,10 @@ from sqlalchemy import (
     ForeignKey
 )
 from sqlalchemy.orm import relationship, synonym
+from sqlalchemy.orm.exc import NoResultFound
 
-from composting.models.base import DBSession, Base, ModelFactory
+from composting import security
+from composting.models.base import Base, ModelFactory
 from composting.security import pwd_context
 
 
@@ -39,3 +42,34 @@ class User(Base):
         if len(password) > 255:
             return False
         return pwd_context.verify(password, self.pwd)
+
+    @property
+    def appstruct(self):
+        return {
+            'group': self.group,
+            'municipality_id': self.municipality_id
+        }
+
+    def update(self, group, municipality_id):
+        self.municipality_id = municipality_id
+        if group in [security.WB.key, security.NEMA.key]:
+            self.municipality_id = None
+        self.group = group
+        self.save()
+
+
+class UserFactory(ModelFactory):
+    __acl__ = [
+        (Allow, security.USER_MANAGE_ALL.key, 'manage')
+    ]
+
+    def __getitem__(self, item):
+        try:
+            record = User.get(User.id == item)
+        except NoResultFound:
+            raise KeyError
+        else:
+            record.__name__ = item
+            record.__parent__ = self
+            record.request = self.request
+            return record
