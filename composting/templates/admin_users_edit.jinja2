@@ -70,3 +70,14 @@
 </section>
 <!-- /.content -->
 {% endblock %}
+{% block jquery_ready %}
+  $('form select[name=group]').on('change', function (evt) {
+      var value = $(evt.currentTarget).val();
+      var $municipality_form_group = $('form .form-group:nth-child(3)')
+      if (value === 'nema' || value === 'wb') {
+          $municipality_form_group.hide();
+      } else {
+          $municipality_form_group.show();
+      }
+  });
+{% endblock %}
