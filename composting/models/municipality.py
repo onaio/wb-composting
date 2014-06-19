@@ -1,4 +1,4 @@
-from pyramid.security import Allow, ALL_PERMISSIONS, Authenticated
+from pyramid.security import Allow
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import (
     Column,
@@ -215,7 +215,7 @@ class Municipality(Base):
 
 class MunicipalityFactory(ModelFactory):
     __acl__ = [
-        (Allow, security.MUNICIPALITY_LIST.key, 'list')
+        (Allow, security.MUNICIPALITY_MANAGE_ALL.key, 'manage')
     ]
 
     def __getitem__(self, item):
