@@ -1,7 +1,9 @@
 from pyramid.view import view_defaults, view_config
 from pyramid.httpexceptions import HTTPFound
-
+from deform import Form, ValidationFailure, Button
 from dashboard.views.base import BaseView
+
+from composting.forms.user_form import UserForm
 from composting.models.user import User, UserFactory
 
 
@@ -29,3 +31,29 @@ class Users(BaseView):
                 "Your changes have been saved", 'success')
 
         return HTTPFound(self.request.route_url('users', traverse=()))
+
+    @view_config(name='edit', renderer='admin_users_edit.jinja2')
+    def edit(self):
+        user = self.request.context
+        form = Form(
+            UserForm().bind(
+                request=self.request,
+                user=user),
+            buttons=('Save', Button(name='cancel', type='button')),
+            appstruct=user.appstruct)
+        if self.request.method == 'POST':
+            data = self.request.POST.items()
+            try:
+                values = form.validate(data)
+            except ValidationFailure:
+                pass
+            else:
+                user.update(values['group'], values['municipality_id'])
+                self.request.session.flash(
+                    "Your changes have been saved", 'success')
+                return HTTPFound(
+                    self.request.route_url(
+                        'users', traverse=(user.id, 'edit')))
+        return {
+            'form': form
+        }

@@ -9,7 +9,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship, synonym
 from sqlalchemy.orm.exc import NoResultFound
 
-from composting.security import USER_MANAGE_ALL
+from composting import security
 from composting.models.base import Base, ModelFactory
 from composting.security import pwd_context
 
@@ -43,10 +43,24 @@ class User(Base):
             return False
         return pwd_context.verify(password, self.pwd)
 
+    @property
+    def appstruct(self):
+        return {
+            'group': self.group,
+            'municipality_id': self.municipality_id
+        }
+
+    def update(self, group, municipality_id):
+        self.municipality_id = municipality_id
+        if group in [security.WB.key, security.NEMA.key]:
+            self.municipality_id = None
+        self.group = group
+        self.save()
+
 
 class UserFactory(ModelFactory):
     __acl__ = [
-        (Allow, USER_MANAGE_ALL.key, 'manage')
+        (Allow, security.USER_MANAGE_ALL.key, 'manage')
     ]
 
     def __getitem__(self, item):

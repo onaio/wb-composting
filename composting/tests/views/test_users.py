@@ -37,6 +37,23 @@ class TestUsers(IntegrationTestBase):
         self.assertEqual(
             response.location, self.request.route_url('users', traverse=()))
 
+    def test_edit_user_post(self):
+        user = User.get(User.username == 'admin')
+        self.request.context = user
+        self.request.method = 'POST'
+        self.request.POST = MultiDict([
+            ('group', 'sm'),
+            ('municipality_id', '2')
+        ])
+        response = self.views.edit()
+        user = User.get(User.username == 'admin')
+        self.assertEqual(user.group, 'sm')
+        self.assertEqual(user.municipality_id, '2')
+        self.assertIsInstance(response, HTTPFound)
+        self.assertEqual(
+            response.location,
+            self.request.route_url('users', traverse=(user.id, 'edit')))
+
 
 class TestUsersFunctional(FunctionalTestBase):
     def setUp(self):
@@ -52,5 +69,17 @@ class TestUsersFunctional(FunctionalTestBase):
 
     def test_list_when_municipality_user(self):
         url = self.request.route_path('users', traverse=())
+        headers = self._login_user(2)
+        self.testapp.get(url, headers=headers, status=403)
+
+    def test_edit_when_nema_user(self):
+        user = User.get(User.username == 'manager')
+        url = self.request.route_path('users', traverse=(user.id, 'edit'))
+        headers = self._login_user(1)
+        self.testapp.get(url, headers=headers, status=200)
+
+    def test_edit_when_municipality_user(self):
+        user = User.get(User.username == 'manager')
+        url = self.request.route_path('users', traverse=(user.id, 'edit'))
         headers = self._login_user(2)
         self.testapp.get(url, headers=headers, status=403)

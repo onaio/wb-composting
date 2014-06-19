@@ -1,0 +1,72 @@
+{% extends 'base_admin.jinja2' %}
+{% block title %}Edit User{% endblock %}
+{% block main_column %}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+     {{ self.title() }}
+  </h1>
+  <ol class="breadcrumb">
+    {% block breadcrumbs %}
+      <li>
+        <a href="{{ request.route_url('users', traverse=()) }}"><iclass="fa fa-desktop"></i> Users</a>
+      </li>
+      <li class="active">Edit User</li>
+    {% endblock %}
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  {% include 'includes/alerts.jinja2' %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box">
+        <div class="box-body table-responsive no-padding">
+          <form class="form-horizontal" data-role="form" method="post">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="username" class="col-sm-2 control-label">Username</label>
+                  <div class="col-sm-2">
+                    <p class="form-control-static">{{ request.context.username }}</p>
+                  </div>
+                  {% if has_error %}
+                    {% for msg in field.error.messages() %}
+                <span class="help-block">{{ msg }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+                {% for field in form %}
+                {% set has_error = not not field.error %}
+                <div class="form-group {% if has_error %}has-error{% endif %}">
+                  <label for="inputEmail3" class="col-sm-2 control-label">{{ field.title }}</label>
+
+                  <div class="col-sm-2">
+                    {{ field.serialize()|safe }}
+                  </div>
+                  {% if has_error %}
+                    {% for msg in field.error.messages() %}
+                <span class="help-block">{{ msg }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
+                {% endfor %}
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <div class="form-group">
+                  <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a class="btn btn-default" href="{{ request.route_url('users', traverse=()) }}">Back</a>
+                  </div>
+                </div>
+              </div>
+            </form>
+        </div>
+        <!-- /.box-body -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+{% endblock %}
