@@ -46,11 +46,13 @@ class Skips(BaseView):
             'form': form
         }
 
-    @view_config(name='delete', request_method='POST')
+    @view_config(name='delete', request_method='POST',
+                 decorator=check_post_csrf)
     def delete(self):
         skip = self.request.context
         municipality_id = skip.municipality_id
         DBSession.delete(skip)
+        self.request.session.flash(u"The skip has been deleted.", "success")
         return HTTPFound(
             self.request.route_url(
                 'municipalities', traverse=(municipality_id, 'skips')))

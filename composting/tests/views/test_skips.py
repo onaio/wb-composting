@@ -62,3 +62,9 @@ class TestSkipsFunctional(FunctionalTestBase):
             ('small_breadth', '16'),
             ('large_breadth', '20')
         ]), headers=headers, status=400)
+
+    def test_delete_skip_post_fails_if_missing_csrf_token(self):
+        skip = Skip.newest()
+        url = self.request.route_path('skips', traverse=(skip.id, 'delete'))
+        headers = self._login_user(1)
+        self.testapp.post(url, headers=headers, status=400)

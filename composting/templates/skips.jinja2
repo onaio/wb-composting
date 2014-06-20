@@ -27,6 +27,7 @@
       <div class="box">
         <div class="box-body table-responsive no-padding">
           <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ request.session.get_csrf_token() }}" />
             <table class="table table-hover">
               <tbody>
               <tr>
@@ -48,7 +49,7 @@
                   <td>{{ skip.cross_sectional_area }}m<sup>2</sup></td>
                   <td>
                     <a class="btn btn-primary btn-xs" href="{{ request.route_url('skips', traverse=(skip.id, 'edit')) }}">Edit</a>
-                    <button type="submit" class="btn btn-danger btn-xs" formaction="{{ request.route_url('skips', traverse=(skip.id, 'delete')) }}">
+                    <button type="button" class="btn btn-danger btn-xs btn-delete" formaction="{{ request.route_url('skips', traverse=(skip.id, 'delete')) }}">
                       Delete
                     </button>
                   </td>
