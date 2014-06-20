@@ -305,6 +305,18 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(3)
         self.testapp.get(url, headers=headers, status=403)
 
+    def test_site_profile_post_fails__if_missing_csrf_token(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'profile'))
+        headers = self._login_user(1)
+        self.testapp.post(url, MultiDict([
+            ('name', 'Mukono Municipality'),
+            ('wheelbarrow_volume', '0.15'),
+            ('box_volume', '0.3'),
+            ('leachete_tank_length', '8.0'),
+            ('leachete_tank_width', '8.0')
+        ]), headers=headers, status=400)
+
     def test_monthly_waste_composition_list(self):
         url = self.request.route_path(
             'municipalities',

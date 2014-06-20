@@ -185,7 +185,7 @@ class Municipalities(BaseView):
         }
 
     @view_config(name='profile', renderer='edit_profile.jinja2',
-                 permission='edit')
+                 permission='edit', decorator=check_post_csrf)
     def edit_profile(self):
         municipality = self.request.context
         form = Form(

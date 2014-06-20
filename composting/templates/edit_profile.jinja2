@@ -16,8 +16,8 @@
     <!-- /.box-header -->
     <!-- form start -->
     <form class="form-horizontal" data-role="form" method="post">
+      <input type="hidden" name="csrf_token" value="{{ request.session.get_csrf_token() }}" />
       <div class="box-body">
-
         {% for field in form %}
         {% set has_error = not not field.error %}
         <div class="form-group {% if has_error %}has-error{% endif %}">
