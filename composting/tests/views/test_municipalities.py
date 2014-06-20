@@ -146,6 +146,7 @@ class TestMunicipalities(IntegrationTestBase):
         self.assertEqual(municipality.name, "Mukono Municipality")
 
     def test_create_profile_post(self):
+        initial_count = Municipality.count()
         self.request.method = 'POST'
         self.request.user = User()
         self.request.POST = MultiDict([
@@ -159,14 +160,8 @@ class TestMunicipalities(IntegrationTestBase):
 
         self.assertIsInstance(result, HTTPFound)
 
-        municipality = Municipality.get(
-            Municipality.name == "Arua Compost Plant")
-        self.assertTrue(municipality)
-
-        self.assertEqual(
-            result.location,
-            self.request.route_url(
-                'municipalities', traverse=(municipality.id, 'profile')))
+        final_count = Municipality.count()
+        self.assertEqual(final_count, initial_count + 1)
 
     def test_site_reports_sets_start_end_to_current_month_if_not_specified(
             self):
