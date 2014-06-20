@@ -19,12 +19,13 @@ from composting.forms import SkipForm, SiteProfileForm
 
 @view_defaults(route_name='municipalities', context=Municipality)
 class Municipalities(BaseView):
+
     @view_config(context=MunicipalityFactory,
                  renderer='admin_municipalities_list.jinja2')
     def list(self):
         # if doest have list permissions, determine the user's municipality and
         # redirect, if we cant determine, their municipality, throw a 403
-        if not self.request.has_permission('list', self.request.context):
+        if not self.request.has_permission('manage', self.request.context):
             municipality = self.request.user.municipality
             if municipality:
                 return HTTPFound(
@@ -145,7 +146,6 @@ class Municipalities(BaseView):
             'percentages': percentages
         }
 
-
     @view_config(name='skips', renderer='skips.jinja2', permission='show')
     def skips(self):
         municipality = self.request.context
@@ -214,6 +214,38 @@ class Municipalities(BaseView):
             'form': form
         }
 
+    @view_config(context=MunicipalityFactory, name='create',
+                 renderer='add_profile.jinja2', permission='manage',
+                 decorator=check_post_csrf)
+    def create_profile(self):
+        user = self.request.user
+
+        form = Form(
+            SiteProfileForm().bind(
+                request=self.request),
+            buttons=('Save', Button(name='cancel', type='button')))
+
+        if self.request.method == "POST":
+            data = self.request.POST.items()
+            try:
+                values = form.validate(data)
+            except ValidationFailure:
+                self.request.session.flash(
+                    u"Please fix the errors indicated below.", "error")
+            else:
+                municipality = Municipality(**values)
+                municipality.save()
+                user.municipality = municipality
+                self.request.session.flash(
+                    u"Your changes have been saved.", "success")
+                return HTTPFound(
+                    self.request.route_url(
+                        'municipalities',
+                        traverse=(municipality.id, 'profile')))
+        return {
+            'form': form
+        }
+
     @view_config(name='reports',
                  renderer='site_reports.jinja2',
                  permission='show')
@@ -262,7 +294,7 @@ class Municipalities(BaseView):
                 (lambda dt: dt.days == 0, "Today"),
                 # if timedelta between start and end is less than 31 days,
                 # last # days
-                (lambda dt:  1 < dt.days < 30, "Last {} days")
+                (lambda dt: 1 < dt.days < 30, "Last {} days")
             ]
             time_delta = today - start
             labels = [l for f, l in time_labels if f(time_delta)]

@@ -6,6 +6,7 @@ pwd_context = CryptContext()
 
 
 class KeyValue(object):
+
     def __init__(self, name, label):
         self.t = (name, label,)
 
@@ -18,8 +19,8 @@ class KeyValue(object):
         return self.t[1]
 
 
-MUNICIPALITY_LIST = KeyValue(
-    'p:municipality-list', "List All Municipalities")
+MUNICIPALITY_MANAGE_ALL = KeyValue(
+    'p:municipality-manage', "List All Municipalities")
 MUNICIPALITY_SHOW_ANY = KeyValue(
     'p:municipality-show', "Access Any Municipality")
 MUNICIPALITY_SHOW_OWN = KeyValue(
@@ -44,11 +45,11 @@ GROUPS = [NEMA, WB, ENV_OFFICER, SITE_MANAGER]
 
 
 GROUP_PERMISSIONS = {
-    WB.key:           [MUNICIPALITY_LIST.key, MUNICIPALITY_SHOW_ANY.key,
-                       MUNICIPALITY_EDIT_ANY.key],
-    NEMA.key:         [MUNICIPALITY_LIST.key, MUNICIPALITY_SHOW_ANY.key,
-                       MUNICIPALITY_EDIT_ANY.key, USER_MANAGE_ALL.key],
-    ENV_OFFICER.key:  [MUNICIPALITY_SHOW_OWN.key, MUNICIPALITY_EDIT_OWN.key],
+    WB.key: [MUNICIPALITY_MANAGE_ALL.key, MUNICIPALITY_SHOW_ANY.key,
+             MUNICIPALITY_EDIT_ANY.key],
+    NEMA.key: [MUNICIPALITY_MANAGE_ALL.key, MUNICIPALITY_SHOW_ANY.key,
+               MUNICIPALITY_EDIT_ANY.key, USER_MANAGE_ALL.key],
+    ENV_OFFICER.key: [MUNICIPALITY_SHOW_OWN.key, MUNICIPALITY_EDIT_OWN.key],
     SITE_MANAGER.key: [MUNICIPALITY_SHOW_OWN.key, MUNICIPALITY_EDIT_OWN.key]
 }
 

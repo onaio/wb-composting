@@ -13,6 +13,7 @@ from composting.tests.test_base import (
 
 
 class TestMunicipalities(IntegrationTestBase):
+
     def setUp(self):
         super(TestMunicipalities, self).setUp()
         self.setup_test_data()
@@ -144,6 +145,24 @@ class TestMunicipalities(IntegrationTestBase):
         municipality = Municipality.get(Municipality.id == municipality_id)
         self.assertEqual(municipality.name, "Mukono Municipality")
 
+    def test_create_profile_post(self):
+        initial_count = Municipality.count()
+        self.request.method = 'POST'
+        self.request.user = User()
+        self.request.POST = MultiDict([
+            ('name', 'Arua Compost Plant'),
+            ('wheelbarrow_volume', '0.15'),
+            ('box_volume', '0.3'),
+            ('leachete_tank_length', '8.0'),
+            ('leachete_tank_width', '8.0')
+        ])
+        result = self.views.create_profile()
+
+        self.assertIsInstance(result, HTTPFound)
+
+        final_count = Municipality.count()
+        self.assertEqual(final_count, initial_count + 1)
+
     def test_site_reports_sets_start_end_to_current_month_if_not_specified(
             self):
         self.request.context = self.municipality
@@ -159,7 +178,7 @@ class TestMunicipalities(IntegrationTestBase):
         self.request.context = self.municipality
         self.request.GET = MultiDict([
             ('start', '2014-06-12'),
-            ('end',   '2014-06-13'),
+            ('end', '2014-06-13'),
         ])
         result = self.views.site_reports()
         start, end = datetime.date(2014, 6, 12), datetime.date(2014, 6, 13)
@@ -170,7 +189,7 @@ class TestMunicipalities(IntegrationTestBase):
         self.request.context = self.municipality
         self.request.GET = MultiDict([
             ('start', '2014-06'),
-            ('end',   '2014-06-15'),
+            ('end', '2014-06-15'),
         ])
         self.assertRaises(HTTPBadRequest, self.views.site_reports)
 
@@ -178,7 +197,7 @@ class TestMunicipalities(IntegrationTestBase):
         self.request.context = self.municipality
         self.request.GET = MultiDict([
             ('start', '2014-06-15'),
-            ('end',   '2014-06'),
+            ('end', '2014-06'),
         ])
         self.assertRaises(HTTPBadRequest, self.views.site_reports)
 
@@ -186,13 +205,14 @@ class TestMunicipalities(IntegrationTestBase):
         self.request.context = self.municipality
         self.request.GET = MultiDict([
             ('start', '2014-06-16'),
-            ('end',   '2014-06-13'),
+            ('end', '2014-06-13'),
         ])
         result = self.views.site_reports()
         self.assertEqual(result['start'], datetime.date(2014, 6, 13))
 
 
 class TestMunicipalitiesFunctional(FunctionalTestBase):
+
     def setUp(self):
         super(TestMunicipalitiesFunctional, self).setUp()
         self.setup_test_data()
@@ -447,3 +467,10 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(2)
         result = self.testapp.get(url, headers=headers)
         self.assertEqual(result.status_code, 200)
+
+    def test_create_profile(self):
+        url = self.request.route_path(
+            'municipalities', traverse=('create'))
+        headers = self._login_user(1)
+        response = self.testapp.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200)

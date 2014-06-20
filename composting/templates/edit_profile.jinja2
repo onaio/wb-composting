@@ -16,24 +16,7 @@
     <!-- /.box-header -->
     <!-- form start -->
     <form class="form-horizontal" data-role="form" method="post">
-      <input type="hidden" name="csrf_token" value="{{ request.session.get_csrf_token() }}" />
-      <div class="box-body">
-        {% for field in form %}
-        {% set has_error = not not field.error %}
-        <div class="form-group {% if has_error %}has-error{% endif %}">
-          <label for="inputEmail3" class="col-sm-2 control-label">{{ field.title }}</label>
-
-          <div class="col-sm-2">
-            {{ field.serialize()|safe }}
-          </div>
-          {% if has_error %}
-            {% for msg in field.error.messages() %}
-        <span class="help-block">{{ msg }}</span>
-            {% endfor %}
-        {% endif %}
-        </div>
-        {% endfor %}
-      </div>
+      {% include 'includes/form_body.jinja2'%}
       <!-- /.box-body -->
       <div class="box-footer">
         <div class="form-group">

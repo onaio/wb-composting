@@ -215,13 +215,14 @@ class Municipality(Base):
 
 class MunicipalityFactory(ModelFactory):
     __acl__ = [
-        (Allow, security.MUNICIPALITY_LIST.key, 'list')
+        (Allow, security.MUNICIPALITY_MANAGE_ALL.key, 'manage')
     ]
 
     def __getitem__(self, item):
         try:
-            record = Municipality.get(Municipality.id == item)
-        except NoResultFound:
+            municipality_id = int(item)
+            record = Municipality.get(Municipality.id == municipality_id)
+        except (ValueError, NoResultFound):
             raise KeyError
         else:
             record.__name__ = item

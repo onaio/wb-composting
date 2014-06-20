@@ -15,6 +15,20 @@
 <section class="content">
   {% include 'includes/alerts.jinja2' %}
   <div class="row">
+    <div class="col-md-4">
+      <div class="box box-solid bg-aqua">
+          <div class="box-header">
+            <h3 class="box-title"><a href="">New Site</a></h3>
+          </div>
+          <div class="box-body text-center create-new-site">
+            <p>
+              <a href="{{ request.route_url('municipalities', traverse=('create',)) }}" class="btn btn-primary">
+                <span>Create New Site</span>
+              </a>
+            </p>
+          </div>
+      </div>
+    </div>
     {% for municipality in municipalities|sort(attribute='name') %}
     <div class="col-md-4">
       <!-- Primary tile -->
