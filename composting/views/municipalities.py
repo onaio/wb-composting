@@ -5,6 +5,7 @@ from pyramid.view import view_defaults, view_config
 from deform import Form, ValidationFailure, Button
 from sqlalchemy import and_
 from dashboard.views.base import BaseView
+from dashboard.views.helpers import check_post_csrf
 
 from composting.libs.utils import get_month_start_end
 from composting.views.helpers import selections_from_request
@@ -155,7 +156,7 @@ class Municipalities(BaseView):
         }
 
     @view_config(name='create-skip', renderer='create_skip.jinja2',
-                 permission='edit')
+                 permission='edit', decorator=check_post_csrf)
     def create_skip(self):
         municipality = self.request.context
         form = Form(
@@ -184,7 +185,7 @@ class Municipalities(BaseView):
         }
 
     @view_config(name='profile', renderer='edit_profile.jinja2',
-                 permission='edit')
+                 permission='edit', decorator=check_post_csrf)
     def edit_profile(self):
         municipality = self.request.context
         form = Form(

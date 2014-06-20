@@ -8,6 +8,7 @@ from pyramid.view import (
     render_view
 )
 from sqlalchemy.orm.exc import NoResultFound
+from dashboard.views.helpers import check_post_csrf
 
 from composting.models.user import User
 
@@ -26,11 +27,13 @@ def forbidden(context, request):
 @view_config(route_name='auth',
              match_param='action=sign-in',
              permission=NO_PERMISSION_REQUIRED,
-             renderer='sign_in.jinja2')
+             renderer='sign_in.jinja2',
+             decorator=check_post_csrf)
 @view_config(name='sign_in',
              context=HTTPForbidden,
              permission=NO_PERMISSION_REQUIRED,
-             renderer='sign_in.jinja2')
+             renderer='sign_in.jinja2',
+             decorator=check_post_csrf)
 def sign_in(request):
     if request.method == 'POST':
         username = request.POST.get('username')

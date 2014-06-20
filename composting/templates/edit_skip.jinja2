@@ -16,6 +16,7 @@
     <!-- /.box-header -->
     <!-- form start -->
     <form class="form-horizontal" data-role="form" method="post">
+      <input type="hidden" name="csrf_token" value="{{ request.session.get_csrf_token() }}" />
       <div class="box-body">
 
         {% include 'includes/alerts.jinja2' %}
@@ -41,7 +42,7 @@
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="btn btn-primary">Save</button>
-            <a class="btn btn-default" href="{{ request.route_url('municipalities', traverse=(municipality.id, 'skips')) }}">Cancel</a>
+            <a class="btn btn-default" href="{{ request.route_url('municipalities', traverse=(municipality.id, 'skips')) }}">Back</a>
           </div>
         </div>
       </div>

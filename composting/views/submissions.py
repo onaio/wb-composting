@@ -4,7 +4,7 @@ from pyramid.view import view_defaults, view_config
 from pyramid.response import Response
 
 from dashboard.views.base import BaseView
-from dashboard.constants import XFORM_ID_STRING
+from dashboard.views.helpers import check_post_csrf
 from composting.models.submission import Submission, ISubmission
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.views.helpers import selections_from_request
@@ -65,7 +65,8 @@ class Submissions(BaseView):
         self.request.override_renderer = submission.renderer('show')
         image_url_base = urlparse.urljoin(
             'https://ona.io',
-            "attachment/small?media_file={}/attachments/".format("wb_composting"))
+            "attachment/small?media_file={}/attachments/".format(
+                "wb_composting"))
 
         data = {}
         return {
@@ -75,19 +76,19 @@ class Submissions(BaseView):
         }
 
     @view_config(name='approve', request_method='POST',
-                 wrapper='update_status_wrapper')
+                 wrapper='update_status_wrapper', decorator=check_post_csrf)
     def approve(self):
         self.request.new_status = Submission.APPROVED
         return Response(None)
 
     @view_config(name='reject', request_method='POST',
-                 wrapper='update_status_wrapper')
+                 wrapper='update_status_wrapper', decorator=check_post_csrf)
     def reject(self):
         self.request.new_status = Submission.REJECTED
         return Response(None)
 
     @view_config(name='unapprove', request_method='POST',
-                 wrapper='update_status_wrapper')
+                 wrapper='update_status_wrapper', decorator=check_post_csrf)
     def unapprove(self):
         self.request.new_status = Submission.PENDING
         return Response(None)

@@ -1,5 +1,5 @@
 <div class="box-body">
-
+  <input type="hidden" name="csrf_token" value="{{ request.session.get_csrf_token() }}" />
   {% for field in form %}
   {% set has_error = not not field.error %}
   <div class="form-group {% if has_error %}has-error{% endif %}">

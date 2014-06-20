@@ -1,7 +1,7 @@
 import unittest
 
 from webob.multidict import MultiDict
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, Response
 from pyramid import testing
 
 from composting import constants
@@ -50,6 +50,7 @@ class TestHelpersIntegration(IntegrationTestBase):
         self.request = testing.DummyRequest()
 
     def test_update_status(self):
+        self.request.wrapped_response = Response()
         self.request.new_status = Submission.APPROVED
         response = helpers.update_status(self.context, self.request)
         self.assertIsInstance(response, HTTPFound)
@@ -61,11 +62,13 @@ class TestHelpersIntegration(IntegrationTestBase):
         self.assertEqual(self.context.status, Submission.APPROVED)
 
     def test_update_status_raises_value_error_if_no_new_status(self):
+        self.request.wrapped_response = Response()
         self.request.action = 'some-action'
         self.assertRaises(
             ValueError, helpers.update_status, self.context, self.request)
 
     def test_update_status_raises_value_error_if_no_action(self):
+        self.request.wrapped_response = Response()
         self.request.new_status = Submission.APPROVED
 
         class BadSubmissionType(Submission):
@@ -89,3 +92,9 @@ class TestHelpersIntegration(IntegrationTestBase):
             'municipalities', traverse=(1, 'daily-waste'))
         result = helpers.is_current_path(self.request, path)
         self.assertFalse(result)
+
+    def test_update_status_returns_the_wrapped_status_as_is_if_not_200(self):
+        wrapped_response = HTTPBadRequest("Very bad request")
+        self.request.wrapped_response = wrapped_response
+        response = helpers.update_status(self.context, self.request)
+        self.assertEqual(response, wrapped_response)
