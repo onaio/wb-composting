@@ -147,8 +147,9 @@ class TestMunicipalities(IntegrationTestBase):
 
     def test_create_profile_post(self):
         self.request.method = 'POST'
+        self.request.user = User()
         self.request.POST = MultiDict([
-            ('name', 'Mukono Municipality'),
+            ('name', 'Arua Compost Plant'),
             ('wheelbarrow_volume', '0.15'),
             ('box_volume', '0.3'),
             ('leachete_tank_length', '8.0'),
@@ -159,8 +160,8 @@ class TestMunicipalities(IntegrationTestBase):
         self.assertIsInstance(result, HTTPFound)
 
         municipality = Municipality.get(
-            Municipality.name == "Mukono Municipality")
-        self.assertEqual(municipality.name, "Mukono Municipality")
+            Municipality.name == "Arua Compost Plant")
+        self.assertTrue(municipality)
 
         self.assertEqual(
             result.location,
@@ -450,8 +451,7 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
 
     def test_create_profile(self):
         url = self.request.route_path(
-            'municipalities',
-            traverse=(1, 'create'))
+            'municipalities', traverse=('create'))
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)

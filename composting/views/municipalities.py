@@ -213,18 +213,16 @@ class Municipalities(BaseView):
             'form': form
         }
 
-    @view_config(name='create', renderer='edit_profile.jinja2',
-                 permission='edit')
+    @view_config(context=MunicipalityFactory, name='create',
+                 renderer='add_profile.jinja2', permission='manage')
     def create_profile(self):
-        municipality = Municipality(box_volume=0.0,
-                                    wheelbarrow_volume=0.0,
-                                    leachete_tank_length=0.0,
-                                    leachete_tank_width=0.0)
+        user = self.request.user
+
         form = Form(
             SiteProfileForm().bind(
                 request=self.request),
-            buttons=('Save', Button(name='cancel', type='button')),
-            appstruct=municipality.appstruct)
+            buttons=('Save', Button(name='cancel', type='button')))
+
         if self.request.method == "POST":
             data = self.request.POST.items()
             try:
@@ -233,8 +231,9 @@ class Municipalities(BaseView):
                 self.request.session.flash(
                     u"Please fix the errors indicated below.", "error")
             else:
-                municipality.update(**values)
+                municipality = Municipality(**values)
                 municipality.save()
+                user.municipality = municipality
                 self.request.session.flash(
                     u"Your changes have been saved.", "success")
                 return HTTPFound(
@@ -242,7 +241,6 @@ class Municipalities(BaseView):
                         'municipalities',
                         traverse=(municipality.id, 'profile')))
         return {
-            'municipality': municipality,
             'form': form
         }
 
