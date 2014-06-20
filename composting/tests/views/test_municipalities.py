@@ -273,6 +273,18 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(3)
         self.testapp.get(url, headers=headers, status=403)
 
+    def test_create_skip_post_fails_if_missing_csrf_token(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id, 'create-skip'))
+        headers = self._login_user(1)
+        self.testapp.post(url, MultiDict([
+            ('skip_type', 'Z'),
+            ('small_length', '20'),
+            ('large_length', '30'),
+            ('small_breadth', '16'),
+            ('large_breadth', '20')
+        ]), headers=headers, status=400)
+
     def test_site_profile_get_when_admin_user(self):
         url = self.request.route_path(
             'municipalities', traverse=(self.municipality.id, 'profile'))

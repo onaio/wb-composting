@@ -3,6 +3,7 @@ from pyramid.view import view_defaults, view_config
 from deform import Form, ValidationFailure, Button
 
 from dashboard.views.base import BaseView
+from dashboard.views.helpers import check_post_csrf
 
 from composting.models.base import DBSession
 from composting.models import Skip
@@ -12,7 +13,8 @@ from composting.forms import SkipForm
 
 @view_defaults(route_name='skips', context=Skip)
 class Skips(BaseView):
-    @view_config(name='edit', renderer='edit_skip.jinja2')
+    @view_config(name='edit', renderer='edit_skip.jinja2',
+                 decorator=check_post_csrf)
     def edit(self):
         skip = self.request.context
         municipality = skip.municipality
