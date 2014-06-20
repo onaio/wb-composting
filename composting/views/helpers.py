@@ -24,7 +24,9 @@ def update_status(context, request):
     Update the context.submission.status property with the value in
     request.new_status
     """
-    # the action we want to target on the municipalities route
+    # if the wrapped response is not a 200, return that instead
+    if request.wrapped_response.status_code != 200:
+        return request.wrapped_response
 
     # todo: check that context is a Submission subclass
     if not hasattr(request, 'new_status'):
