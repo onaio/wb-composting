@@ -57,6 +57,18 @@ class User(Base):
         self.group = group
         self.save()
 
+    @classmethod
+    def get_or_create_from_api(cls, data):
+        username = data['username']
+        try:
+            user = User.get(User.username == username)
+        except NoResultFound:
+            user = User(username=username)
+            # flash to get the auto-inc id
+            user.save()
+        return user
+
+
 
 class UserFactory(ModelFactory):
     __acl__ = [

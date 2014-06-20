@@ -40,5 +40,8 @@ zope.sqlalchemy==0.7.4
 colander==1.0b1
 peppercorn==0.4
 deform==2.0a2
+oauthlib==0.6.3
+requests==2.3.0
+requests-oauthlib==0.4.1
 
 -e git://github.com/onaio/dashboard-skeleton.git@0.1.2c#egg=Dashboard

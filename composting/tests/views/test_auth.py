@@ -16,20 +16,16 @@ class TestAuthViews(IntegrationTestBase):
         result = sign_in(request)
         self.assertIsInstance(result, HTTPFound)
 
+    def test_sign_out(self):
+        response = sign_out(self.request)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.location,
+            self.request.route_url('municipalities', traverse=()))
+
 
 class TestAuthViewsFunctional(FunctionalTestBase):
     def test_sign_in_get(self):
         url = self.request.route_path('auth', action='sign-in')
         response = self.testapp.get(url)
         self.assertEqual(response.status_code, 200)
-
-    def test_sign_out(self):
-        self.setup_test_data()
-        headers = self._login_user(1)
-        url = self.request.route_path('auth', action='sign-out')
-        response = self.testapp.get(url, headers=headers)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.location,
-            self.request.route_url('auth', action='sign-in'))
-        response.follow()
