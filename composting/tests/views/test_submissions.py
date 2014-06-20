@@ -91,53 +91,6 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
 
-    def assertActionMatches(self, location, action):
-        self.assertEqual(
-            location,
-            self.request.route_url(
-                'municipalities',
-                traverse=(self.municipality.id, action)))
-
-    def test_approve_daily_waste(self):
-        daily_waste = DailyWaste.newest()
-        url = self.request.route_path(
-            'submissions', traverse=(daily_waste.id, 'approve'))
-        headers = self._login_user(1)
-        response = self.testapp.post(url, headers=headers)
-        self.assertEqual(response.status_code, 302)
-        self.assertActionMatches(response.location, 'daily-waste')
-        response.follow(headers=headers)
-
-    def test_reject_daily_waste(self):
-        daily_waste = DailyWaste.newest()
-        url = self.request.route_path(
-            'submissions', traverse=(daily_waste.id, 'reject'))
-        headers = self._login_user(1)
-        response = self.testapp.post(url, headers=headers)
-        self.assertEqual(response.status_code, 302)
-        self.assertActionMatches(response.location, 'daily-waste')
-        response.follow(headers=headers)
-
-    def test_unapprove_daily_waste(self):
-        daily_waste = DailyWaste.newest()
-        url = self.request.route_path(
-            'submissions', traverse=(daily_waste.id, 'unapprove'))
-        headers = self._login_user(1)
-        response = self.testapp.post(url, headers=headers)
-        self.assertEqual(response.status_code, 302)
-        self.assertActionMatches(response.location, 'daily-waste')
-        response.follow(headers=headers)
-
-    def test_approve_monthly_waste_density(self):
-        monthly_density = MonthlyDensity.newest()
-        url = self.request.route_path(
-            'submissions', traverse=(monthly_density.id, 'approve'))
-        headers = self._login_user(1)
-        response = self.testapp.post(url, headers=headers)
-        self.assertEqual(response.status_code, 302)
-        self.assertActionMatches(response.location, 'monthly-waste-density')
-        response.follow(headers=headers)
-
     def test_monthly_waste_composition_show(self):
         monthly_waste = MonthlyWasteComposition.newest()
         url = self.request.route_path(
@@ -226,3 +179,24 @@ class TestSubmissionsFunctional(FunctionalTestBase):
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+    def test_approve_post_fail_if_missing_csrf_token(self):
+        daily_waste = DailyWaste.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(daily_waste.id, 'approve'))
+        headers = self._login_user(1)
+        self.testapp.post(url, headers=headers, status=400)
+
+    def test_reject_post_fail_if_missing_csrf_token(self):
+        daily_waste = DailyWaste.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(daily_waste.id, 'reject'))
+        headers = self._login_user(1)
+        self.testapp.post(url, headers=headers, status=400)
+
+    def test_unapprove_post_fail_if_missing_csrf_token(self):
+        daily_waste = DailyWaste.newest()
+        url = self.request.route_path(
+            'submissions', traverse=(daily_waste.id, 'unapprove'))
+        headers = self._login_user(1)
+        self.testapp.post(url, headers=headers, status=400)
