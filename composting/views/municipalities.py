@@ -215,7 +215,8 @@ class Municipalities(BaseView):
         }
 
     @view_config(context=MunicipalityFactory, name='create',
-                 renderer='add_profile.jinja2', permission='manage')
+                 renderer='add_profile.jinja2', permission='manage',
+                 decorator=check_post_csrf)
     def create_profile(self):
         user = self.request.user
 
