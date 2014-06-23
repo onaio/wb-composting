@@ -42,15 +42,18 @@ class TestSubmission(TestBase):
 
     def test_delete_report(self):
         submission = Submission.newest()
+        submission_id = submission.id
         report = Report(
-            submission_id=submission.id, report_json={'key': 'value'})
+            submission=submission, report_json={'key': 'value'})
         with transaction.manager:
             DBSession.add(report)
-        num_reports = Report.count(Report.submission_id == submission.id)
+        num_reports = Report.count(Report.submission_id == submission_id)
         self.assertEqual(num_reports, 1)
+
+        submission = Submission.get(Submission.id == submission_id)
         submission.delete_report()
         self.assertEqual(
-            Report.count(Report.submission_id == submission.id),
+            Report.count(Report.submission_id == submission_id),
             num_reports - 1)
 
     def test_create_or_update_report_raises_not_implemented(self):
