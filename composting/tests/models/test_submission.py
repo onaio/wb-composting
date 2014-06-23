@@ -56,11 +56,6 @@ class TestSubmission(TestBase):
             Report.count(Report.submission_id == submission_id),
             num_reports - 1)
 
-    def test_create_or_update_report_raises_not_implemented(self):
-        submission = Submission()
-        self.assertRaises(NotImplementedError,
-                          submission.create_or_update_report)
-
     def test_set_approved_calls_create_or_update_report(self):
         submission = Submission()
         submission.create_or_update_report = MagicMock(

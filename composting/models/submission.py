@@ -120,7 +120,12 @@ class Submission(Base):
         return get_locale_time_from_utc_time(submission_time)
 
     def create_or_update_report(self):
-        raise NotImplementedError
+        """
+        Will be called whenever the Submission is APPROVED, implement report
+        creation logic in subclasses as required
+        :return: None
+        """
+        pass
 
     def delete_report(self):
         from composting.models.report import Report
