@@ -3,6 +3,7 @@ import transaction
 
 from datetime import datetime
 from pyramid import testing
+from mock import MagicMock
 
 from composting.models.base import DBSession
 from composting.models.submission import Submission, SubmissionFactory
@@ -41,18 +42,37 @@ class TestSubmission(TestBase):
 
     def test_delete_report(self):
         submission = Submission.newest()
-        report = Report(submission_id=submission.id, report_json={'key': 'value'})
+        report = Report(
+            submission_id=submission.id, report_json={'key': 'value'})
         with transaction.manager:
             DBSession.add(report)
         num_reports = Report.count(Report.submission_id == submission.id)
         self.assertEqual(num_reports, 1)
         submission.delete_report()
-        self.assertEqual(Report.count(Report.submission_id == submission.id), num_reports - 1)
+        self.assertEqual(
+            Report.count(Report.submission_id == submission.id),
+            num_reports - 1)
 
     def test_create_or_update_report_raises_not_implemented(self):
         submission = Submission()
-        self.assertRaises(NotImplementedError, submission.create_or_update_report)
+        self.assertRaises(NotImplementedError,
+                          submission.create_or_update_report)
 
-    def test_submission_status_set_event(self):
-        submission= Submission(status=Submission.APPROVED)
+    def test_set_approved_calls_create_or_update_report(self):
+        submission = Submission()
+        submission.create_or_update_report = MagicMock(
+            name='create_or_update_report')
         submission.status = Submission.APPROVED
+        submission.create_or_update_report.assert_called_with()
+
+    def test_set_pending_calls_delete_report(self):
+        submission = Submission()
+        submission.delete_report = MagicMock(name='delete_report')
+        submission.status = Submission.PENDING
+        submission.delete_report.assert_called_with()
+
+    def test_set_rejected_calls_delete_report(self):
+        submission = Submission()
+        submission.delete_report = MagicMock(name='delete_report')
+        submission.status = Submission.REJECTED
+        submission.delete_report.assert_called_with()

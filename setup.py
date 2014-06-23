@@ -26,7 +26,8 @@ requires = [
     'lingua',
     'deform',
     'Dashboard',
-    'requests-oauthlib'
+    'requests-oauthlib',
+    'mock'
 ]
 
 setup(name='WBComposting',

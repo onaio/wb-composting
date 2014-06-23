@@ -43,5 +43,6 @@ deform==2.0a2
 oauthlib==0.6.3
 requests==2.3.0
 requests-oauthlib==0.4.1
+mock==1.0.1
 
 -e git://github.com/onaio/dashboard-skeleton.git@0.1.2e#egg=Dashboard
