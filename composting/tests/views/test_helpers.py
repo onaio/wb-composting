@@ -1,5 +1,6 @@
 import unittest
 
+from datetime import date
 from webob.multidict import MultiDict
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, Response
 from pyramid import testing
@@ -44,6 +45,12 @@ class TestHelpersIntegration(IntegrationTestBase):
         self.context = DailyWaste(
             xform_id=constants.DAILY_WASTE_REGISTER_FORM,
             status=Submission.PENDING,
+            # add dummy json data for volume calculation
+            date=date(2014, 6, 13),
+            json_data={
+                'compressor_truck': 'yes',
+                'volume': '20'
+            },
             municipality_submission=MunicipalitySubmission(
                 municipality_id=municipality_id
             ))

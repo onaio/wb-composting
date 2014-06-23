@@ -80,6 +80,16 @@ class DailyWaste(Submission):
         else:
             return None
 
+    def create_or_update_report(self):
+        report = self.get_or_create_report()
+        report.report_json = {
+            'volume': self.volume,
+            'density': self.monthly_density,
+            'tonnage': self.tonnage
+        }
+        report.submission = self
+        report.save()
+
 
 class DailyWasteFactory(ModelFactory):
     def __getitem__(self, item):

@@ -11,6 +11,7 @@ from sqlalchemy import (
 )
 from sqlalchemy import event
 from dashboard.libs.utils import date_string_to_datetime, default_date_format
+from pyramid.security import Allow, ALL_PERMISSIONS, Everyone
 
 from composting.models.base import Base, DBSession, ModelFactory
 from composting.models.report import Report
@@ -136,15 +137,18 @@ class Submission(Base):
         pass
 
     def delete_report(self):
-        from composting.models.report import Report
         return Report.delete(Report.submission_id == self.id)
 
 
 def submission_status_set_listener(submission, new_status, old_status, evt):
-    if new_status == Submission.APPROVED:
-        submission.create_or_update_report()
-    else:
-        submission.delete_report()
+    if new_status != old_status and old_status in [Submission.PENDING,
+                                                   Submission.APPROVED,
+                                                   Submission.REJECTED]:
+        if new_status == Submission.APPROVED:
+            submission.create_or_update_report()
+        elif (new_status == Submission.REJECTED
+              or new_status == Submission.PENDING):
+            submission.delete_report()
 
 
 event.listen(Submission.status, 'set', submission_status_set_listener,

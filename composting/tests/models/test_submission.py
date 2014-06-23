@@ -73,20 +73,20 @@ class TestSubmission(TestBase):
             num_reports - 1)
 
     def test_set_approved_calls_create_or_update_report(self):
-        submission = Submission()
+        submission = Submission(status=Submission.PENDING)
         submission.create_or_update_report = MagicMock(
             name='create_or_update_report')
         submission.status = Submission.APPROVED
         submission.create_or_update_report.assert_called_with()
 
     def test_set_pending_calls_delete_report(self):
-        submission = Submission()
+        submission = Submission(status=Submission.APPROVED)
         submission.delete_report = MagicMock(name='delete_report')
         submission.status = Submission.PENDING
         submission.delete_report.assert_called_with()
 
     def test_set_rejected_calls_delete_report(self):
-        submission = Submission()
+        submission = Submission(status=Submission.PENDING)
         submission.delete_report = MagicMock(name='delete_report')
         submission.status = Submission.REJECTED
         submission.delete_report.assert_called_with()
