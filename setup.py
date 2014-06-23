@@ -25,7 +25,8 @@ requires = [
     'Babel',
     'lingua',
     'deform',
-    'Dashboard'
+    'Dashboard',
+    'requests-oauthlib'
 ]
 
 setup(name='WBComposting',
