@@ -16,3 +16,7 @@
 .create-new-site {
     height: 70px;
 }
+
+.create-new-site a {
+    color: #fff;
+}
