@@ -134,7 +134,8 @@ def submission_status_set_listener(submission, new_status, old_status, evt):
         submission.delete_report()
 
 
-event.listen(Submission.status, 'set', submission_status_set_listener)
+event.listen(Submission.status, 'set', submission_status_set_listener,
+             propagate=True)
 
 
 class SubmissionFactory(ModelFactory):
