@@ -10,12 +10,12 @@ from sqlalchemy import (
     Date,
 )
 from sqlalchemy import event
-
-from composting.constants import SUBMISSION_TIME
-from composting.libs.utils import get_locale_time_from_utc_time
 from dashboard.libs.utils import date_string_to_datetime, default_date_format
 
 from composting.models.base import Base, DBSession, ModelFactory
+from composting.models.report import Report
+from composting.constants import SUBMISSION_TIME
+from composting.libs.utils import get_locale_time_from_utc_time
 
 
 class ISubmission(Interface):
@@ -118,6 +118,14 @@ class Submission(Base):
         submission_time = self.datetime_from_json(
             self.json_data, SUBMISSION_TIME, '%Y-%m-%dT%H:%M:%S')
         return get_locale_time_from_utc_time(submission_time)
+
+    def get_or_create_report(self):
+        try:
+            report = Report.get(Report.submission == self)
+        except NoResultFound:
+            return Report(submission=self)
+        else:
+            return report
 
     def create_or_update_report(self):
         """

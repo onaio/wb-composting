@@ -4,6 +4,7 @@ import transaction
 from datetime import datetime
 from pyramid import testing
 from mock import MagicMock
+from sqlalchemy.orm.attributes import instance_state
 
 from composting.models.base import DBSession
 from composting.models.submission import Submission, SubmissionFactory
@@ -39,6 +40,21 @@ class TestSubmission(TestBase):
             pytz.timezone('Africa/Kampala'))
         locale_datetime = submission.locale_submission_time()
         self.assertEqual(locale_datetime, submission_time)
+
+    def test_get_or_create_report_returns_new_report_if_none_exists(self):
+        submission = Submission.newest()
+        report = submission.get_or_create_report()
+        self.assertFalse(instance_state(report).persistent)
+
+    def test_get_or_create_report_returns_existing_report_if_one_exist(self):
+        submission = Submission.newest()
+        submission_id = submission.id
+        report = Report(submission=submission, report_json={'key': 'value'})
+        with transaction.manager:
+            DBSession.add(report)
+        submission = Submission.get(Submission.id == submission_id)
+        report = submission.get_or_create_report()
+        self.assertTrue(instance_state(report).persistent)
 
     def test_delete_report(self):
         submission = Submission.newest()
