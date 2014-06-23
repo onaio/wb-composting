@@ -16,7 +16,7 @@ class Users(BaseView):
             'users': users
         }
 
-    @view_config(name='toggle-status', request_method='POST')
+    @view_config(name='toggle-status', request_method='POST', check_csrf=True)
     def toggle_status(self):
         user = self.request.context
 
