@@ -9,6 +9,7 @@ from sqlalchemy import (
     Enum,
     Date,
 )
+from sqlalchemy import event
 
 from composting.constants import SUBMISSION_TIME
 from composting.libs.utils import get_locale_time_from_utc_time
@@ -117,6 +118,23 @@ class Submission(Base):
         submission_time = self.datetime_from_json(
             self.json_data, SUBMISSION_TIME, '%Y-%m-%dT%H:%M:%S')
         return get_locale_time_from_utc_time(submission_time)
+
+    def create_or_update_report(self):
+        raise NotImplementedError
+
+    def delete_report(self):
+        from composting.models.report import Report
+        return Report.delete(Report.submission_id == self.id)
+
+
+def submission_status_set_listener(submission, new_status, old_status, evt):
+    if new_status == Submission.APPROVED:
+        submission.create_or_update_report()
+    else:
+        submission.delete_report()
+
+
+event.listen(Submission.status, 'set', submission_status_set_listener)
 
 
 class SubmissionFactory(ModelFactory):

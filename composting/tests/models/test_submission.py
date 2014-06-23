@@ -1,10 +1,13 @@
 import pytz
-from datetime import datetime
+import transaction
 
+from datetime import datetime
 from pyramid import testing
 
 from composting.models.base import DBSession
 from composting.models.submission import Submission, SubmissionFactory
+from composting.models.municipality_submission import MunicipalitySubmission
+from composting.models.report import Report
 from composting.tests.test_base import TestBase
 
 
@@ -35,3 +38,21 @@ class TestSubmission(TestBase):
             pytz.timezone('Africa/Kampala'))
         locale_datetime = submission.locale_submission_time()
         self.assertEqual(locale_datetime, submission_time)
+
+    def test_delete_report(self):
+        submission = Submission.newest()
+        report = Report(submission_id=submission.id, report_json={'key': 'value'})
+        with transaction.manager:
+            DBSession.add(report)
+        num_reports = Report.count(Report.submission_id == submission.id)
+        self.assertEqual(num_reports, 1)
+        submission.delete_report()
+        self.assertEqual(Report.count(Report.submission_id == submission.id), num_reports - 1)
+
+    def test_create_or_update_report_raises_not_implemented(self):
+        submission = Submission()
+        self.assertRaises(NotImplementedError, submission.create_or_update_report)
+
+    def test_submission_status_set_event(self):
+        submission= Submission(status=Submission.APPROVED)
+        submission.status = Submission.APPROVED
