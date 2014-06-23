@@ -96,11 +96,14 @@ class TestBase(unittest.TestCase):
         skip_a = Skip(
             municipality=municipality, skip_type='A', small_length=20,
             large_length=30, small_breadth=10, large_breadth=16)
+        skip_b = Skip(
+            municipality=municipality, skip_type='B', small_length=20,
+            large_length=30, small_breadth=10, large_breadth=16)
         submission_handler_manager.clear()
         hook_submission_handlers()
         with transaction.manager:
             DBSession.add_all(
-                [admin, manager, municipality, skip_a, other_manager])
+                [admin, manager, municipality, skip_a, skip_b, other_manager])
             for status, raw_json in self.submissions:
                 json_payload = json.loads(raw_json)
                 handler_class = submission_handler_manager.find_handler(
