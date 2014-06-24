@@ -7,6 +7,7 @@ from composting.models.municipality_submission import MunicipalitySubmission
 
 
 class TestDailyWaste(TestBase):
+
     def setUp(self):
         super(TestDailyWaste, self).setUp()
         self.setup_test_data()

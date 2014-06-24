@@ -234,6 +234,9 @@ class Municipality(Base):
         query = self.get_report_query(DailyWaste, start_date, end_date)
         return query.count()
 
+    def density_of_msw(self, start_date, end_date):
+        pass
+
     def volume_of_msw_processed(self, start_date, end_date):
         query = self.get_report_query(DailyWaste, start_date, end_date)
         import ipdb; ipdb.set_trace()
