@@ -24,31 +24,28 @@ class TestMunicipality(IntegrationTestBase):
         self.assertEqual(m.leachete_tank_length, 8.0)
         self.assertEqual(m.leachete_tank_width, 6.0)
 
-    def test_num_daily_wastes_returns_cached_count_if_set(self):
+
+class TestMunicipalityIntegration(IntegrationTestBase):
+    def setUp(self):
+        super(TestMunicipalityIntegration, self).setUp()
         self.setup_test_data()
-        municipality = Municipality.get(Municipality.name == "Mukono")
-        municipality._num_actionable_daily_wastes = 1000
-        self.assertEqual(municipality.num_actionable_daily_wastes, 1000)
+        self.municipality = Municipality.get(Municipality.name == "Mukono")
+
+    def test_num_daily_wastes_returns_cached_count_if_set(self):
+        self.municipality._num_actionable_daily_wastes = 1000
+        self.assertEqual(self.municipality.num_actionable_daily_wastes, 1000)
 
     def test_num_daily_wastes_returns_actual_count_if_not_cached(self):
-        self.setup_test_data()
-        municipality = Municipality.get(Municipality.name == "Mukono")
-        self.assertEqual(municipality.num_actionable_daily_wastes, 1)
+        self.assertEqual(self.municipality.num_actionable_daily_wastes, 1)
 
     def test_num_monthly_density_returns_cached_count_if_set(self):
-        self.setup_test_data()
-        municipality = Municipality.get(Municipality.name == "Mukono")
-        municipality._num_actionable_monthly_waste = 10
-        self.assertEqual(municipality.num_actionable_monthly_waste, 10)
+        self.municipality._num_actionable_monthly_waste = 10
+        self.assertEqual(self.municipality.num_actionable_monthly_waste, 10)
 
     def test_num_monthly_density_returns_actual_count_if_not_cached(self):
-        self.setup_test_data()
-        municipality = Municipality.get(Municipality.name == "Mukono")
-        self.assertEqual(municipality.num_actionable_monthly_waste, 3)
+        self.assertEqual(self.municipality.num_actionable_monthly_waste, 3)
 
     def test_num_trucks_delivered_msw(self):
-        self.setup_test_data()
-        municipality = Municipality.get(Municipality.name == "Mukono")
         # approve some daily wastes to have data to aggregate on
         num_reports = Report.count()
         daily_wastes = DBSession\
@@ -62,5 +59,14 @@ class TestMunicipality(IntegrationTestBase):
         self.assertEqual(Report.count(), num_reports + len(daily_wastes))
         start = datetime.date(2014, 4, 1)
         end = datetime.date(2014, 4, 30)
-        num_trucks = municipality.num_trucks_delivered_msw(start, end)
+        num_trucks = self.municipality.num_trucks_delivered_msw(start, end)
         self.assertEqual(num_trucks, 1)
+
+    def populate_monthly_density_reports(self):
+        # Should be run before daily wastes to make sure daily wastes have a
+        # density to reference
+        pass
+
+    def test_volume_of_msw_processed(self):
+        self.populate_monthly_density_reports()
+        self.municipality.volume_of_msw_processed()
