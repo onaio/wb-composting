@@ -21,7 +21,7 @@ from composting.tests.test_base import TestBase
 
 class TestDailyWasteSubmissionHandling(TestBase):
     klass = DailyWaste
-    xform_id = constants.DAILY_WASTE_REGISTER_FORM
+    xform_id = DailyWaste.XFORM_ID
     date_string = '2014-04-21T10:34:03.000'
 
     def test_can_handle(self):

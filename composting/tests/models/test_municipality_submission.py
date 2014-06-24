@@ -15,7 +15,7 @@ class TestMunicipalitySubmission(TestBase):
     def test_get_items_on_daily_waste(self):
         items = MunicipalitySubmission.get_items(self.municipality, DailyWaste)
         daily_wastes = self.get_submissions_by_xform_id(
-            constants.DAILY_WASTE_REGISTER_FORM)
+            DailyWaste.XFORM_ID)
         self.assertEqual(len(items), len(daily_wastes))
 
     def test_get_skip(self):

@@ -10,8 +10,9 @@ from composting.models.monthly_density import MonthlyDensity
 
 @implementer(ISubmission)
 class DailyWaste(Submission):
+    XFORM_ID = 'daily_waste_register'
     __mapper_args__ = {
-        'polymorphic_identity': constants.DAILY_WASTE_REGISTER_FORM,
+        'polymorphic_identity': XFORM_ID
     }
 
     # form fields

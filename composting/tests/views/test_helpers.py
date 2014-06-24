@@ -43,7 +43,7 @@ class TestHelpersIntegration(IntegrationTestBase):
         self.setup_test_data()
         municipality_id = Municipality.get(Municipality.name == "Mukono").id
         self.context = DailyWaste(
-            xform_id=constants.DAILY_WASTE_REGISTER_FORM,
+            xform_id=DailyWaste.XFORM_ID,
             status=Submission.PENDING,
             # add dummy json data for volume calculation
             date=date(2014, 6, 13),
