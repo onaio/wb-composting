@@ -5,7 +5,8 @@ from sqlalchemy import (
     Integer,
     String,
     Float,
-    or_
+    or_,
+    and_
 )
 
 from composting import security
@@ -28,6 +29,7 @@ from composting.models.compost_density_register import CompostDensityRegister
 from composting.models.monthly_rejects_composition import (
     MonthlyRejectsComposition)
 from composting.models.daily_vehicle_register import DailyVehicleDataRegister
+from composting.models.report import Report
 
 
 class Municipality(Base):
@@ -204,8 +206,28 @@ class Municipality(Base):
         self.leachete_tank_length = leachete_tank_length
         self.leachete_tank_width = leachete_tank_width
 
-    def volume_of_msw_processed(self, start_date, end_date):
-        return 0
+    def get_report_query(
+            self, submission_subclass, start_date, end_date, *columns):
+        """
+        Build a report query that takes into account the current municipality,
+        the period and the target xform_id
+        :param submission_subclass: A subclass of Submission e.g. DailyWaste
+        :param start_date: reporting start date
+        :param end_date: reporting end date
+        :param columns: for e.g. sums, the aggregate column defs
+        :return: query object
+        """
+        return DBSession\
+            .query(Report)\
+            .join(
+                MunicipalitySubmission,
+                Report.submission_id == MunicipalitySubmission.submission_id)\
+            .join(Submission)\
+            .filter(MunicipalitySubmission.municipality == self)\
+            .filter(Submission.xform_id == submission_subclass.XFORM_ID)\
+            .filter(
+                and_(Submission.date >= start_date,
+                     Submission.date <= end_date))
 
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
