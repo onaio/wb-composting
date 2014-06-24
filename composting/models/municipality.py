@@ -222,7 +222,8 @@ class Municipality(Base):
             .join(
                 MunicipalitySubmission,
                 Report.submission_id == MunicipalitySubmission.submission_id)\
-            .join(Submission)\
+            .join(Submission,
+                  Submission.id == MunicipalitySubmission.submission_id)\
             .filter(MunicipalitySubmission.municipality == self)\
             .filter(Submission.xform_id == submission_subclass.XFORM_ID)\
             .filter(
@@ -235,6 +236,11 @@ class Municipality(Base):
 
     def density_of_msw(self, start_date, end_date):
         pass
+
+    def volume_of_msw_processed(self, start_date, end_date):
+        query = self.get_report_query(DailyWaste, start_date, end_date)
+        import ipdb; ipdb.set_trace()
+        return query.count()
 
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)

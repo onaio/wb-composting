@@ -7,16 +7,10 @@ from composting.models.daily_waste import DailyWaste
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.report import Report
 
-from composting.tests.test_base import IntegrationTestBase
+from composting.tests.test_base import TestBase, IntegrationTestBase
 
 
-class TestMunicipality(IntegrationTestBase):
-
-    def setUp(self):
-        super(TestMunicipality, self).setUp()
-        self.setup_test_data()
-        self.municipality = Municipality.get(Municipality.name == "Mukono")
-
+class TestMunicipality(TestBase):
     def test_update(self):
         m = Municipality(name="Test Municipal", box_volume=0.125,
                          wheelbarrow_volume=0.625, leachete_tank_length=5.0,
@@ -29,6 +23,13 @@ class TestMunicipality(IntegrationTestBase):
         self.assertEqual(m.wheelbarrow_volume, 0.15)
         self.assertEqual(m.leachete_tank_length, 8.0)
         self.assertEqual(m.leachete_tank_width, 6.0)
+
+
+class TestMunicipalityIntegration(IntegrationTestBase):
+    def setUp(self):
+        super(TestMunicipalityIntegration, self).setUp()
+        self.setup_test_data()
+        self.municipality = Municipality.get(Municipality.name == "Mukono")
 
     def test_num_daily_wastes_returns_cached_count_if_set(self):
         self.municipality._num_actionable_daily_wastes = 1000
@@ -55,6 +56,11 @@ class TestMunicipality(IntegrationTestBase):
 
         return daily_wastes
 
+    def populate_monthly_density_reports(self):
+        # Should be run before daily wastes to make sure daily wastes have a
+        # density to reference
+        pass
+
     def test_num_trucks_delivered_msw(self):
         # approve some daily wastes to have data to aggregate on
         num_reports = Report.count()
@@ -66,7 +72,11 @@ class TestMunicipality(IntegrationTestBase):
         start = datetime.date(2014, 4, 1)
         end = datetime.date(2014, 4, 30)
         num_trucks = self.municipality.num_trucks_delivered_msw(start, end)
-        self.assertEqual(num_trucks, 1)
+        self.assertEqual(num_trucks, 2)
 
     def test_density_of_msw(self):
         pass
+
+    def test_volume_of_msw_processed(self):
+        self.populate_monthly_density_reports()
+        self.municipality.volume_of_msw_processed()
