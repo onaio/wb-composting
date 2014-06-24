@@ -100,7 +100,12 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         self.assertEqual(num_trucks, 2)
 
     def test_density_of_msw(self):
-        pass
+        self.populate_monthly_density_reports()
+        start = datetime.date(2014, 4, 1)
+        end = datetime.date(2014, 4, 30)
+        self.populate_daily_waste_reports()
+        average_density = self.municipality.density_of_msw(start, end)
+        self.assertAlmostEqual(average_density, 0.000202564)
 
     def test_volume_of_msw_processed(self):
         self.populate_monthly_density_reports()

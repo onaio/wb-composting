@@ -8,7 +8,7 @@ from sqlalchemy import (
     or_,
     and_
 )
-from sqlalchemy.sql.functions import sum as sqla_sum
+from sqlalchemy.sql.functions import sum as sqla_sum, func
 
 from composting import security
 from composting.models.base import DBSession, Base, ModelFactory
@@ -237,7 +237,10 @@ class Municipality(Base):
         return query.count()
 
     def density_of_msw(self, start_date, end_date):
-        pass
+        query = self.get_report_query(
+            DailyWaste, start_date, end_date,
+            func.avg(Report.report_json['density'].cast(Float)))
+        return query.first()[0]
 
     def volume_of_msw_processed(self, start_date, end_date):
         query = self.get_report_query(
