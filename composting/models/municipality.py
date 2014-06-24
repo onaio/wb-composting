@@ -245,6 +245,12 @@ class Municipality(Base):
             sqla_sum(Report.report_json['volume'].cast(Float)))
         return query.first()[0]
 
+    def tonnage_of_msw_processed(self, start_date, end_date):
+        query = self.get_report_query(
+            DailyWaste, start_date, end_date,
+            sqla_sum(Report.report_json['tonnage'].cast(Float)))
+        return query.first()[0]
+
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
         return request.route_url(
