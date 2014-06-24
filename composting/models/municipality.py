@@ -229,6 +229,10 @@ class Municipality(Base):
                 and_(Submission.date >= start_date,
                      Submission.date <= end_date))
 
+    def num_trucks_delivered_msw(self, start_date, end_date):
+        query = self.get_report_query(DailyWaste, start_date, end_date)
+        return query.count()
+
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
         return request.route_url(

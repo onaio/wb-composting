@@ -57,7 +57,7 @@
               <td rowspan="4">MWS</td>
               <td>Volume of MSW processed</td>
               <td>m<sup>3</sup></td>
-              <td>{{ municipality.volume_of_msw_processed(start, end)|format_decimal(request) }}</td>
+              <td><!-- value --></td>
               <td style="width: 25%">Consistency with normal monthly supply</td>
               <td><!-- comments --></td>
             </tr>
@@ -71,7 +71,7 @@
             <tr>
               <td>Number of trucks having delivered MSW</td>
               <td class="in-active"></td>
-              <td><!-- value --></td>
+              <td>{{ municipality.num_trucks_delivered_msw(start, end)|format_number(request) }}</td>
               <td>Consistency with normal activity</td>
               <td><!-- comments --></td>
             </tr>
