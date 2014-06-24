@@ -23,7 +23,7 @@ from composting.models.daily_vehicle_register import DailyVehicleDataRegister
 class MunicipalitySubmissionHandler(SubmissionHandler):
     # mapping of id strings to classes
     XFORM_CLASS_MAPPING = {
-        constants.MONTHLY_WASTE_DENSITY_FORM: MonthlyDensity,
+        MonthlyDensity.XFORM_ID: MonthlyDensity,
         DailyWaste.XFORM_ID: DailyWaste,
         constants.MONTHLY_WASTE_COMPOSITION_FORM: MonthlyWasteComposition,
         WindrowMonitoring.XFORM_ID: WindrowMonitoring,
@@ -40,7 +40,7 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
     @staticmethod
     def can_handle(json_payload):
         return json_payload[XFORM_ID_STRING] in [
-            constants.MONTHLY_WASTE_DENSITY_FORM,
+            MonthlyDensity.XFORM_ID,
             DailyWaste.XFORM_ID,
             constants.MONTHLY_WASTE_COMPOSITION_FORM,
             DailyRejectsLandfilled.XFORM_ID,

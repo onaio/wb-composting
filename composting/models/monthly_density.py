@@ -11,8 +11,9 @@ from composting.models.submission import Submission, ISubmission
 
 @implementer(ISubmission)
 class MonthlyDensity(Submission):
+    XFORM_ID = 'monthly_waste_density_register'
     __mapper_args__ = {
-        'polymorphic_identity': constants.MONTHLY_WASTE_DENSITY_FORM,
+        'polymorphic_identity': XFORM_ID
     }
 
     COMPRESSOR_TRUCK_FIELD = 'compressor_truck'

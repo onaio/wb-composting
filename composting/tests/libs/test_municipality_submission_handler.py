@@ -57,7 +57,7 @@ class TestDailyWasteSubmissionHandling(TestBase):
 
 class TestMonthlyDensitySubmissionHandling(TestDailyWasteSubmissionHandling):
     klass = MonthlyDensity
-    xform_id = constants.MONTHLY_WASTE_DENSITY_FORM
+    xform_id = MonthlyDensity.XFORM_ID
 
 
 class TestMonthlyWasteCompositionSubmissionHandling(
