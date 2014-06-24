@@ -1,9 +1,11 @@
 import datetime
+import transaction
 
 from composting.models.base import DBSession
 from composting.models import Municipality
 from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
+from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.report import Report
 
@@ -46,29 +48,50 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         self.assertEqual(self.municipality.num_actionable_monthly_waste, 3)
 
     def populate_daily_waste_reports(self):
+        # approve some daily wastes to have data to aggregate on
+        num_reports = Report.count()
         daily_wastes = DBSession\
             .query(DailyWaste)\
             .join(MunicipalitySubmission)\
-            .filter(DailyWaste.status == Submission.PENDING).all()
+            .filter(DailyWaste.status == Submission.PENDING)\
+            .all()
 
         for daily_waste in daily_wastes:
             daily_waste.status = Submission.APPROVED
+
+        # check that we've incremented num reports buy number of approved
+        # submissions
+        self.assertEqual(Report.count(), num_reports + len(daily_wastes))
 
         return daily_wastes
 
     def populate_monthly_density_reports(self):
         # Should be run before daily wastes to make sure daily wastes have a
         # density to reference
-        pass
+
+        # approve monthly density records to have data to aggregate on
+        query = DBSession\
+            .query(MonthlyDensity)\
+            .join(MunicipalitySubmission)\
+            .filter(MonthlyDensity.status == Submission.PENDING)
+        monthly_densities = query.all()
+
+        # change the monthly density threshold to
+        MonthlyDensity.THRESHOLD_MIN = 3
+
+        for monthly_density in monthly_densities:
+            monthly_density.status = Submission.APPROVED
+
+        with transaction.manager:
+            DBSession.add_all(monthly_densities)
+
+        # check that our number of approved monthly densities
+        self.assertEqual(query.count(), 0)
+
+        return monthly_densities
 
     def test_num_trucks_delivered_msw(self):
-        # approve some daily wastes to have data to aggregate on
-        num_reports = Report.count()
-        daily_wastes = self.populate_daily_waste_reports()
-
-        # check that we've incremented num reports buy number of approved
-        # submissions
-        self.assertEqual(Report.count(), num_reports + len(daily_wastes))
+        self.populate_daily_waste_reports()
         start = datetime.date(2014, 4, 1)
         end = datetime.date(2014, 4, 30)
         num_trucks = self.municipality.num_trucks_delivered_msw(start, end)
@@ -79,4 +102,8 @@ class TestMunicipalityIntegration(IntegrationTestBase):
 
     def test_volume_of_msw_processed(self):
         self.populate_monthly_density_reports()
-        self.municipality.volume_of_msw_processed()
+        start = datetime.date(2014, 4, 1)
+        end = datetime.date(2014, 4, 30)
+        self.populate_daily_waste_reports()
+        total_volume = self.municipality.volume_of_msw_processed(start, end)
+        self.assertAlmostEqual(total_volume, 178750.0)

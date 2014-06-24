@@ -47,7 +47,7 @@ class TestMunicipalities(IntegrationTestBase):
         # today's date for this test
         self.request.context = self.municipality
         self.request.GET = MultiDict([
-            ('period', '2014-01')
+            ('period', '2014-04')
         ])
         result = self.views.monthly_density_list()
         self.assertEqual(len(result['items']), 3)

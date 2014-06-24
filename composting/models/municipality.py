@@ -8,6 +8,7 @@ from sqlalchemy import (
     or_,
     and_
 )
+from sqlalchemy.sql.functions import sum as sqla_sum
 
 from composting import security
 from composting.models.base import DBSession, Base, ModelFactory
@@ -218,7 +219,7 @@ class Municipality(Base):
         :return: query object
         """
         return DBSession\
-            .query(Report)\
+            .query(*columns)\
             .join(
                 MunicipalitySubmission,
                 Report.submission_id == MunicipalitySubmission.submission_id)\
@@ -231,16 +232,18 @@ class Municipality(Base):
                      Submission.date <= end_date))
 
     def num_trucks_delivered_msw(self, start_date, end_date):
-        query = self.get_report_query(DailyWaste, start_date, end_date)
+        query = self.get_report_query(
+            DailyWaste, start_date, end_date, Report.submission_id)
         return query.count()
 
     def density_of_msw(self, start_date, end_date):
         pass
 
     def volume_of_msw_processed(self, start_date, end_date):
-        query = self.get_report_query(DailyWaste, start_date, end_date)
-        import ipdb; ipdb.set_trace()
-        return query.count()
+        query = self.get_report_query(
+            DailyWaste, start_date, end_date,
+            sqla_sum(Report.report_json['volume'].cast(Float)))
+        return query.first()[0]
 
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)

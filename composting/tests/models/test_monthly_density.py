@@ -87,6 +87,6 @@ class TestMonthlyDensity(TestBase):
 
     def test_get_average_density_returns_avg_if_above_threshold(self):
         MonthlyDensity.THRESHOLD_MIN = 2
-        date = datetime.date(2014, 01, 07)
+        date = datetime.date(2014, 04, 07)
         average_density = MonthlyDensity.get_average_density(date)
         self.assertAlmostEqual(average_density, 0.000226923)

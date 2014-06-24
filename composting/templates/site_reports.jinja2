@@ -57,7 +57,7 @@
               <td rowspan="4">MWS</td>
               <td>Volume of MSW processed</td>
               <td>m<sup>3</sup></td>
-              <td><!-- value --></td>
+              <td>{{ municipality.volume_of_msw_processed(start, end)|format_decimal(request) }}</td>
               <td style="width: 25%">Consistency with normal monthly supply</td>
               <td><!-- comments --></td>
             </tr>
