@@ -233,6 +233,9 @@ class Municipality(Base):
         query = self.get_report_query(DailyWaste, start_date, end_date)
         return query.count()
 
+    def density_of_msw(self, start_date, end_date):
+        pass
+
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
         return request.route_url(
