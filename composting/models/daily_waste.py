@@ -2,7 +2,6 @@ from zope.interface import implementer
 from sqlalchemy.orm.exc import NoResultFound
 from dashboard.libs.utils import date_string_to_time
 
-from composting import constants
 from composting.models.base import ModelFactory
 from composting.models.submission import ISubmission, Submission
 from composting.models.monthly_density import MonthlyDensity

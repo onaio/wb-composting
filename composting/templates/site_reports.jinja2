@@ -54,7 +54,7 @@
             </thead>
             <tbody>
             <tr>
-              <td rowspan="4">MWS</td>
+              <td rowspan="5">MWS</td>
               <td>Volume of MSW processed</td>
               <td>m<sup>3</sup></td>
               {% set volume_of_msw_processed = municipality.volume_of_msw_processed(start, end) %}
@@ -63,9 +63,18 @@
               <td><!-- comments --></td>
             </tr>
             <tr>
+              <td>Density of MSW</td>
+              <td>t/m<sup>3</sup></td>
+              {% set density_of_msw = municipality.density_of_msw(start, end) %}
+              <td>{{ density_of_msw|default(0, true)|format_decimal(request) }}</td>
+              <td style="width: 25%">Consistency with normal monthly supply</td>
+              <td><!-- comments --></td>
+            </tr>
+            <tr>
               <td>Quantity of MSW processed</td>
               <td>Tonnes</td>
-              <td><!-- value --></td>
+              {% set tonnage_of_msw_processed = municipality.tonnage_of_msw_processed(start, end) %}
+              <td>{{ tonnage_of_msw_processed|default(0, true)|format_decimal(request) }}</td>
               <td class="in-active"></td>
               <td class="in-active"></td>
             </tr>
