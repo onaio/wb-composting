@@ -142,3 +142,14 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         end = datetime.date(2014, 6, 30)
         fuel_consumption = self.municipality.fuel_consumption(start, end)
         self.assertEqual(fuel_consumption, 18.6)
+
+    def test_count_of_vehicles_transporting_compost(self):
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+
+        vehicle_count = self.municipality.vehicle_count(start, end)
+        self.assertEqual(vehicle_count, 0)
+        self.populate_daily_vehicle_data_register_reports()
+
+        vehicle_count = self.municipality.vehicle_count(start, end)
+        self.assertEqual(vehicle_count, 2)

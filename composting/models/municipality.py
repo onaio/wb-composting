@@ -265,11 +265,23 @@ class Municipality(Base):
                   (MunicipalitySubmission.submission_id ==
                    submission_subclass.id))
             .filter(MunicipalitySubmission.municipality == self)
+            .filter(submission_subclass.status == Submission.APPROVED)
             .filter(
                 and_(Submission.date >= start_date,
                      Submission.date <= end_date)))
 
         return query.first()[0]
+
+    def vehicle_count(self, start_date, end_date):
+        submission_subclass = DailyVehicleDataRegister
+        query = MunicipalitySubmission.get_items_query(
+            self,
+            submission_subclass,
+            and_(submission_subclass.status == Submission.APPROVED,
+                 submission_subclass.date >= start_date,
+                 submission_subclass.date <= end_date))
+
+        return query.count()
 
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
