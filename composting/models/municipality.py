@@ -251,7 +251,24 @@ class Municipality(Base):
     def tonnage_of_msw_processed(self, start_date, end_date):
         query = self.get_report_query(
             DailyWaste, start_date, end_date,
-            sqla_sum(Report.report_json['tonnage'].cast(Float)))
+            sqla_sum(Report.report_json['tonnage']).cast(Float))
+        return query.first()[0]
+
+    def fuel_consumption(self, start_date, end_date):
+        submission_subclass = DailyVehicleDataRegister
+        query = (
+            DBSession
+            .query(sqla_sum(
+                submission_subclass.json_data[
+                    submission_subclass.FUEL_PURCHASED_LTRS].cast(Float)))
+            .join(MunicipalitySubmission,
+                  (MunicipalitySubmission.submission_id ==
+                   submission_subclass.id))
+            .filter(MunicipalitySubmission.municipality == self)
+            .filter(
+                and_(Submission.date >= start_date,
+                     Submission.date <= end_date)))
+
         return query.first()[0]
 
     def url(self, request, action=None):

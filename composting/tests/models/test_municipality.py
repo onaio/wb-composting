@@ -5,6 +5,7 @@ from composting.models.base import DBSession
 from composting.models import Municipality
 from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
+from composting.models.daily_vehicle_register import DailyVehicleDataRegister
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.report import Report
@@ -49,14 +50,17 @@ class TestMunicipalityIntegration(IntegrationTestBase):
     def test_num_monthly_density_returns_actual_count_if_not_cached(self):
         self.assertEqual(self.municipality.num_actionable_monthly_waste, 3)
 
+    def get_pending_submissions_by_class(self, klass):
+        pending_submissions_query = DBSession\
+            .query(klass)\
+            .join(MunicipalitySubmission)\
+            .filter(klass.status == Submission.PENDING)
+        return pending_submissions_query
+
     def populate_daily_waste_reports(self):
         # approve some daily wastes to have data to aggregate on
         num_reports = Report.count()
-        daily_wastes = DBSession\
-            .query(DailyWaste)\
-            .join(MunicipalitySubmission)\
-            .filter(DailyWaste.status == Submission.PENDING)\
-            .all()
+        daily_wastes = self.get_pending_submissions_by_class(DailyWaste).all()
 
         for daily_waste in daily_wastes:
             daily_waste.status = Submission.APPROVED
@@ -72,10 +76,7 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         # density to reference
 
         # approve monthly density records to have data to aggregate on
-        query = DBSession\
-            .query(MonthlyDensity)\
-            .join(MunicipalitySubmission)\
-            .filter(MonthlyDensity.status == Submission.PENDING)
+        query = self.get_pending_submissions_by_class(MonthlyDensity)
         monthly_densities = query.all()
 
         # change the monthly density threshold to
@@ -122,3 +123,22 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         self.populate_daily_waste_reports()
         total_tonnage = self.municipality.tonnage_of_msw_processed(start, end)
         self.assertAlmostEqual(total_tonnage, 36.2083333333333)
+
+    def populate_daily_vehicle_data_register_reports(self):
+        query = self.get_pending_submissions_by_class(DailyVehicleDataRegister)
+        daily_vehicle_registers = query.all()
+
+        for daily_vehicle_register in daily_vehicle_registers:
+            daily_vehicle_register.status = Submission.APPROVED
+
+        with transaction.manager:
+            DBSession.add_all(daily_vehicle_registers)
+
+        self.assertEqual(query.count(), 0)
+
+    def test_fuel_consumption(self):
+        self.populate_daily_vehicle_data_register_reports()
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+        fuel_consumption = self.municipality.fuel_consumption(start, end)
+        self.assertEqual(fuel_consumption, 18.6)
