@@ -72,6 +72,9 @@ class Municipality(Base):
         DailyVehicleDataRegister.LIST_ACTION_NAME: DailyVehicleDataRegister
     }
 
+    # dict cache of skips with the skip type as the key
+    _skips = {}
+
     def __acl__(self):
         # users who have the p:municipality-edit permission and the
         # p:municipality-show:<id>
@@ -258,6 +261,29 @@ class Municipality(Base):
         traverse = (self.id, action) if action else (self.id,)
         return request.route_url(
             'municipalities', traverse=traverse)
+
+    def get_skip(self, skip_type):
+        """
+        Get the Skip with the specified skip_type that is tied to this
+        municipality
+
+        Meant to be used form within views where we can handle a None result
+        gracefully. Also caches the skip by type for subsequent queries
+
+        :param skip_type: Skip type, ideally between [A-Z]
+        :return: The skip or None
+        """
+        if skip_type in self._skips:
+            return self._skips[skip_type]
+        else:
+            try:
+                skip = Skip.get(Skip.municipality == self,
+                                Skip.skip_type == skip_type)
+            except NoResultFound:
+                self._skips[skip_type] = None
+            else:
+                self._skips[skip_type] = skip
+            return self._skips[skip_type]
 
 
 class MunicipalityFactory(ModelFactory):

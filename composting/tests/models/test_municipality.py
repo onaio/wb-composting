@@ -8,6 +8,7 @@ from composting.models.daily_waste import DailyWaste
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.report import Report
+from composting.models.skip import Skip
 
 from composting.tests.test_base import TestBase, IntegrationTestBase
 
@@ -29,7 +30,6 @@ class TestMunicipality(TestBase):
 
 
 class TestMunicipalityIntegration(IntegrationTestBase):
-
     def setUp(self):
         super(TestMunicipalityIntegration, self).setUp()
         self.setup_test_data()
@@ -122,3 +122,15 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         self.populate_daily_waste_reports()
         total_tonnage = self.municipality.tonnage_of_msw_processed(start, end)
         self.assertAlmostEqual(total_tonnage, 36.2083333333333)
+
+    def test_get_skip_if_skip_not_in_cache(self):
+        skip = self.municipality.get_skip('A')
+        self.assertIsInstance(skip, Skip)
+
+    def test_get_skip_returns_cached_skip(self):
+        skip = Skip(skip_type='X')
+        self.municipality._skips['X'] = skip
+        self.assertEqual(self.municipality.get_skip('X'), skip)
+
+    def test_get_skip_returns_none_if_skip_doesnt_exist(self):
+        self.assertIsNone(self.municipality.get_skip('Z'))
