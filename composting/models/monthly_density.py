@@ -1,9 +1,8 @@
 from zope.interface import implementer
 from sqlalchemy.orm.exc import NoResultFound
-
+from pyramid.threadlocal import get_current_registry
 from dashboard.libs.utils import date_string_to_time, date_string_to_month
 
-from composting import constants
 from composting.libs.utils import get_month_start_end
 from composting.models.base import DBSession
 from composting.models.submission import Submission, ISubmission
@@ -82,6 +81,12 @@ class MonthlyDensity(Submission):
         """
         Get the average density for the month that said date falls in
         """
+        # get the minimum threshold
+        threshold_min = cls.THRESHOLD_MIN
+        settings = get_current_registry().settings
+        if settings:
+            threshold_min = int(settings['monthly_density_threshold_min'])
+
         # determine the start and end days for the month
         start, end = get_month_start_end(date)
 
@@ -91,7 +96,7 @@ class MonthlyDensity(Submission):
                 cls.date >= start, cls.date <= end,
                 cls.status == Submission.APPROVED)\
             .all()
-        if len(monthly_densities) >= cls.THRESHOLD_MIN:
+        if len(monthly_densities) >= threshold_min:
             return cls.calculate_average_density(monthly_densities)
         else:
             return None
