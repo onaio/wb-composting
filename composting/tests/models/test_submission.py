@@ -8,7 +8,6 @@ from sqlalchemy.orm.attributes import instance_state
 
 from composting.models.base import DBSession
 from composting.models.submission import Submission, SubmissionFactory
-from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.report import Report
 from composting.tests.test_base import TestBase
 
@@ -90,3 +89,13 @@ class TestSubmission(TestBase):
         submission.delete_report = MagicMock(name='delete_report')
         submission.status = Submission.REJECTED
         submission.delete_report.assert_called_with()
+
+    def test_can_approve_returns_true_if_pending(self):
+        # can_approve should be True if
+        submission = Submission(status=Submission.PENDING)
+        self.assertTrue(submission.can_approve(testing.DummyRequest()))
+
+    def test_can_approve_returns_false_if_not_pending(self):
+        # can_approve should be True if
+        submission = Submission(status=Submission.APPROVED)
+        self.assertFalse(submission.can_approve(testing.DummyRequest()))

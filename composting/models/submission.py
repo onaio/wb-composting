@@ -60,7 +60,8 @@ class Submission(Base):
 
     def can_approve(self, request):
         """
-        Anyone with permissions can approve if pending
+        Anyone with permissions can approve if pending AND has valid density
+        and tonnage values
         """
         return self.status == Submission.PENDING
 

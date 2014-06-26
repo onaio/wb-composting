@@ -50,6 +50,6 @@ class MunicipalitySubmission(Base):
         from composting.models import Skip
         return DBSession.query(Skip)\
             .filter(
-                Skip.municipality_id == self.municipality_id,
+                Skip.municipality == self.municipality,
                 Skip.skip_type == skip_type)\
             .one()
