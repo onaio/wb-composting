@@ -20,6 +20,6 @@ class TestMunicipalitySubmission(TestBase):
 
     def test_get_skip(self):
         municipality_submission = MunicipalitySubmission(
-            municipality_id=self.municipality.id)
+            municipality=self.municipality)
         skip = municipality_submission.get_skip('A')
         self.assertIsInstance(skip, Skip)

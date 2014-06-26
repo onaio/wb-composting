@@ -26,7 +26,7 @@ class TestDailyWaste(TestBase):
 
     def test_calculates_volume_if_not_compressor(self):
         municipality_submission = MunicipalitySubmission(
-            municipality_id=self.municipality.id)
+            municipality=self.municipality)
         daily_waste = DailyWaste(
             json_data={
                 'compressor_truck': 'no',

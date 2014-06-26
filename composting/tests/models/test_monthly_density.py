@@ -27,7 +27,7 @@ class TestMonthlyDensity(TestBase):
                 MonthlyDensity.WASTE_HEIGHT_FIELD: '20.0'
             },
             municipality_submission=MunicipalitySubmission(
-                municipality_id=self.municipality.id
+                municipality=self.municipality
             ))
         self.assertEqual(monthly_density.volume, 6500.0)
 
