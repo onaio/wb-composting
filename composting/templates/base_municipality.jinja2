@@ -37,21 +37,21 @@
             <span>Site Reports</span>
           </a>
         </li>
-        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'daily-waste')) %}
-        <li class="{% if request.is_current_path(path) %}active{% endif %}">
-          <a href="{{ path }}">
-            <span>Daily Waste Register</span>
-            {% if municipality.num_actionable_daily_wastes > 0 %}
-            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_daily_wastes }}</small>
-            {% endif %}
-          </a>
-        </li>
         {% set path = request.route_path('municipalities', traverse=(municipality.id, 'monthly-waste-density')) %}
         <li class="{% if request.is_current_path(path) %}active{% endif %}">
           <a href="{{ path }}">
             <span>Monthly Waste Density</span>
             {% if municipality.num_actionable_monthly_waste > 0 %}
             <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_monthly_waste }}</small>
+            {% endif %}
+          </a>
+        </li>
+        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'daily-waste')) %}
+        <li class="{% if request.is_current_path(path) %}active{% endif %}">
+          <a href="{{ path }}">
+            <span>Daily Waste Register</span>
+            {% if municipality.num_actionable_daily_wastes > 0 %}
+            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_daily_wastes }}</small>
             {% endif %}
           </a>
         </li>
@@ -118,21 +118,21 @@
             {% endif %}
           </a>
         </li>
-        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'outgoing-compost-sales-register')) %}
-        <li class="{% if request.is_current_path(path) %}active{% endif %}">
-          <a href="{{ path }}">
-            <span>Daily Outgoing Compost Register</span>
-            {% if municipality.num_actionable_compost_sales_register > 0 %}
-            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_compost_sales_register }}</small>
-            {% endif %}
-          </a>
-        </li>
         {% set path = request.route_path('municipalities', traverse=(municipality.id, 'monthly-rejects-composition-from-sieving')) %}
         <li class="{% if request.is_current_path(path) %}active{% endif %}">
           <a href="{{ path }}">
             <span>Monthly Composition of Rejects from Sieving</span>
             {% if municipality.num_actionable_monthly_rejects_composition > 0 %}
             <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_monthly_rejects_composition }}</small>
+            {% endif %}
+          </a>
+        </li>
+        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'outgoing-compost-sales-register')) %}
+        <li class="{% if request.is_current_path(path) %}active{% endif %}">
+          <a href="{{ path }}">
+            <span>Daily Outgoing Compost Register</span>
+            {% if municipality.num_actionable_compost_sales_register > 0 %}
+            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_compost_sales_register }}</small>
             {% endif %}
           </a>
         </li>
