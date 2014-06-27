@@ -257,6 +257,9 @@ class Municipality(Base):
             sqla_sum(Report.report_json['tonnage'].cast(Float)))
         return query.first()[0]
 
+    def volume_of_mature_compost(self, start_date, end_date):
+        return 0
+
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
         return request.route_url(
