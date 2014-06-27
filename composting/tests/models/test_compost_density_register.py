@@ -23,12 +23,20 @@ class TestCompostDensityRegister(TestBase):
             })
         self.assertEqual(compost_density.density(municipality), 12.0)
 
-    def test_get_by_date_returns_record_by_specified_date(self):
+
+class TestCompostDensityRegisterWithTestData(TestBase):
+    def setUp(self):
+        super(TestCompostDensityRegisterWithTestData, self).setUp()
         self.setup_test_data()
-        compost_density = CompostDensityRegister.get_by_date(date(2014, 5, 1))
+        self.municipality = Municipality.get(Municipality.name == "Mukono")
+
+    def test_get_by_date_returns_record_by_specified_date(self):
+        compost_density = CompostDensityRegister.get_by_date(
+            date(2014, 5, 1), self.municipality)
         self.assertIsInstance(compost_density, CompostDensityRegister)
 
     def test_get_by_date_returns_non_if_none_found(self):
-        self.setup_test_data()
-        compost_density = CompostDensityRegister.get_by_date(date(2013, 1, 1))
+        compost_density = CompostDensityRegister.get_by_date(
+            date(2013, 1, 1),
+            self.municipality)
         self.assertIsNone(compost_density)

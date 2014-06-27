@@ -29,7 +29,9 @@ class CompostDensityRegister(Submission):
         return self.net_weight / municipality.box_volume
 
     @classmethod
-    def get_by_date(cls, date):
+    def get_by_date(cls, date, municipality, *criterion):
+        from composting.models.municipality_submission import\
+            MunicipalitySubmission
         """
         Tries to retrieve newest compost density record for whichever month is
         specified by date
@@ -38,6 +40,13 @@ class CompostDensityRegister(Submission):
         """
         start, end = get_month_start_end(date)
         return DBSession.query(cls)\
-            .filter(cls.date >=start, cls.date <= end)\
+            .select_from(MunicipalitySubmission)\
+            .join(cls)\
+            .filter(
+                    cls.xform_id == cls.XFORM_ID,
+                    cls.date >=start,
+                    cls.date <= end,
+                    MunicipalitySubmission.municipality == municipality,
+                    *criterion)\
             .order_by(desc(cls.date))\
             .first()

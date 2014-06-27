@@ -20,6 +20,7 @@
                   <th rowspan="3" style="width: 7%">Total Mature Compost (kg)</th>
                   <th rowspan="3" style="width: 7%">Sieved Compost (kg)</th>
                   <th colspan="6" class="text-center">REJECTS</th>
+                  <th rowspan="3">Volume</th>
                   <th rowspan="3">Remarks</th>
                   <th rowspan="3">Status</th>
                   <th rowspan="3">Actions</th>
@@ -51,6 +52,14 @@
                   <td>{{ report.garden_yard_waste }}</td>
                   <td>{{ report.textiles }}</td>
                   <td>{{ report.glass_plastics_metal }}</td>
+                  <td rowspan="2">
+                    {%- set volume_of_mature_compost = item.volume_of_mature_compost() %}
+                    {%- if volume_of_mature_compost %}
+                      {{ volume_of_mature_compost|format_decimal(request) }}
+                    {%- else %}
+                      <span class="label label-danger" data-toggle="tooltip" title="Cannot approve! Monthly compost density is not available"><i class="fa fa-warning"></i></span>
+                    {%- endif %}
+                  </td>
                   <td rowspan="2">
                     {% if report.remarks %}
                     <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
