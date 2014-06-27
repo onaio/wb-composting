@@ -54,7 +54,7 @@
             </thead>
             <tbody>
             <tr>
-              <td rowspan="5">MWS</td>
+              <td rowspan="4">MWS</td>
               <td>Volume of MSW processed</td>
               <td>m<sup>3</sup></td>
               {% set volume_of_msw_processed = municipality.volume_of_msw_processed(start, end) %}
@@ -75,16 +75,166 @@
               <td>Tonnes</td>
               {% set tonnage_of_msw_processed = municipality.tonnage_of_msw_processed(start, end) %}
               <td>{{ tonnage_of_msw_processed|default(0, true)|format_decimal(request) }}</td>
-              <td class="in-active"></td>
-              <td class="in-active"></td>
+              <td class="inactive"></td>
+              <td class="inactive"></td>
             </tr>
             <tr>
               <td>Number of trucks having delivered MSW</td>
-              <td class="in-active"></td>
+              <td class="inactive"></td>
               <td>{{ municipality.num_trucks_delivered_msw(start, end)|format_number(request) }}</td>
               <td>Consistency with normal activity</td>
-              <td><!-- comments --></td>
+              <td class="inactive"><!-- comments --></td>
             </tr>
+            <!-- compost report -->
+            <tr>
+              <td rowspan="7">Compost</td>
+              <td>Volume of mature compost (Qmc)</td>
+              <td>m<sup>3</sup></td>
+              <td><!-- value--></td>
+              <td class="inactive"></td>
+              <td class="inactive"></td>
+            </tr>
+            <tr>
+              <td>Density of mature compost (Dmc)</td>
+              <td>Ton/m<sup>3</sup></td>
+              <td><!-- value--></td>
+              <td>Consistency with previous months</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Conversion factor mature to sieved (WSieved/WMature)</td>
+              <td>N/A</td>
+              <td><!-- value--></td>
+              <td>Comparison with Quantity of rejects from sieving</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Quantity of compost produced (Qpc)</td>
+              <td>Tonnes</td>
+              <td><!-- value--></td>
+              <td>Consistency with normal monthly production</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Quantity of compost sold</td>
+              <td>Tonnes</td>
+              <td><!-- value--></td>
+              <td>Consistency with compost produced</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Number of vehicles having transported compost</td>
+              <td>N/A</td>
+              <td><!-- value--></td>
+              <td>Comparison with previous months</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Average distance travelled by vehicles transporting compost</td>
+              <td>Kms</td>
+              <td><!-- value--></td>
+              <td>Comparison with previous months</td>
+              <td></td>
+            </tr>
+            <!-- /compost report -->
+            <!-- Rejects from sieving -->
+            <tr>
+              <td rowspan="4">Rejects from sieving</td>
+              <td>Volume of rejects from sieving landfilled</td>
+              <td>Tonnes</td>
+              <td><!-- value--></td>
+              <td class="inactive"></td>
+              <td class="inactive"></td>
+            </tr>
+            <tr>
+              <td>Density of rejects from sieving</td>
+              <td>Ton/m<sup>3</sup></td>
+              <td><!-- value--></td>
+              <td class="inactive"></td>
+              <td class="inactive"></td>
+            </tr>
+            <tr>
+              <td rowspan="2">Quantity of rejects from sieving landfilled</td>
+              <td>Tonnes</td>
+              <td><!-- value--></td>
+              <td rowspan="2">Consistency with previous months</td>
+              <td rowspan="2"></td>
+            </tr>
+            <tr>
+              <td>%</td>
+              <td><!-- value--></td>
+            </tr>
+            <!-- /Rejects from sieving -->
+            <!-- Oxygen content -->
+            <tr>
+              <td rowspan="3">Oxygen content</td>
+              <td>Total # of samples</td>
+              <td>N/A</td>
+              <td><!-- value --></td>
+              <td>Normal operation (about 240 samples for 4 windrows)</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td rowspan="2">Total # of samples below 10%</td>
+              <td>N/A</td>
+              <td><!-- value --></td>
+              <td rowspan="2">Normal operation (about 240 samples for 4 windrows)</td>
+              <td rowspan="2"></td>
+            </tr>
+            <tr>
+              <td>%</td>
+              <td><!-- value--></td>
+            </tr>
+            <!-- /Oxygen content -->
+            <!-- Energy -->
+            <tr>
+              <td rowspan="2">Energy</td>
+              <td>Fuel consumption (on site)</td>
+              <td>Litres</td>
+              <td><!-- value --></td>
+              <td>Consistency with MSW processed</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Electricity consumption</td>
+              <td>MWh</td>
+              <td><!-- value --></td>
+              <td>Consistency with normal activity</td>
+              <td></td>
+            </tr>
+            <!-- /Energy -->
+            <!-- Leachate -->
+            <tr>
+              <td>Leachate</td>
+              <td>Volume of leachate accumulated in 24 hours</td>
+              <td>m<sup>3</sup></td>
+              <td><!-- value --></td>
+              <td>Any impacting factors</td>
+              <td></td>
+            </tr>
+            <!-- /Leachate -->
+            <!-- Plant operation -->
+            <tr>
+              <td rowspan="3">Plant operation</td>
+              <td>Number of days of operation</td>
+              <td></td>
+              <td><!-- value --></td>
+              <td rowspan="2">Days of operation + holidays + Sundays = Days in the month</td>
+              <td rowspan="2"></td>
+            </tr>
+            <tr>
+              <td>Number of hollidays</td>
+              <td></td>
+              <td><!-- value --></td>
+            </tr>
+            <tr>
+              <td>Number of days of abnormal operation (much more or less MSW supply)</td>
+              <td></td>
+              <td><!-- value --></td>
+              <td rowspan="2">Any impacting factors (e.g. tractor breakdown)</td>
+              <td rowspan="2"></td>
+            </tr>
+            <!-- /Plant operation -->
             </tbody>
           </table>
         </div>

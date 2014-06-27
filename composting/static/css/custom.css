@@ -5,7 +5,7 @@
     text-overflow: ellipsis;
 }
 
-.table td.in-active {
+.table td.inactive {
     background-color: #f5f5f5;
 }
 
