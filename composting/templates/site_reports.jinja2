@@ -90,7 +90,8 @@
               <td rowspan="7">Compost</td>
               <td>Volume of mature compost (Qmc)</td>
               <td>m<sup>3</sup></td>
-              <td><!-- value--></td>
+              {% set volume_of_mature_compost = municipality.volume_of_mature_compost(start, end) %}
+              <td>{% if volume_of_mature_compost is none %} - {% else %}{{ volume_of_mature_compost|format_decimal(request) }}{% endif %}</td>
               <td class="inactive"></td>
               <td class="inactive"></td>
             </tr>

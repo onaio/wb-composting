@@ -1,4 +1,8 @@
 from zope.interface import implementer
+from sqlalchemy import desc
+
+from composting.libs.utils import get_month_start_end
+from composting.models.base import DBSession
 from composting.models.submission import Submission, ISubmission
 
 
@@ -24,12 +28,25 @@ class CompostDensityRegister(Submission):
     def density(self, municipality):
         return self.net_weight / municipality.box_volume
 
-    def create_or_update_report(self):
-        report = self.get_or_create_report()
-        municipality = None
-        report.report_json = {
-            'weight': self.net_weight,
-            'density': self.density(municipality)
-        }
-        report.submission = self
-        report.save()
+    @classmethod
+    def get_by_date(cls, date, municipality, *criterion):
+        from composting.models.municipality_submission import\
+            MunicipalitySubmission
+        """
+        Tries to retrieve newest compost density record for whichever month is
+        specified by date
+        :param date: the target month
+        :return:
+        """
+        start, end = get_month_start_end(date)
+        return DBSession.query(cls)\
+            .select_from(MunicipalitySubmission)\
+            .join(cls)\
+            .filter(
+                cls.xform_id == cls.XFORM_ID,
+                cls.date >= start,
+                cls.date <= end,
+                MunicipalitySubmission.municipality == municipality,
+                *criterion)\
+            .order_by(desc(cls.date))\
+            .first()

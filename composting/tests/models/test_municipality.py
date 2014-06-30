@@ -166,3 +166,8 @@ class TestMunicipalityIntegration(IntegrationTestBase):
 
     def test_get_skip_returns_none_if_skip_doesnt_exist(self):
         self.assertIsNone(self.municipality.get_skip('Z'))
+
+    def test_volume_of_mature_compost(self):
+        # we already have a monthly mature compost record for May within
+        # tests, lets add another for june to test with
+        pass
