@@ -1,6 +1,8 @@
 from datetime import date
 
+from composting.models.submission import Submission
 from composting.models.municipality import Municipality
+from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.compost_density_register import CompostDensityRegister
 from composting.tests.test_base import TestBase
 
@@ -14,21 +16,23 @@ class TestCompostDensityRegister(TestBase):
             })
         self.assertEqual(compost_density.net_weight, 1.5)
 
-    def test_density(self):
-        municipality = Municipality(box_volume=0.125)
-        compost_density = CompostDensityRegister(
-            json_data={
-                'filled_box_weight': '2.5',
-                'empty_box_weight': '1.0'
-            })
-        self.assertEqual(compost_density.density(municipality), 12.0)
-
 
 class TestCompostDensityRegisterWithTestData(TestBase):
     def setUp(self):
         super(TestCompostDensityRegisterWithTestData, self).setUp()
         self.setup_test_data()
         self.municipality = Municipality.get(Municipality.name == "Mukono")
+
+    def test_density(self):
+        compost_density = CompostDensityRegister(
+            status=Submission.APPROVED,
+            json_data={
+                'filled_box_weight': '1.8',
+                'empty_box_weight': '1.0'
+            },
+            municipality_submission=MunicipalitySubmission(
+                municipality=self.municipality))
+        self.assertAlmostEqual(compost_density.density(), 6.4)
 
     def test_get_by_date_returns_record_by_specified_date(self):
         compost_density = CompostDensityRegister.get_by_date(
@@ -40,3 +44,17 @@ class TestCompostDensityRegisterWithTestData(TestBase):
             date(2013, 1, 1),
             self.municipality)
         self.assertIsNone(compost_density)
+
+    def test_create_or_update_report(self):
+        compost_density = CompostDensityRegister(
+            status=Submission.APPROVED,
+            json_data={
+                'filled_box_weight': '1.8',
+                'empty_box_weight': '1.0'
+            },
+            municipality_submission=MunicipalitySubmission(
+                municipality=self.municipality))
+        report = compost_density.create_or_update_report()
+        self.assertEqual(report.report_json, {
+            'density': 6.4
+        })

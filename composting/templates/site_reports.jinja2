@@ -98,7 +98,8 @@
             <tr>
               <td>Density of mature compost (Dmc)</td>
               <td>Ton/m<sup>3</sup></td>
-              <td><!-- value--></td>
+              {% set density_of_mature_compost = municipality.density_of_mature_compost(start, end) %}
+              <td>{% if density_of_mature_compost is none %} - {% else %}{{ density_of_mature_compost|format_decimal(request) }}{% endif %}</td>
               <td>Consistency with previous months</td>
               <td></td>
             </tr>

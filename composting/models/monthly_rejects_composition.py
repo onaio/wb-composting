@@ -48,7 +48,7 @@ class MonthlyRejectsComposition(Submission):
         if compost_density_record is None:
             return None
 
-        return compost_density_record.density(municipality)
+        return compost_density_record.density()
 
     def can_approve(self, request):
         return super(MonthlyRejectsComposition, self).can_approve(request)\

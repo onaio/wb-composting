@@ -25,7 +25,8 @@ class CompostDensityRegister(Submission):
         return float(self.json_data[self.FILLED_BOX_WEIGHT_FIELD])\
             - float(self.json_data[self.EMPTY_BOX_WEIGHT_FIELD])
 
-    def density(self, municipality):
+    def density(self):
+        municipality = self.municipality_submission.municipality
         return self.net_weight / municipality.box_volume
 
     @classmethod
@@ -43,10 +44,19 @@ class CompostDensityRegister(Submission):
             .select_from(MunicipalitySubmission)\
             .join(cls)\
             .filter(
-                    cls.xform_id == cls.XFORM_ID,
-                    cls.date >=start,
-                    cls.date <= end,
-                    MunicipalitySubmission.municipality == municipality,
-                    *criterion)\
+                cls.xform_id == cls.XFORM_ID,
+                cls.date >= start,
+                cls.date <= end,
+                MunicipalitySubmission.municipality == municipality,
+                *criterion)\
             .order_by(desc(cls.date))\
             .first()
+
+    def create_or_update_report(self):
+        report = self.get_or_create_report()
+        report.report_json = {
+            'density': self.density(),
+        }
+        report.submission = self
+        report.save()
+        return report
