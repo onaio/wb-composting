@@ -57,7 +57,7 @@ class CompostSalesRegister(Submission):
         if compost_density is None:
             return None
 
-        self._density = self._density or compost_density.density(municipality)
+        self._density = self._density or compost_density.density()
         return self._density
 
     def weight(self, municipality):

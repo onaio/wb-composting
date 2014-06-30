@@ -1,7 +1,7 @@
 {% extends 'base_municipality.jinja2' %}
 {% from 'macros/badge_class_from_status.jinja2' import badge_class_from_status %}
 {% from 'macros/action_buttons.jinja2' import action_buttons %}
-{% block title %}Monthly Density of Rejects from Sieving{% endblock %}
+{% block title %}Monthly Compost Density Register{% endblock %}
 {% block breadcrumbs %}
 {% endblock breadcrumbs %}
 {% block content %}
@@ -34,7 +34,7 @@
                   <td>{{ report.empty_box_weight }}</td>
                   <td>{{ compost_density.net_weight }}</td>
                   <td>{{ municipality.box_volume }}</td>
-                  <td>{{ compost_density.density(municipality) }}</td>
+                  <td>{{ compost_density.density() }}</td>
                   <td>
                     {% if report.remarks %}
                     <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">

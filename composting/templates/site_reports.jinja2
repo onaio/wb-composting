@@ -98,21 +98,24 @@
             <tr>
               <td>Density of mature compost (Dmc)</td>
               <td>Ton/m<sup>3</sup></td>
-              <td><!-- value--></td>
+              {% set density_of_mature_compost = municipality.density_of_mature_compost(start, end) %}
+              <td>{% if density_of_mature_compost is none %} - {% else %}{{ density_of_mature_compost|format_decimal(request) }}{% endif %}</td>
               <td>Consistency with previous months</td>
               <td></td>
             </tr>
             <tr>
               <td>Conversion factor mature to sieved (WSieved/WMature)</td>
               <td>N/A</td>
-              <td><!-- value--></td>
+              {% set conversion_factor_mature_to_sieved = municipality.conversion_factor_mature_to_sieved(start, end) %}
+              <td>{% if conversion_factor_mature_to_sieved is none %} - {% else %}{{ conversion_factor_mature_to_sieved|format_decimal(request) }}{% endif %}</td>
               <td>Comparison with Quantity of rejects from sieving</td>
               <td></td>
             </tr>
             <tr>
               <td>Quantity of compost produced (Qpc)</td>
               <td>Tonnes</td>
-              <td><!-- value--></td>
+              {% set quantity_of_compost_produced = municipality.quantity_of_compost_produced(start, end) %}
+              <td>{% if quantity_of_compost_produced is none %} - {% else %}{{ quantity_of_compost_produced|format_decimal(request) }}{% endif %}</td>
               <td>Consistency with normal monthly production</td>
               <td></td>
             </tr>
@@ -225,7 +228,7 @@
               <td rowspan="2"></td>
             </tr>
             <tr>
-              <td>Number of hollidays</td>
+              <td>Number of holidays</td>
               <td></td>
               <td><!-- value --></td>
             </tr>

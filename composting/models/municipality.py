@@ -293,6 +293,27 @@ class Municipality(Base):
                 Report.report_json['volume_of_mature_compost'].cast(Float)))
         return query.first()[0]
 
+    def density_of_mature_compost(self, start_date, end_date):
+        query = self.get_report_query(
+            MonthlyRejectsComposition, start_date, end_date,
+            func.avg(
+                Report.report_json['density_of_mature_compost'].cast(Float)))
+        return query.first()[0]
+
+    def conversion_factor_mature_to_sieved(self, start_date, end_date):
+        query = self.get_report_query(
+            MonthlyRejectsComposition, start_date, end_date,
+            func.avg(Report.report_json['conversion_factor'].cast(Float)))
+        return query.first()[0]
+
+    def quantity_of_compost_produced(self, start_date, end_date):
+        query = self.get_report_query(
+            MonthlyRejectsComposition, start_date, end_date,
+            sqla_sum(
+                Report.report_json['quantity_of_compost_produced']
+                    .cast(Float)))
+        return query.first()[0]
+
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
         return request.route_url(
