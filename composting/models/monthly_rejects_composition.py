@@ -1,4 +1,6 @@
 from zope.interface import implementer
+
+from composting.constants import KGS_PER_TONNE
 from composting.models.submission import Submission, ISubmission
 
 
@@ -20,16 +22,6 @@ class MonthlyRejectsComposition(Submission):
         return float(self.json_data[key])\
             / float(self.json_data[self.TOTAL_MATURE_COMPOST_FIELD])
 
-    def volume_of_mature_compost(self):
-        # find the monthly compost density for our month and municipality
-        monthly_compost_density = self.get_compost_density()
-        if monthly_compost_density is None:
-            return None
-
-        # volume = mass/density
-        return float(self.json_data[self.TOTAL_MATURE_COMPOST_FIELD])\
-            / monthly_compost_density
-
     def get_compost_density(self):
         from composting.models.compost_density_register import\
             CompostDensityRegister
@@ -50,6 +42,16 @@ class MonthlyRejectsComposition(Submission):
 
         return compost_density_record.density()
 
+    def volume_of_mature_compost(self):
+        # find the monthly compost density for our month and municipality
+        monthly_compost_density = self.get_compost_density()
+        if monthly_compost_density is None:
+            return None
+
+        # volume = mass/density
+        return float(self.json_data[self.TOTAL_MATURE_COMPOST_FIELD])\
+            / monthly_compost_density
+
     def can_approve(self, request):
         return super(MonthlyRejectsComposition, self).can_approve(request)\
             and self.volume_of_mature_compost() is not None
@@ -57,7 +59,7 @@ class MonthlyRejectsComposition(Submission):
     def create_or_update_report(self):
         report = self.get_or_create_report()
         volume_of_mature_compost = self.volume_of_mature_compost()
-        density_of_mature_compost = self.get_compost_density()
+        density_of_mature_compost = self.get_compost_density()/KGS_PER_TONNE
         conversion_factor = self.percentage(self.SIEVED_COMPOST_FIELD)
         report.report_json = {
             'volume_of_mature_compost': volume_of_mature_compost,
@@ -70,6 +72,5 @@ class MonthlyRejectsComposition(Submission):
             'num_vehicles_transported_compost': 0,
             'avg_distance_travelled_by_vehicles': 0
         }
-        report.submission = self
         report.save()
         return report

@@ -114,7 +114,8 @@
             <tr>
               <td>Quantity of compost produced (Qpc)</td>
               <td>Tonnes</td>
-              <td><!-- value--></td>
+              {% set quantity_of_compost_produced = municipality.quantity_of_compost_produced(start, end) %}
+              <td>{% if quantity_of_compost_produced is none %} - {% else %}{{ quantity_of_compost_produced|format_decimal(request) }}{% endif %}</td>
               <td>Consistency with normal monthly production</td>
               <td></td>
             </tr>
@@ -226,7 +227,7 @@
               <td rowspan="2"></td>
             </tr>
             <tr>
-              <td>Number of hollidays</td>
+              <td>Number of holidays</td>
               <td></td>
               <td><!-- value --></td>
             </tr>
