@@ -108,6 +108,7 @@ class TestBase(unittest.TestCase):
         testing.tearDown()
 
     def setup_test_data(self):
+
         admin = User(id=1, username='admin', password='admin', active=True,
                      group='nema')
         municipality = Municipality(name="Mukono")

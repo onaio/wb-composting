@@ -1,11 +1,11 @@
 from sqlalchemy import (
     Column,
     Integer,
-    Date,
     ForeignKey,
     Index
 )
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm.exc import NoResultFound
 
 from composting.models.base import Base, DBSession
 
@@ -47,9 +47,9 @@ class MunicipalitySubmission(Base):
         Get the skip associated with this municipality and of the specified
         type
         """
-        from composting.models import Skip
-        return DBSession.query(Skip)\
-            .filter(
-                Skip.municipality_id == self.municipality_id,
-                Skip.skip_type == skip_type)\
-            .one()
+        skip = self.municipality.get_skip(skip_type)
+        if skip is None:
+            raise NoResultFound("Skip type '{}' does not exist in this"
+                                " municipality".format(skip_type))
+        else:
+            return skip

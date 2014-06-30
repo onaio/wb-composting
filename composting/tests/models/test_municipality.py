@@ -9,6 +9,7 @@ from composting.models.daily_vehicle_register import DailyVehicleDataRegister
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.report import Report
+from composting.models.skip import Skip
 
 from composting.tests.test_base import TestBase, IntegrationTestBase
 
@@ -153,3 +154,15 @@ class TestMunicipalityIntegration(IntegrationTestBase):
 
         vehicle_count = self.municipality.vehicle_count(start, end)
         self.assertEqual(vehicle_count, 2)
+
+    def test_get_skip_if_skip_not_in_cache(self):
+        skip = self.municipality.get_skip('A')
+        self.assertIsInstance(skip, Skip)
+
+    def test_get_skip_returns_cached_skip(self):
+        skip = Skip(skip_type='X')
+        self.municipality._skips['X'] = skip
+        self.assertEqual(self.municipality.get_skip('X'), skip)
+
+    def test_get_skip_returns_none_if_skip_doesnt_exist(self):
+        self.assertIsNone(self.municipality.get_skip('Z'))

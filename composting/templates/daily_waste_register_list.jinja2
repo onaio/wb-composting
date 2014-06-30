@@ -22,15 +22,15 @@
             <table class="table table-hover">
               <thead>
               <tr>
-                <th>Time</th>
-                <th>Vehicle #</th>
-                <th>Skip #</th>
-                <th>Skip Type</th>
-                <th>Height</th>
-                <th>Volume</th>
-                <th>Tonnage</th>
-                <th>Remarks</th>
-                <th>Status</th>
+                <th style="width: 8%">Time</th>
+                <th style="width: 12%">Vehicle #</th>
+                <th  style="width: 8%">Skip #</th>
+                <th style="width: 8%">Skip Type</th>
+                <th style="width: 10%">Height</th>
+                <th style="width: 10%">Volume</th>
+                <th style="width: 10%">Tonnage</th>
+                <th style="width: 12%">Remarks</th>
+                <th style="width: 10%">Status</th>
                 <th>Actions</th>
               </tr>
               </thead>
@@ -38,15 +38,28 @@
               {% for daily_waste in group.list %}
                 {% set report = daily_waste.json_data %}
                 {% set status = daily_waste.status %}
+                {% set volume = daily_waste.volume %}
                 {% set tonnage = daily_waste.tonnage %}
+                {% set skip = municipality.get_skip(report.skip_type) %}
                 <tr>
                   <td>{{ daily_waste.time|format_time(request) }}</td>
                   <td>{{ report.vehicle_number }}</td>
                   <td>{{ report.skip_number }}</td>
-                  <td>{{ report.skip_type }}</td>
-                  <td>{% if report.waste_height %}{{ report.waste_height }}m{% endif %}</td>
-                  <td>{% if daily_waste.volume is not none %}{{ daily_waste.volume }}m<sup>3</sup>{% endif %}</td>
-                  <td>{% if tonnage is not none %}{{ tonnage|format_decimal(request) }}t{% else %}-{% endif %}</td>
+                  <td>
+                    {{ report.skip_type }}
+                    {% if not skip and report.compressor_truck == 'no' %}
+                    <span class="label label-danger" data-toggle="tooltip" title="Cannot approve! Invalid skip type"><i class="fa fa-warning"></i></span>
+                    {% endif %}
+                  </td>
+                  <td>{% if report.compressor_truck == 'no' %}{{ report.waste_height }}m{% else %}N/A{% endif %}</td>
+                  <td>{% if volume is not none %}{{ volume }}m<sup>3</sup>{% endif %}</td>
+                  <td>
+                    {% if tonnage is not none %}{{ tonnage|format_decimal(request) }}t{% else %}-{% endif %}
+                    {# if we have a volume but no tonnage, we're missing a monthly density value #}
+                    {% if volume is not none and tonnage is none %}
+                    <span class="label label-danger" data-toggle="tooltip" title="Cannot approve! Monthly density is not available"><i class="fa fa-warning"></i></span>
+                    {% endif %}
+                  </td>
                   <td>
                     {% if report.remarks %}
                     <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">

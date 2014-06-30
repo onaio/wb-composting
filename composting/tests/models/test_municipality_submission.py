@@ -1,4 +1,5 @@
-from composting import constants
+from sqlalchemy.orm.exc import NoResultFound
+
 from composting.models.municipality import Municipality
 from composting.models.daily_waste import DailyWaste
 from composting.models.skip import Skip
@@ -20,6 +21,11 @@ class TestMunicipalitySubmission(TestBase):
 
     def test_get_skip(self):
         municipality_submission = MunicipalitySubmission(
-            municipality_id=self.municipality.id)
+            municipality=self.municipality)
         skip = municipality_submission.get_skip('A')
         self.assertIsInstance(skip, Skip)
+
+    def test_get_skip_raises_no_result_found_if_skip_not_found(self):
+        municipality_submission = MunicipalitySubmission(
+            municipality=self.municipality)
+        self.assertRaises(NoResultFound, municipality_submission.get_skip, 'Z')

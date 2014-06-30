@@ -90,6 +90,10 @@ class DailyWaste(Submission):
         report.submission = self
         report.save()
 
+    def can_approve(self, request):
+        return super(DailyWaste, self).can_approve(request)\
+            and self.tonnage is not None
+
 
 class DailyWasteFactory(ModelFactory):
     def __getitem__(self, item):
