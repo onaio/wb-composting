@@ -254,7 +254,7 @@ class Municipality(Base):
     def tonnage_of_msw_processed(self, start_date, end_date):
         query = self.get_report_query(
             DailyWaste, start_date, end_date,
-            sqla_sum(Report.report_json['tonnage']).cast(Float))
+            sqla_sum(Report.report_json['tonnage'].cast(Float)))
         return query.first()[0]
 
     def fuel_consumption(self, start_date, end_date):
