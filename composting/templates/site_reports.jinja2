@@ -106,7 +106,8 @@
             <tr>
               <td>Conversion factor mature to sieved (WSieved/WMature)</td>
               <td>N/A</td>
-              <td><!-- value--></td>
+              {% set conversion_factor_mature_to_sieved = municipality.conversion_factor_mature_to_sieved(start, end) %}
+              <td>{% if conversion_factor_mature_to_sieved is none %} - {% else %}{{ conversion_factor_mature_to_sieved|format_decimal(request) }}{% endif %}</td>
               <td>Comparison with Quantity of rejects from sieving</td>
               <td></td>
             </tr>
