@@ -257,6 +257,35 @@ class Municipality(Base):
             sqla_sum(Report.report_json['tonnage'].cast(Float)))
         return query.first()[0]
 
+    def fuel_consumption(self, start_date, end_date):
+        submission_subclass = DailyVehicleDataRegister
+        query = (
+            DBSession
+            .query(sqla_sum(
+                submission_subclass.json_data[
+                    submission_subclass.FUEL_PURCHASED_LTRS].cast(Float)))
+            .join(MunicipalitySubmission,
+                  (MunicipalitySubmission.submission_id ==
+                   submission_subclass.id))
+            .filter(MunicipalitySubmission.municipality == self)
+            .filter(submission_subclass.status == Submission.APPROVED)
+            .filter(
+                and_(Submission.date >= start_date,
+                     Submission.date <= end_date)))
+
+        return query.first()[0]
+
+    def vehicle_count(self, start_date, end_date):
+        submission_subclass = DailyVehicleDataRegister
+        query = MunicipalitySubmission.get_items_query(
+            self,
+            submission_subclass,
+            and_(submission_subclass.status == Submission.APPROVED,
+                 submission_subclass.date >= start_date,
+                 submission_subclass.date <= end_date))
+
+        return query.count()
+
     def volume_of_mature_compost(self, start_date, end_date):
         query = self.get_report_query(
             MonthlyRejectsComposition, start_date, end_date,

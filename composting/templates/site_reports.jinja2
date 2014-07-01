@@ -129,7 +129,7 @@
             <tr>
               <td>Number of vehicles having transported compost</td>
               <td>N/A</td>
-              <td><!-- value--></td>
+              <td>{{ municipality.vehicle_count(start, end)|format_number(request) }}</td>
               <td>Comparison with previous months</td>
               <td></td>
             </tr>
@@ -195,7 +195,8 @@
               <td rowspan="2">Energy</td>
               <td>Fuel consumption (on site)</td>
               <td>Litres</td>
-              <td><!-- value --></td>
+              {% set fuel_consumption = municipality.fuel_consumption(start, end) %}
+              <td>{% if fuel_consumption is none %} - {% else %}{{ fuel_consumption|format_number(request) }} {% endif %}</td>
               <td>Consistency with MSW processed</td>
               <td></td>
             </tr>
