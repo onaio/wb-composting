@@ -67,10 +67,7 @@ class MonthlyRejectsComposition(Submission):
             'conversion_factor': conversion_factor,
             'quantity_of_compost_produced': (volume_of_mature_compost
                                              * density_of_mature_compost
-                                             * conversion_factor),
-            'quantity_of_compost_sold': 0,
-            'num_vehicles_transported_compost': 0,
-            'avg_distance_travelled_by_vehicles': 0
+                                             * conversion_factor)
         }
         report.save()
         return report

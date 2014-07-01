@@ -6,6 +6,7 @@ from composting.models import Municipality
 from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
 from composting.models.daily_vehicle_register import DailyVehicleDataRegister
+from composting.models.compost_sales_register import CompostSalesRegister
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.report import Report
@@ -137,6 +138,18 @@ class TestMunicipalityIntegration(IntegrationTestBase):
 
         self.assertEqual(query.count(), 0)
 
+    def populate_compost_sales_register_reports(self):
+        query = self.get_pending_submissions_by_class(CompostSalesRegister)
+        compost_sales_records = query.all()
+
+        for daily_vehicle_register in compost_sales_records:
+            daily_vehicle_register.status = Submission.APPROVED
+
+        with transaction.manager:
+            DBSession.add_all(compost_sales_records)
+
+        self.assertEqual(query.count(), 0)
+
     def test_fuel_consumption(self):
         self.populate_daily_vehicle_data_register_reports()
         start = datetime.date(2014, 6, 1)
@@ -150,7 +163,7 @@ class TestMunicipalityIntegration(IntegrationTestBase):
 
         vehicle_count = self.municipality.vehicle_count(start, end)
         self.assertEqual(vehicle_count, 0)
-        self.populate_daily_vehicle_data_register_reports()
+        self.populate_compost_sales_register_reports()
 
         vehicle_count = self.municipality.vehicle_count(start, end)
         self.assertEqual(vehicle_count, 2)

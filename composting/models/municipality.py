@@ -276,7 +276,7 @@ class Municipality(Base):
         return query.first()[0]
 
     def vehicle_count(self, start_date, end_date):
-        submission_subclass = DailyVehicleDataRegister
+        submission_subclass = CompostSalesRegister
         query = MunicipalitySubmission.get_items_query(
             self,
             submission_subclass,
