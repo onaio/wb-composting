@@ -98,3 +98,30 @@ class TestCompostSalesRegister(TestBase):
                 municipality=municipality))
         weight = compost_sale.weight()
         self.assertEqual(weight, 1.5)
+
+    def test_create_or_update_report_raises_value_error_if_no_municipality(
+            self):
+        self.setup_test_data()
+        compost_sale = CompostSalesRegister(
+            date=datetime.datetime(2013, 01, 01),
+            json_data={
+                'bagged_compost': 'no',
+                'compost_length': '3.0',
+                'compost_width': '4.0',
+                'compost_height': '5.0'
+            })
+        self.assertRaises(ValueError, compost_sale.create_or_update_report)
+
+    def test_create_or_update_report(
+            self):
+        self.setup_test_data()
+        compost_sale = CompostSalesRegister(
+            date=datetime.datetime(2013, 01, 01),
+            json_data={
+                'bagged_compost': 'yes',
+                'bagged_compost_weight': '1.5'
+            })
+        report = compost_sale.create_or_update_report()
+        self.assertEqual(report.report_json, {
+            'weight': 1.5
+        })
