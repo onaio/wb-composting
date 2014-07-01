@@ -32,7 +32,7 @@
   {% endif %}
   <tr>
     <td>Weight</td>
-    {% set weight = submission.weight(municipality) %}
+    {% set weight = submission.weight() %}
     <td>{% if weight %}{{ weight|format_decimal(request, '#,##0.####') }} t{% else %} - {% endif %}</td>
   </tr>
 {% endblock %}

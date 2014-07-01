@@ -60,10 +60,14 @@ class CompostSalesRegister(Submission):
         self._density = self._density or compost_density.density()
         return self._density
 
-    def weight(self, municipality):
+    def weight(self):
         # if compost was bagged, return weight directly
         if self.json_data[self.IS_BAGGED_COMPOST_FIELD] == 'yes':
             return float(self.json_data[self.BAGGED_COMPOST_WEIGHT_FIELD])
+
+        if self.municipality_submission is None:
+            return None
+        municipality = self.municipality_submission.municipality
 
         volume = self.volume
         density = self.density(municipality)
@@ -72,4 +76,12 @@ class CompostSalesRegister(Submission):
 
         return (density * volume)/1000
 
-
+    def create_or_update_report(self):
+        report = self.get_or_create_report()
+        weight = self.weight()
+        if weight is None:
+            raise ValueError("Cannot create a report if the weight is invalid")
+        report.report_json = {
+            'weight': weight
+        }
+        return report
