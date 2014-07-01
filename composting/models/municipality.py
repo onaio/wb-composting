@@ -293,6 +293,24 @@ class Municipality(Base):
                 Report.report_json['volume_of_mature_compost'].cast(Float)))
         return query.first()[0]
 
+    def average_distance_travelled(self, start_date, end_date):
+        submission_subclass = CompostSalesRegister
+        query = (
+            DBSession
+            .query(func.avg(
+                submission_subclass.json_data[
+                    submission_subclass.DISTANCE_TRAVELLED].cast(Float)))
+            .join(MunicipalitySubmission,
+                  (MunicipalitySubmission.submission_id ==
+                   submission_subclass.id))
+            .filter(MunicipalitySubmission.municipality == self)
+            .filter(submission_subclass.status == Submission.APPROVED)
+            .filter(
+                and_(Submission.date >= start_date,
+                     Submission.date <= end_date)))
+
+        return query.first()[0]
+
     def density_of_mature_compost(self, start_date, end_date):
         query = self.get_report_query(
             MonthlyRejectsComposition, start_date, end_date,
