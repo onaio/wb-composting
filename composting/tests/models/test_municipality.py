@@ -214,3 +214,24 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         # we already have a monthly mature compost record for May within
         # tests, lets add another for june to test with
         pass
+
+    def populate_compost_sales_register(self):
+        query = self.get_pending_submissions_by_class(CompostSalesRegister)
+        compost_sales_registers = query.all()
+
+        for compost_sales_register in compost_sales_registers:
+            compost_sales_register.status = Submission.APPROVED
+
+        with transaction.manager:
+            DBSession.add_all(compost_sales_registers)
+
+        self.assertEqual(query.count(), 0)
+
+    def test_average_distance_travelled(self):
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+
+        self.populate_compost_sales_register()
+        distance = self.municipality.average_distance_travelled(start, end)
+
+        self.assertEqual(distance, 13.25)

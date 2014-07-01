@@ -137,7 +137,8 @@
             <tr>
               <td>Average distance travelled by vehicles transporting compost</td>
               <td>Kms</td>
-              <td><!-- value--></td>
+              {% set average_distance = municipality.average_distance_travelled(start, end) %}
+              <td>{% if average_distance is none %} - {% else %}{{ average_distance|format_decimal(request) }}{% endif %}</td>
               <td>Comparison with previous months</td>
               <td></td>
             </tr>

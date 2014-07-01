@@ -1,6 +1,7 @@
 from zope.interface import implementer
 from sqlalchemy import desc
 
+from composting.constants import KGS_PER_TONNE
 from composting.libs.utils import get_month_start_end
 from composting.models.base import DBSession
 from composting.models.compost_density_register import CompostDensityRegister
@@ -22,6 +23,7 @@ class CompostSalesRegister(Submission):
     COMPOST_WIDTH_FIELD = 'compost_width'
     COMPOST_HEIGHT_FIELD = 'compost_height'
     BAGGED_COMPOST_WEIGHT_FIELD = 'bagged_compost_weight'
+    DISTANCE_TRAVELLED = 'supply_distance'
 
     LIST_ACTION_NAME = 'outgoing-compost-sales-register'
 
@@ -74,7 +76,7 @@ class CompostSalesRegister(Submission):
         if volume is None or density is None:
             return None
 
-        return (density * volume)/1000
+        return (density * volume)/KGS_PER_TONNE
 
     def create_or_update_report(self):
         report = self.get_or_create_report()

@@ -8,6 +8,7 @@ from composting.tests.test_base import TestBase
 
 
 class TestCompostDensityRegister(TestBase):
+
     def test_net_weight(self):
         compost_density = CompostDensityRegister(
             json_data={
@@ -18,6 +19,7 @@ class TestCompostDensityRegister(TestBase):
 
 
 class TestCompostDensityRegisterWithTestData(TestBase):
+
     def setUp(self):
         super(TestCompostDensityRegisterWithTestData, self).setUp()
         self.setup_test_data()
