@@ -22,6 +22,7 @@ class CompostSalesRegister(Submission):
     COMPOST_WIDTH_FIELD = 'compost_width'
     COMPOST_HEIGHT_FIELD = 'compost_height'
     BAGGED_COMPOST_WEIGHT_FIELD = 'bagged_compost_weight'
+    DISTANCE_TRAVELLED = 'supply_distance'
 
     LIST_ACTION_NAME = 'outgoing-compost-sales-register'
 
@@ -70,6 +71,5 @@ class CompostSalesRegister(Submission):
         if volume is None or density is None:
             return None
 
-        return (density * volume)/1000
-
-
+        return (density * volume) / 1000
+0
