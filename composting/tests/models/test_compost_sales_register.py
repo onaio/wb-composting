@@ -1,5 +1,8 @@
 import datetime
+import transaction
 
+from composting.models.base import DBSession
+from composting.models.submission import Submission
 from composting.models.municipality import Municipality
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.compost_sales_register import CompostSalesRegister
@@ -25,9 +28,12 @@ class TestCompostSalesRegister(TestBase):
             })
         self.assertEqual(compost_sale.volume, 60.0)
 
-    def test_get_compost_density(self):
+    def test_get_compost_density_returns_only_if_approved(self):
         self.setup_test_data()
         municipality = Municipality.get(Municipality.name == "Mukono")
+        compost_density = CompostDensityRegister.get(
+            CompostDensityRegister.date == datetime.date(2014, 5, 1))
+        compost_density.status = Submission.APPROVED
         compost_sale = CompostSalesRegister(
             date=datetime.datetime(2014, 05, 01),
             json_data={
@@ -56,6 +62,12 @@ class TestCompostSalesRegister(TestBase):
     def test_weight_calculation(self):
         self.setup_test_data()
         municipality = Municipality.get(Municipality.name == "Mukono")
+        compost_density = CompostDensityRegister.get(
+            CompostDensityRegister.date >= datetime.date(2014, 5, 1),
+            CompostDensityRegister.date <= datetime.date(2014, 5, 31))
+        compost_density.status = Submission.APPROVED
+        with transaction.manager:
+            DBSession.add(compost_density)
         compost_sale = CompostSalesRegister(
             date=datetime.datetime(2014, 05, 01),
             json_data={

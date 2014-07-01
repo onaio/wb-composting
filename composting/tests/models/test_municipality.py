@@ -158,18 +158,6 @@ class TestMunicipalityIntegration(IntegrationTestBase):
 
         self.assertEqual(query.count(), 0)
 
-    def populate_compost_sales_register_reports(self):
-        query = self.get_pending_submissions_by_class(CompostSalesRegister)
-        compost_sales_records = query.all()
-
-        for compost_sale in compost_sales_records:
-            compost_sale.status = Submission.APPROVED
-
-        with transaction.manager:
-            DBSession.add_all(compost_sales_records)
-
-        #self.assertEqual(query.count(), 0)
-
     def test_fuel_consumption(self):
         self.populate_daily_vehicle_data_register_reports()
         start = datetime.date(2014, 6, 1)
@@ -177,26 +165,29 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         fuel_consumption = self.municipality.fuel_consumption(start, end)
         self.assertEqual(fuel_consumption, 18.6)
 
-    def _test_count_of_vehicles_transporting_compost(self):
-        start = datetime.date(2014, 6, 1)
+    def test_count_of_vehicles_transporting_compost(self):
+        start = datetime.date(2014, 5, 1)
         end = datetime.date(2014, 6, 30)
 
         vehicle_count = self.municipality.vehicle_count(start, end)
         self.assertEqual(vehicle_count, 0)
-        self.populate_compost_sales_register_reports()
+        self.populate_compost_density()
+        self.populate_compost_sales_register()
 
         self.municipality = Municipality.get(Municipality.name == "Mukono")
         vehicle_count = self.municipality.vehicle_count(start, end)
         self.assertEqual(vehicle_count, 2)
 
-    def _test_quantity_of_compost_sold(self):
+    def test_quantity_of_compost_sold(self):
         self.populate_compost_density()
-        self.populate_compost_sales_register_reports()
+        self.populate_compost_sales_register()
 
         self.municipality = Municipality.get(Municipality.name == "Mukono")
-        start = datetime.date(2014, 6, 1)
+        start = datetime.date(2014, 5, 1)
         end = datetime.date(2014, 6, 30)
-        self.assertEqual(self.municipality.quantity_of_compost_sold(start, end), 0.3)
+        self.assertAlmostEqual(
+            self.municipality.quantity_of_compost_sold(start, end),
+            1.38576)
 
     def test_get_skip_if_skip_not_in_cache(self):
         skip = self.municipality.get_skip('A')
@@ -222,15 +213,13 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         for compost_sales_register in compost_sales_registers:
             compost_sales_register.status = Submission.APPROVED
 
-        with transaction.manager:
-            DBSession.add_all(compost_sales_registers)
-
         self.assertEqual(query.count(), 0)
 
     def test_average_distance_travelled(self):
-        start = datetime.date(2014, 6, 1)
+        start = datetime.date(2014, 5, 1)
         end = datetime.date(2014, 6, 30)
 
+        self.populate_compost_density()
         self.populate_compost_sales_register()
         distance = self.municipality.average_distance_travelled(start, end)
 
