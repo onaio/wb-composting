@@ -311,6 +311,17 @@ class Municipality(Base):
 
         return query.first()[0]
 
+    def total_windrow_samples(self, start_date, end_date):
+        submission_subclass = WindrowMonitoring
+        query = MunicipalitySubmission.get_items_query(
+            self,
+            submission_subclass,
+            and_(submission_subclass.status == Submission.APPROVED,
+                 submission_subclass.date >= start_date,
+                 submission_subclass.date <= end_date))
+
+        return query.count() * WindrowMonitoring.NO_OF_SAMPLE
+
     def density_of_mature_compost(self, start_date, end_date):
         query = self.get_report_query(
             MonthlyRejectsComposition, start_date, end_date,

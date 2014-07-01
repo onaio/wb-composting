@@ -7,6 +7,7 @@ from composting.models.submission import Submission
 from composting.models.daily_waste import DailyWaste
 from composting.models.daily_vehicle_register import DailyVehicleDataRegister
 from composting.models.compost_sales_register import CompostSalesRegister
+from composting.models.windrow_monitoring import WindrowMonitoring
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.report import Report
@@ -193,3 +194,29 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         distance = self.municipality.average_distance_travelled(start, end)
 
         self.assertEqual(distance, 13.25)
+
+    def populate_windrow_monistoring(self):
+        query = self.get_pending_submissions_by_class(WindrowMonitoring)
+        compost_sales_registers = query.all()
+
+        for compost_sales_register in compost_sales_registers:
+            compost_sales_register.status = Submission.APPROVED
+
+        with transaction.manager:
+            DBSession.add_all(compost_sales_registers)
+
+        self.assertEqual(query.count(), 0)
+
+    def test_windrow_sample_number(self):
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+
+        total_windrow_samples = self.municipality.total_windrow_samples(
+            start, end)
+        self.assertEqual(total_windrow_samples, 0)
+
+        self.populate_windrow_monistoring()
+
+        total_windrow_samples = self.municipality.total_windrow_samples(
+            start, end)
+        self.assertEqual(total_windrow_samples, 5)

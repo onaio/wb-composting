@@ -1,5 +1,4 @@
 from zope.interface import implementer
-from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import (
     Column,
     Integer,
@@ -32,8 +31,10 @@ class WindrowMonitoring(Submission):
     WEEK_NO_FIELD = 'week_no'
 
     LIST_ACTION_NAME = 'windrow-monitoring'
+    NO_OF_SAMPLE = 5
 
 
 class WindrowMonitoringFactory(RootFactory):
+
     def __getitem__(self, item):
         raise KeyError
