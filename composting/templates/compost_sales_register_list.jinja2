@@ -51,7 +51,12 @@
                   <td>{{ report.compost_width|default('-', true) }}</td>
                   <td>{{ report.compost_height|default('-', true) }}</td>
                   <td>{{ compost_sale.volume|default('-', true) }}</td>
-                  <td>{% if not is_bagged %}{{ compost_sale.density(municipality)|default('-', true) }}{% else %} - {% endif %}</td>
+                  <td>
+                    {% if not is_bagged %}{{ compost_sale.density()|default('-', true) }}{% else %} - {% endif %}
+                    {% if compost_sale.density() is none %}
+                    <span class="label label-danger" data-toggle="tooltip" title="Cannot approve! Monthly compost density is not available"><i class="fa fa-warning"></i></span>
+                    {% endif %}
+                  </td>
                   {% set weight = compost_sale.weight() %}
                   <td>{% if not is_bagged and weight is not none %}{{ weight|format_decimal(request, '#,##0.####') }}{% else %} - {% endif %}</td>
                   <td>{{ report.bagged_compost_weight|default('-', true) }}</td>

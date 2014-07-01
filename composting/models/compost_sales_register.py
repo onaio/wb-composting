@@ -48,13 +48,18 @@ class CompostSalesRegister(Submission):
             .join(MunicipalitySubmission.submission)\
             .filter(MunicipalitySubmission.municipality == municipality,
                     CompostDensityRegister.date >= start,
-                    CompostDensityRegister.date <= end)\
+                    CompostDensityRegister.date <= end,
+                    CompostDensityRegister.status == Submission.APPROVED)\
             .order_by(desc(CompostDensityRegister.date))\
             .limit(1)\
             .first()
         return self._compost_density
 
-    def density(self, municipality):
+    def density(self):
+        if self.municipality_submission is None:
+            return None
+        municipality = self.municipality_submission.municipality
+
         compost_density = self.get_compost_density(municipality)
         if compost_density is None:
             return None
@@ -67,12 +72,8 @@ class CompostSalesRegister(Submission):
         if self.json_data[self.IS_BAGGED_COMPOST_FIELD] == 'yes':
             return float(self.json_data[self.BAGGED_COMPOST_WEIGHT_FIELD])
 
-        if self.municipality_submission is None:
-            return None
-        municipality = self.municipality_submission.municipality
-
         volume = self.volume
-        density = self.density(municipality)
+        density = self.density()
         if volume is None or density is None:
             return None
 
@@ -87,3 +88,7 @@ class CompostSalesRegister(Submission):
             'weight': weight
         }
         return report
+
+    def can_approve(self, request):
+        return super(CompostSalesRegister, self).can_approve(request)\
+            and self.density() is not None
