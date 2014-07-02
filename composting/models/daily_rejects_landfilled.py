@@ -69,3 +69,11 @@ class DailyRejectsLandfilled(Submission):
     def can_approve(self, request):
         return super(DailyRejectsLandfilled, self).can_approve(request)\
             and self.volume() is not None
+
+    def create_or_update_report(self):
+        report = self.get_or_create_report()
+        report.report_json = {
+            'volume': self.volume()
+        }
+        report.save()
+        return report
