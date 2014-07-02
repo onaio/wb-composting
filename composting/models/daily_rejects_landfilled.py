@@ -49,13 +49,23 @@ class DailyRejectsLandfilled(Submission):
             .first()
 
     def volume(self):
+        if hasattr(self, '_volume'):
+            return self._volume
+
         municipality_submission = self.municipality_submission
         if municipality_submission is None:
-            return None
+            self._volume = None
+            return self._volume
 
         density = self.get_monthly_rejects_density()
         if density is None:
-            return None
+            self._volume = None
+            return self._volume
 
-        return (municipality_submission.municipality.wheelbarrow_volume
+        self._volume = (municipality_submission.municipality.wheelbarrow_volume
                 * int(self.json_data[self.BARROWS_FROM_SIEVING_FIELD]))
+        return self._volume
+
+    def can_approve(self, request):
+        return super(DailyRejectsLandfilled, self).can_approve(request)\
+            and self.volume() is not None

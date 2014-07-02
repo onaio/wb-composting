@@ -18,6 +18,7 @@
                 <th>Date</th>
                 <th>Number of Barrows from Sorting</th>
                 <th>Number of Barrows from Sieving</th>
+                <th>Volume of rejects from Sieving</th>
                 <th>Remarks</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -29,6 +30,13 @@
                   <td>{{ rejects_landfilled.date|format_date(request) }}</td>
                   <td>{{ report.barrows_number_frm_sorting }}</td>
                   <td>{{ report.barrows_number_frm_sieving }}</td>
+                  {% set volume = rejects_landfilled.volume() %}
+                  <td>
+                  {% if volume is none %}-{% else %}{{ volume| format_decimal(request) }}m<sup>3</sup>{% endif %}
+                  {% if volume is none%}
+                    <span class="label label-danger" data-toggle="tooltip" title="Cannot approve! Monthly density of rejects land filled is not available"><i class="fa fa-warning"></i></span>
+                    {% endif %}
+                  </td>
                   <td>
                     {% if report.remarks %}
                     <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
