@@ -33,5 +33,5 @@ def deploy(deployment="prod", branch="master"):
             run("alembic -n {0} upgrade head".format(
                 env.get('alembic_section', 'alembic')))
 
-    # Reload uWSGI
-    run("/usr/local/bin/uwsgi --reload /var/run/WBComposting.pid")
+            # Reload uWSGI
+            run("uwsgi --reload /var/run/WBComposting.pid")

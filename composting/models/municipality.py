@@ -276,7 +276,7 @@ class Municipality(Base):
         return query.first()[0]
 
     def vehicle_count(self, start_date, end_date):
-        submission_subclass = DailyVehicleDataRegister
+        submission_subclass = CompostSalesRegister
         query = MunicipalitySubmission.get_items_query(
             self,
             submission_subclass,
@@ -340,6 +340,14 @@ class Municipality(Base):
             MonthlyRejectsComposition, start_date, end_date,
             sqla_sum(
                 Report.report_json['quantity_of_compost_produced']
+                    .cast(Float)))
+        return query.first()[0]
+
+    def quantity_of_compost_sold(self, start_date, end_date):
+        query = self.get_report_query(
+            CompostSalesRegister, start_date, end_date,
+            sqla_sum(
+                Report.report_json['weight']
                     .cast(Float)))
         return query.first()[0]
 

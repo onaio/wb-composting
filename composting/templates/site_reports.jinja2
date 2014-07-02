@@ -122,7 +122,8 @@
             <tr>
               <td>Quantity of compost sold</td>
               <td>Tonnes</td>
-              <td><!-- value--></td>
+              {% set quantity_of_compost_sold = municipality.quantity_of_compost_sold(start, end) %}
+              <td>{% if quantity_of_compost_sold is none %} - {% else %}{{ quantity_of_compost_sold|format_decimal(request) }}{% endif %}</td>
               <td>Consistency with compost produced</td>
               <td></td>
             </tr>
