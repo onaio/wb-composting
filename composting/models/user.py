@@ -69,7 +69,6 @@ class User(Base):
         return user
 
 
-
 class UserFactory(ModelFactory):
     __acl__ = [
         (Allow, security.USER_MANAGE_ALL.key, 'manage')
