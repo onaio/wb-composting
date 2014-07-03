@@ -329,6 +329,13 @@ class Municipality(Base):
                 Report.report_json['low_sample_count'].cast(Integer)))
         return query.first()[0]
 
+    def percentage_of_low_samples(self, start_date, end_date):
+        try:
+            return (float(self.low_windrow_sample_count(start_date, end_date))
+                    / float(self.total_windrow_samples(start_date, end_date)))
+        except TypeError:
+            return None
+
     def density_of_mature_compost(self, start_date, end_date):
         query = self.get_report_query(
             MonthlyRejectsComposition, start_date, end_date,

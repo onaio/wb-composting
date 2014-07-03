@@ -183,13 +183,15 @@
             <tr>
               <td rowspan="2">Total # of samples below 10%</td>
               <td>N/A</td>
-              <td><!-- value --></td>
+              {% set low_windrow_sample_count = municipality.low_windrow_sample_count(start, end) %}
+              <td>{% if low_windrow_sample_count is none %} - {% else %} {{ low_windrow_sample_count|format_number(request) }} {% endif %}</td>
               <td rowspan="2">Normal operation (about 240 samples for 4 windrows)</td>
               <td rowspan="2"></td>
             </tr>
             <tr>
               <td>%</td>
-              <td><!-- value--></td>
+              {% set percentage_of_low_samples = municipality.percentage_of_low_samples(start, end) %}
+              <td>{% if percentage_of_low_samples is none %} - {% else %} {{ percentage_of_low_samples|format_percent }} {% endif %}</td>
             </tr>
             <!-- /Oxygen content -->
             <!-- Energy -->

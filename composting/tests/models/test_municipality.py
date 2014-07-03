@@ -253,12 +253,19 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         start = datetime.date(2014, 6, 1)
         end = datetime.date(2014, 6, 30)
 
-        count = self.municipality.low_windrow_sample_count(
-            start, end)
+        count = self.municipality.low_windrow_sample_count(start, end)
         self.assertIsNone(count)
 
         self.populate_windrow_monistoring()
 
-        count = self.municipality.low_windrow_sample_count(
-            start, end)
+        count = self.municipality.low_windrow_sample_count(start, end)
         self.assertEqual(count, 3)
+
+    def test_percentage_of_low_samples(self):
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+
+        self.populate_windrow_monistoring()
+
+        percentage = self.municipality.percentage_of_low_samples(start, end)
+        self.assertAlmostEqual(percentage, 0.3)
