@@ -152,19 +152,25 @@ def oauth_callback(request):
         else:
             request.session['oauth_token'] = json.dumps(token)
 
-            # login user
-            headers = remember(request, user.id)
-
-            request.session.flash("Your account has been created, please"
-                                  " contact your administrator to activate"
-                                  " it", 'error')
-
-            # TODO: redirect to `came_from` url
-            return HTTPFound(
-                request.route_url(
-                    'municipalities', traverse=(), headers=headers))
+            # check if user's account is active
+            if user.active:
+                # login user
+                headers = remember(request, user.id)
+                # TODO: redirect to `came_from` url
+                return HTTPFound(
+                    request.route_url(
+                        'municipalities', traverse=()), headers=headers)
+            else:
+                request.session.flash(
+                    "Your account has been created, please contact your"
+                    " administrator to activate it",
+                    'error')
+                # TODO: redirect to `came_from` url
+                return HTTPFound(
+                    request.route_url(
+                        'oauth', action='sign-in'))
 
     request.session.flash(
         u"Failed to login, please try again", 'error')
     return HTTPFound(
-        request.route_url('oauth', action='login'))
+        request.route_url('oauth', action='sign-in'))
