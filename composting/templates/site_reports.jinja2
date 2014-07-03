@@ -148,7 +148,8 @@
               <td rowspan="4">Rejects from sieving</td>
               <td>Volume of rejects from sieving landfilled</td>
               <td>Tonnes</td>
-              <td><!-- value--></td>
+              {% set volume_of_rejects_from_sieving = municipality.volume_of_rejects_from_sieving(start, end) %}
+              <td>{% if volume_of_rejects_from_sieving is none %} - {% else %}{{ volume_of_rejects_from_sieving|format_decimal(request) }}{% endif %}</td>
               <td class="inactive"></td>
               <td class="inactive"></td>
             </tr>

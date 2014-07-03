@@ -64,21 +64,21 @@
             {% endif %}
           </a>
         </li>
-        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'daily-rejects-landfilled')) %}
-        <li class="{% if request.is_current_path(path) %}active{% endif %}">
-          <a href="{{ path }}">
-            <span>Daily Rejects Landfilled</span>
-            {% if municipality.num_actionable_daily_rejects_landfilled > 0 %}
-            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_daily_rejects_landfilled }}</small>
-            {% endif %}
-          </a>
-        </li>
         {% set path = request.route_path('municipalities', traverse=(municipality.id, 'density-of-rejects-from-sieving')) %}
         <li class="{% if request.is_current_path(path) %}active{% endif %}">
           <a href="{{ path }}">
             <span>Monthly Density of Rejects from Sieving</span>
             {% if municipality.num_actionable_monthly_rejects_density > 0 %}
             <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_monthly_rejects_density }}</small>
+            {% endif %}
+          </a>
+        </li>
+        {% set path = request.route_path('municipalities', traverse=(municipality.id, 'daily-rejects-landfilled')) %}
+        <li class="{% if request.is_current_path(path) %}active{% endif %}">
+          <a href="{{ path }}">
+            <span>Daily Rejects Landfilled</span>
+            {% if municipality.num_actionable_daily_rejects_landfilled > 0 %}
+            <small class="badge pull-right bg-yellow">{{ municipality.num_actionable_daily_rejects_landfilled }}</small>
             {% endif %}
           </a>
         </li>
