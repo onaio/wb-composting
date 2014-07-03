@@ -48,7 +48,10 @@ class Users(BaseView):
             except ValidationFailure:
                 pass
             else:
-                user.update(values['group'], values['municipality_id'])
+                user.update(
+                    values['group'],
+                    values['municipality_id'],
+                    values['active'])
                 self.request.session.flash(
                     "Your changes have been saved", 'success')
                 return HTTPFound(

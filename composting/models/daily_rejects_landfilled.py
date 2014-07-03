@@ -1,6 +1,7 @@
 from zope.interface import implementer
 from sqlalchemy import desc
 
+from composting.constants import KGS_PER_TONNE
 from composting.libs.utils import get_month_start_end
 from composting.models.base import DBSession
 from composting.models.submission import Submission, ISubmission
@@ -63,7 +64,7 @@ class DailyRejectsLandfilled(Submission):
             return self._volume
 
         self._volume = (municipality_submission.municipality.wheelbarrow_volume
-                * int(self.json_data[self.BARROWS_FROM_SIEVING_FIELD]))
+                        * int(self.json_data[self.BARROWS_FROM_SIEVING_FIELD]))
         return self._volume
 
     def can_approve(self, request):
@@ -72,8 +73,21 @@ class DailyRejectsLandfilled(Submission):
 
     def create_or_update_report(self):
         report = self.get_or_create_report()
+        volume = self.volume()
+        if volume is None:
+            raise ValueError(
+                "The volume cannot be None when creating the report")
+        monthly_rejects_density = self.get_monthly_rejects_density()
+        if monthly_rejects_density is None:
+            raise ValueError(
+                "The monthly_rejects_density cannot be None when creating the"
+                " report")
+        municipality = self.municipality_submission.municipality
+        density = monthly_rejects_density.density(municipality) / KGS_PER_TONNE
+        tonnage = volume * density
         report.report_json = {
-            'volume': self.volume()
+            'volume': volume,
+            'tonnage': tonnage
         }
         report.save()
         return report

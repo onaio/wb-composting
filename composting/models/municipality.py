@@ -387,6 +387,23 @@ class Municipality(Base):
                 Report.report_json['volume'].cast(Float)))
         return query.first()[0]
 
+    def density_of_rejects_from_sieving(self, start_date, end_date):
+        query = self.get_report_query(
+            MonthlyRejectsDensity, start_date, end_date,
+            func.avg(
+                Report.report_json['density']
+                    .cast(Float)))
+        return query.first()[0]
+
+    def quantity_of_rejects_from_sieving_landfilled(
+            self, start_date, end_date):
+        query = self.get_report_query(
+            DailyRejectsLandfilled, start_date, end_date,
+            sqla_sum(
+                Report.report_json['tonnage']
+                    .cast(Float)))
+        return query.first()[0]
+
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
         return request.route_url(

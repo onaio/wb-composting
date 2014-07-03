@@ -27,6 +27,7 @@ class UserForm(colander.MappingSchema):
     municipality_id = colander.SchemaNode(
         colander.String(), title="Municipality",
         widget=municipality_widget, missing=None)
+    active = colander.SchemaNode(colander.Boolean())
 
     def validator(self, node, value):
         exc = colander.Invalid(node, "")

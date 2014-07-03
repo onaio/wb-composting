@@ -25,3 +25,12 @@ class MonthlyRejectsDensity(Submission):
         # get the municipality for this submission
         box_volume = municipality.box_volume
         return self.net_weight/box_volume
+
+    def create_or_update_report(self):
+        municipality = self.municipality_submission.municipality
+        report = self.get_or_create_report()
+        report.report_json = {
+            'density': self.density(municipality)
+        }
+        report.save()
+        return report
