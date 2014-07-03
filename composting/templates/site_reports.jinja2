@@ -198,7 +198,7 @@
             <tr>
               <td>%</td>
               {% set percentage_of_low_samples = municipality.percentage_of_low_samples(start, end) %}
-              <td>{% if percentage_of_low_samples is none %} - {% else %} {{ percentage_of_low_samples|format_percent }} {% endif %}</td>
+              <td>{% if percentage_of_low_samples is none %} - {% else %} {{ percentage_of_low_samples|format_percent(request) }} {% endif %}</td>
             </tr>
             <!-- /Oxygen content -->
             <!-- Energy -->
@@ -207,7 +207,7 @@
               <td>Fuel consumption (on site)</td>
               <td>Litres</td>
               {% set fuel_consumption = municipality.fuel_consumption(start, end) %}
-              <td>{% if fuel_consumption is none %} - {% else %}{{ fuel_consumption|format_number(request) }} {% endif %}</td>
+              <td>{% if fuel_consumption is none %} - {% else %}{{ fuel_consumption|format_decimal(request) }} {% endif %}</td>
               <td>Consistency with MSW processed</td>
               <td></td>
             </tr>
@@ -215,7 +215,7 @@
               <td>Electricity consumption</td>
               <td>MWh</td>
               {% set electricity_consumption = municipality.electricity_consumption(start, end) %}
-              <td>{% if electricity_consumption is none %} - {% else %}{{ electricity_consumption|format_number(request) }} {% endif %}</td>
+              <td>{% if electricity_consumption is none %} - {% else %}{{ electricity_consumption|format_decimal(request) }} {% endif %}</td>
               <td>Consistency with normal activity</td>
               <td></td>
             </tr>
@@ -226,7 +226,7 @@
               <td>Volume of leachate accumulated in 24 hours</td>
               <td>m<sup>3</sup></td>
               {% set leachete_volume_accumulated = municipality.leachete_volume_accumulated(start, end)%}
-              <td>{% if leachete_volume_accumulated is none %} - {% else %}{{ leachete_volume_accumulated|format_number(request) }} {% endif %}</td>
+              <td>{% if leachete_volume_accumulated is none %} - {% else %}{{ leachete_volume_accumulated|format_decimal(request) }} {% endif %}</td>
               <td>Any impacting factors</td>
               <td></td>
             </tr>
