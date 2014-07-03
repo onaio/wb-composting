@@ -47,14 +47,16 @@ class User(Base):
     def appstruct(self):
         return {
             'group': self.group,
-            'municipality_id': self.municipality_id
+            'municipality_id': self.municipality_id,
+            'active': self.active
         }
 
-    def update(self, group, municipality_id):
+    def update(self, group, municipality_id, active):
         self.municipality_id = municipality_id
         if group in [security.WB.key, security.NEMA.key]:
             self.municipality_id = None
         self.group = group
+        self.active = active
         self.save()
 
     @classmethod
