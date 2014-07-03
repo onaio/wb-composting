@@ -12,6 +12,7 @@ from composting.models.windrow_monitoring import WindrowMonitoring
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.models.electricity_register import ElectricityRegister
+from composting.models.leachete_monthly_register import LeacheteMonthlyRegister
 from composting.models.report import Report
 from composting.models.skip import Skip
 
@@ -295,3 +296,20 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         self.populate_electricity_register_reports()
         consumption = self.municipality.electricity_consumption(start, end)
         self.assertIsNone(consumption)
+
+    def populate_leachete_volume_reports(self):
+        query = self.get_pending_submissions_by_class(LeacheteMonthlyRegister)
+        leachete_registers = query.all()
+
+        for leachete_register in leachete_registers:
+            leachete_register.status = Submission.APPROVED
+
+        self.assertEqual(query.count(), 0)
+
+    def test_leachete_volume_accumulated(self):
+        start = datetime.date(2014, 5, 1)
+        end = datetime.date(2014, 5, 30)
+
+        self.populate_leachete_volume_reports()
+        volume = self.municipality.leachete_volume_accumulated(start, end)
+        self.assertEqual(volume, 179.0)
