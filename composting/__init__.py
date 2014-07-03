@@ -21,7 +21,6 @@ from composting.models.municipality import MunicipalityFactory
 from composting.models.user import UserFactory
 from composting.models.submission import SubmissionFactory
 from composting.models.skip import SkipFactory
-from composting.models.windrow_monitoring import WindrowMonitoringFactory
 from composting.views.helpers import is_current_path, get_request_user
 
 
@@ -76,6 +75,7 @@ def includeme(config):
 
     # pyramid_jinja2 is already included by Dashboard
     config.add_jinja2_search_path("composting:templates")
+    config.add_renderer('xlsx', 'wkcdd.renderers.TablibXLSXRenderer')
 
     config.add_static_view('static', 'composting:static', cache_max_age=3600)
     config.add_route('default', '/')

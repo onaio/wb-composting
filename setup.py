@@ -27,7 +27,8 @@ requires = [
     'deform',
     'Dashboard',
     'requests-oauthlib',
-    'mock'
+    'mock',
+    'tablib'
 ]
 
 setup(name='WBComposting',
@@ -35,11 +36,11 @@ setup(name='WBComposting',
       description='WBComposting',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
-        "Programming Language :: Python",
-        "Framework :: Pyramid",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-        ],
+          "Programming Language :: Python",
+          "Framework :: Pyramid",
+          "Topic :: Internet :: WWW/HTTP",
+          "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+      ],
       author='',
       author_email='',
       url='',
