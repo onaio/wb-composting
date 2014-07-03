@@ -61,3 +61,25 @@ class TestDailyRejectsLandfilled(TestBase):
             )
         )
         self.assertEqual(rejects_landfilled.volume(), 6.25)
+
+    def test_create_or_update_report(self):
+        self.setup_test_data()
+        with transaction.manager:
+            DBSession.query(MonthlyRejectsDensity).update({
+                'status': Submission.APPROVED
+            })
+        municipality = Municipality.get(Municipality.name == "Mukono")
+        rejects_landfilled = DailyRejectsLandfilled(
+            date=date(2014, 6, 13),
+            json_data={
+                'barrows_number_frm_sieving': '10'
+            },
+            municipality_submission=MunicipalitySubmission(
+                municipality=municipality
+            )
+        )
+        report = rejects_landfilled.create_or_update_report()
+        self.assertEqual(report.report_json, {
+            'volume': 6.25,
+            'tonnage': 1.7999999999999998
+        })

@@ -164,13 +164,18 @@
             <tr>
               <td rowspan="2">Quantity of rejects from sieving landfilled</td>
               <td>Tonnes</td>
-              <td><!-- value--></td>
+              {% set quantity_of_rejects_from_sieving_landfilled = municipality.quantity_of_rejects_from_sieving_landfilled(start, end) %}
+              <td>{% if quantity_of_rejects_from_sieving_landfilled is none %} - {% else %}{{ quantity_of_rejects_from_sieving_landfilled|format_decimal(request) }}{% endif %}</td>
               <td rowspan="2">Consistency with previous months</td>
               <td rowspan="2"></td>
             </tr>
             <tr>
               <td>%</td>
-              <td><!-- value--></td>
+              <td>
+                {%- if quantity_of_compost_sold is not none and quantity_of_rejects_from_sieving_landfilled is not none %}
+                  {{ (quantity_of_rejects_from_sieving_landfilled / quantity_of_compost_sold)|format_percent(request) }}
+                {%- else %}-{% endif %}
+              </td>
             </tr>
             <!-- /Rejects from sieving -->
             <!-- Oxygen content -->
