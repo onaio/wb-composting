@@ -311,6 +311,31 @@ class Municipality(Base):
 
         return query.first()[0]
 
+    def total_windrow_samples(self, start_date, end_date):
+        submission_subclass = WindrowMonitoring
+        query = MunicipalitySubmission.get_items_query(
+            self,
+            submission_subclass,
+            and_(submission_subclass.status == Submission.APPROVED,
+                 submission_subclass.date >= start_date,
+                 submission_subclass.date <= end_date))
+
+        return query.count() * WindrowMonitoring.NO_OF_SAMPLE
+
+    def low_windrow_sample_count(self, start_date, end_date):
+        query = self.get_report_query(
+            WindrowMonitoring, start_date, end_date,
+            sqla_sum(
+                Report.report_json['low_sample_count'].cast(Integer)))
+        return query.first()[0]
+
+    def percentage_of_low_samples(self, start_date, end_date):
+        try:
+            return (float(self.low_windrow_sample_count(start_date, end_date))
+                    / float(self.total_windrow_samples(start_date, end_date)))
+        except TypeError:
+            return None
+
     def density_of_mature_compost(self, start_date, end_date):
         query = self.get_report_query(
             MonthlyRejectsComposition, start_date, end_date,
@@ -346,6 +371,20 @@ class Municipality(Base):
             sqla_sum(
                 Report.report_json['volume']
                     .cast(Float)))
+        return query.first()[0]
+
+    def electricity_consumption(self, start_date, end_date):
+        query = self.get_report_query(
+            ElectricityRegister, start_date, end_date,
+            sqla_sum(
+                Report.report_json['consumption'].cast(Float)))
+        return query.first()[0]
+
+    def leachete_volume_accumulated(self, start_date, end_date):
+        query = self.get_report_query(
+            LeacheteMonthlyRegister, start_date, end_date,
+            sqla_sum(
+                Report.report_json['volume'].cast(Float)))
         return query.first()[0]
 
     def density_of_rejects_from_sieving(self, start_date, end_date):

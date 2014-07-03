@@ -8,8 +8,11 @@ from composting.models.daily_waste import DailyWaste
 from composting.models.daily_vehicle_register import DailyVehicleDataRegister
 from composting.models.compost_density_register import CompostDensityRegister
 from composting.models.compost_sales_register import CompostSalesRegister
+from composting.models.windrow_monitoring import WindrowMonitoring
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
+from composting.models.electricity_register import ElectricityRegister
+from composting.models.leachete_monthly_register import LeacheteMonthlyRegister
 from composting.models.report import Report
 from composting.models.skip import Skip
 
@@ -224,3 +227,89 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         distance = self.municipality.average_distance_travelled(start, end)
 
         self.assertEqual(distance, 13.25)
+
+    def populate_windrow_monistoring(self):
+        query = self.get_pending_submissions_by_class(WindrowMonitoring)
+        windrow_submissions = query.all()
+
+        for windrow_submission in windrow_submissions:
+            windrow_submission.status = Submission.APPROVED
+
+        self.assertEqual(query.count(), 0)
+
+    def test_windrow_sample_number(self):
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+
+        total_windrow_samples = self.municipality.total_windrow_samples(
+            start, end)
+        self.assertEqual(total_windrow_samples, 0)
+
+        self.populate_windrow_monistoring()
+
+        total_windrow_samples = self.municipality.total_windrow_samples(
+            start, end)
+        self.assertEqual(total_windrow_samples, 10)
+
+    def test_low_windrow_sample_count(self):
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+
+        count = self.municipality.low_windrow_sample_count(start, end)
+        self.assertIsNone(count)
+
+        self.populate_windrow_monistoring()
+
+        count = self.municipality.low_windrow_sample_count(start, end)
+        self.assertEqual(count, 3)
+
+    def test_percentage_of_low_samples(self):
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+
+        self.populate_windrow_monistoring()
+
+        percentage = self.municipality.percentage_of_low_samples(start, end)
+        self.assertAlmostEqual(percentage, 0.3)
+
+    def populate_electricity_register_reports(self):
+        query = self.get_pending_submissions_by_class(ElectricityRegister)
+        electricity_registers = query.all()
+
+        for electricity_register in electricity_registers:
+            electricity_register.status = Submission.APPROVED
+
+        self.assertEqual(query.count(), 0)
+
+    def test_electricity_consumption_calculation(self):
+        start = datetime.date(2014, 5, 1)
+        end = datetime.date(2014, 5, 30)
+
+        self.populate_electricity_register_reports()
+        consumption = self.municipality.electricity_consumption(start, end)
+        self.assertEqual(consumption, 351)
+
+    def test_electricity_consumption_calculation_for_first_register(self):
+        start = datetime.date(2014, 4, 1)
+        end = datetime.date(2014, 4, 30)
+
+        self.populate_electricity_register_reports()
+        consumption = self.municipality.electricity_consumption(start, end)
+        self.assertIsNone(consumption)
+
+    def populate_leachete_volume_reports(self):
+        query = self.get_pending_submissions_by_class(LeacheteMonthlyRegister)
+        leachete_registers = query.all()
+
+        for leachete_register in leachete_registers:
+            leachete_register.status = Submission.APPROVED
+
+        self.assertEqual(query.count(), 0)
+
+    def test_leachete_volume_accumulated(self):
+        start = datetime.date(2014, 5, 1)
+        end = datetime.date(2014, 5, 30)
+
+        self.populate_leachete_volume_reports()
+        volume = self.municipality.leachete_volume_accumulated(start, end)
+        self.assertEqual(volume, 179.0)

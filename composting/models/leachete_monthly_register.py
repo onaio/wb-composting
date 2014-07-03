@@ -23,5 +23,14 @@ class LeacheteMonthlyRegister(Submission):
 
     def volume(self, municipality):
         return municipality.leachete_tank_length\
-               * municipality.leachete_tank_width\
-               * self.net_height
+            * municipality.leachete_tank_width\
+            * self.net_height
+
+    def create_or_update_report(self):
+        report = self.get_or_create_report()
+        municipality = self.municipality_submission.municipality
+        report.report_json = {
+            'volume': self.volume(municipality)
+        }
+        report.submission = self
+        report.save()

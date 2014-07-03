@@ -3,10 +3,13 @@ import datetime
 from composting.models.base import DBSession
 from composting.models.municipality import Municipality
 from composting.models.electricity_register import ElectricityRegister
+from composting.models.report import Report
+from composting.models.submission import Submission
 from composting.tests.test_base import TestBase
 
 
 class TestElectricityRegister(TestBase):
+
     def setUp(self):
         super(TestElectricityRegister, self).setUp()
         self.setup_test_data()
@@ -38,3 +41,21 @@ class TestElectricityRegister(TestBase):
         consumption = electricity_register.consumption_since_last_reading(
             self.municipality)
         self.assertIsNone(consumption)
+
+    def test_consumption_report_creation(self):
+        count = Report.count()
+        electricity_register = ElectricityRegister.newest()
+        electricity_register.status = Submission.APPROVED
+
+        self.assertEqual(Report.count(), count + 1)
+
+    def test_consumption_report_not_created_for_first_report(self):
+        count = Report.count()
+        electricity_register = DBSession\
+            .query(ElectricityRegister)\
+            .filter(ElectricityRegister.date == '2014-04-01')\
+            .one()
+
+        electricity_register.status = Submission.APPROVED
+
+        self.assertEqual(Report.count(), count)
