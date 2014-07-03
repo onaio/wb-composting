@@ -1,12 +1,24 @@
 from composting.models.municipality import Municipality
+from composting.models.submission import Submission
+from composting.models.report import Report
 from composting.tests.test_base import IntegrationTestBase, FunctionalTestBase
+from composting.models.windrow_monitoring import WindrowMonitoring
 
 
 class TestWindrowMonitorings(IntegrationTestBase):
-    pass
+
+    def test_create_or_update_report(self):
+        self.setup_test_data()
+        report_count = Report.count()
+        windrow_monitor = WindrowMonitoring.all()[0]
+
+        windrow_monitor.status = Submission.APPROVED
+
+        self.assertEqual(Report.count(), report_count + 1)
 
 
 class TestWindrowMonitoringsFunctional(FunctionalTestBase):
+
     def setUp(self):
         super(TestWindrowMonitoringsFunctional, self).setUp()
         self.setup_test_data()

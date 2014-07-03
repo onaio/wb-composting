@@ -228,13 +228,10 @@ class TestMunicipalityIntegration(IntegrationTestBase):
 
     def populate_windrow_monistoring(self):
         query = self.get_pending_submissions_by_class(WindrowMonitoring)
-        compost_sales_registers = query.all()
+        windrow_submissions = query.all()
 
-        for compost_sales_register in compost_sales_registers:
-            compost_sales_register.status = Submission.APPROVED
-
-        with transaction.manager:
-            DBSession.add_all(compost_sales_registers)
+        for windrow_submission in windrow_submissions:
+            windrow_submission.status = Submission.APPROVED
 
         self.assertEqual(query.count(), 0)
 
@@ -250,4 +247,18 @@ class TestMunicipalityIntegration(IntegrationTestBase):
 
         total_windrow_samples = self.municipality.total_windrow_samples(
             start, end)
-        self.assertEqual(total_windrow_samples, 5)
+        self.assertEqual(total_windrow_samples, 10)
+
+    def test_low_windrow_sample_count(self):
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+
+        count = self.municipality.low_windrow_sample_count(
+            start, end)
+        self.assertIsNone(count)
+
+        self.populate_windrow_monistoring()
+
+        count = self.municipality.low_windrow_sample_count(
+            start, end)
+        self.assertEqual(count, 3)

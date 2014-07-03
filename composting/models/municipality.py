@@ -322,6 +322,13 @@ class Municipality(Base):
 
         return query.count() * WindrowMonitoring.NO_OF_SAMPLE
 
+    def low_windrow_sample_count(self, start_date, end_date):
+        query = self.get_report_query(
+            WindrowMonitoring, start_date, end_date,
+            sqla_sum(
+                Report.report_json['low_sample_count'].cast(Integer)))
+        return query.first()[0]
+
     def density_of_mature_compost(self, start_date, end_date):
         query = self.get_report_query(
             MonthlyRejectsComposition, start_date, end_date,
