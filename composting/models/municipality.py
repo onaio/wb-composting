@@ -373,6 +373,13 @@ class Municipality(Base):
                     .cast(Float)))
         return query.first()[0]
 
+    def electricity_consumption(self, start_date, end_date):
+        query = self.get_report_query(
+            ElectricityRegister, start_date, end_date,
+            sqla_sum(
+                Report.report_json['consumption'].cast(Float)))
+        return query.first()[0]
+
     def url(self, request, action=None):
         traverse = (self.id, action) if action else (self.id,)
         return request.route_url(

@@ -57,3 +57,15 @@ class ElectricityRegister(Submission):
         last_reading = float(last_reading)
         current_reading = float(self.json_data[self.METER_READING_FIELD])
         return current_reading - last_reading
+
+    def create_or_update_report(self):
+        municipality = self.municipality_submission.municipality
+        last_reading = self.consumption_since_last_reading(municipality)
+
+        if last_reading:
+            report = self.get_or_create_report()
+            report.report_json = {
+                'consumption': last_reading
+            }
+            report.submission = self
+            report.save()

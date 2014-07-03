@@ -11,6 +11,7 @@ from composting.models.compost_sales_register import CompostSalesRegister
 from composting.models.windrow_monitoring import WindrowMonitoring
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.municipality_submission import MunicipalitySubmission
+from composting.models.electricity_register import ElectricityRegister
 from composting.models.report import Report
 from composting.models.skip import Skip
 
@@ -269,3 +270,28 @@ class TestMunicipalityIntegration(IntegrationTestBase):
 
         percentage = self.municipality.percentage_of_low_samples(start, end)
         self.assertAlmostEqual(percentage, 0.3)
+
+    def populate_electricity_register_reports(self):
+        query = self.get_pending_submissions_by_class(ElectricityRegister)
+        electricity_registers = query.all()
+
+        for electricity_register in electricity_registers:
+            electricity_register.status = Submission.APPROVED
+
+        self.assertEqual(query.count(), 0)
+
+    def test_electricity_consumption_calculation(self):
+        start = datetime.date(2014, 5, 1)
+        end = datetime.date(2014, 5, 30)
+
+        self.populate_electricity_register_reports()
+        consumption = self.municipality.electricity_consumption(start, end)
+        self.assertEqual(consumption, 351)
+
+    def test_electricity_consumption_calculation_for_first_register(self):
+        start = datetime.date(2014, 4, 1)
+        end = datetime.date(2014, 4, 30)
+
+        self.populate_electricity_register_reports()
+        consumption = self.municipality.electricity_consumption(start, end)
+        self.assertIsNone(consumption)

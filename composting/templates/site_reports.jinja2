@@ -208,7 +208,8 @@
             <tr>
               <td>Electricity consumption</td>
               <td>MWh</td>
-              <td><!-- value --></td>
+              {% set electricity_consumption = municipality.electricity_consumption(start, end) %}
+              <td>{% if electricity_consumption is none %} - {% else %}{{ electricity_consumption|format_number(request) }} {% endif %}</td>
               <td>Consistency with normal activity</td>
               <td></td>
             </tr>
