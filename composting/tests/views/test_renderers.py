@@ -1,3 +1,4 @@
+import datetime
 
 from pyramid import testing
 
@@ -14,7 +15,9 @@ class TestTablibXLSXRenderer(TestBase):
         renderer = TablibXLSXRenderer({})
         municipality = Municipality.all()[0]
 
-        data = {'municipality': municipality}
+        data = {'municipality': municipality,
+                'start': datetime.date(2014, 6, 1),
+                'end': datetime.date(2014, 6, 30)}
 
         renderer(data, {'request': request})
         self.assertEqual(

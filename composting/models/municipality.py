@@ -329,13 +329,6 @@ class Municipality(Base):
                 Report.report_json['low_sample_count'].cast(Integer)))
         return query.first()[0]
 
-    def percentage_of_low_samples(self, start_date, end_date):
-        try:
-            return (float(self.low_windrow_sample_count(start_date, end_date))
-                    / float(self.total_windrow_samples(start_date, end_date)))
-        except TypeError:
-            return None
-
     def density_of_mature_compost(self, start_date, end_date):
         query = self.get_report_query(
             MonthlyRejectsComposition, start_date, end_date,
@@ -438,6 +431,155 @@ class Municipality(Base):
         """
         headers = []
         rows = []
+        headers = ["", "Parameter", "Unit", "Value", "Comments"]
+
+        # MWS reports
+        volume_of_msw_processed = self.volume_of_msw_processed(
+            start_date, end_date) or 0
+        rows.append(
+            ["MWS", "Volume of MSW processed", "m3", volume_of_msw_processed,
+             "Consistency with normal monthly supply"])
+
+        density_of_msw = self.density_of_msw(start_date, end_date) or 0
+        rows.append(
+            ["", "Density of MSW", "t/m3", density_of_msw,
+             "Consistency with normal monthly supply"])
+
+        tonnage_of_msw_processed = self.tonnage_of_msw_processed(
+            start_date, end_date) or 0
+        rows.append(
+            ["", "Quantity of MSW processed", "Tonnes",
+             tonnage_of_msw_processed, ""])
+
+        num_trucks_delivered_msw = self.num_trucks_delivered_msw(
+            start_date, end_date) or 0
+        rows.append(
+            ["", "Number of trucks having delivered MSW", "Tonnes",
+             num_trucks_delivered_msw, "Consistency with normal activity"])
+
+        # Compost reports
+        volume_of_mature_compost = self.volume_of_mature_compost(
+            start_date, end_date) or "-"
+        rows.append(
+            ["Compost", "Volume of mature compost (Qmc)", "m3",
+             volume_of_mature_compost, ""])
+
+        density_of_mature_compost = self.density_of_mature_compost(
+            start_date, end_date) or "-"
+        rows.append(
+            ["", "Density of mature compost (Dmc)", "Ton/m3",
+             density_of_mature_compost, "Consistency with previous months"])
+
+        conversion_factor_mature_to_sieved = (
+            self.conversion_factor_mature_to_sieved(start_date, end_date) or
+            "-")
+        rows.append(
+            ["", "Conversion factor mature to sieved (WSieved/WMature)",
+             "N/A", conversion_factor_mature_to_sieved,
+             "Comparison with Quantity of rejects from sieving"])
+
+        quantity_of_compost_produced = (
+            self.quantity_of_compost_produced(start_date, end_date) or "-")
+        rows.append(
+            ["", "Quantity of compost produced (Qpc)", "Tonnes",
+             quantity_of_compost_produced,
+             "Consistency with normal monthly production"])
+
+        quantity_of_compost_sold = (
+            self.quantity_of_compost_sold(start_date, end_date) or "-")
+        rows.append(
+            ["", "Quantity of compost sold", "Tonnes",
+             quantity_of_compost_sold,
+             "Consistency with compost produced"])
+
+        vehicle_count = self.vehicle_count(start_date, end_date) or 0
+        rows.append(
+            ["", "Number of vehicles having transported compost", "N/A",
+             vehicle_count, "Comparison with previous months"])
+
+        average_distance = (
+            self.average_distance_travelled(start_date, end_date) or "-")
+        rows.append(
+            ["", "Average distance travelled by vehicles transporting compost",
+             "Kms", average_distance, "Comparison with previous months"])
+
+        volume_of_rejects_from_sieving = (
+            self.volume_of_rejects_from_sieving(start_date, end_date) or "-")
+        rows.append(
+            ["Rejects from sieving",
+             "Volume of rejects from sieving landfilled",
+             "Tonnes", volume_of_rejects_from_sieving, ""])
+
+        density_of_rejects_from_sieving = (
+            self.density_of_rejects_from_sieving(start_date, end_date))
+        rows.append(
+            ["",
+             "Density of rejects from sieving",
+             "Ton/m3", density_of_rejects_from_sieving or "-", ""])
+
+        quantity_of_rejects_from_sieving_landfilled = (
+            self.quantity_of_rejects_from_sieving_landfilled(start_date,
+                                                             end_date))
+        rows.append(
+            ["",
+             "Quantity of rejects from sieving landfilled",
+             "Tonnes", quantity_of_rejects_from_sieving_landfilled or "-",
+             "Consistency with previous months"])
+
+        if (quantity_of_rejects_from_sieving_landfilled and
+                quantity_of_compost_sold):
+            reject_ratio = (
+                quantity_of_rejects_from_sieving_landfilled /
+                quantity_of_compost_sold)
+        else:
+            reject_ratio = "-"
+
+        rows.append(
+            ["", "", "%", reject_ratio, "Consistency with previous months"])
+
+        total_windrow_samples = (
+            self.total_windrow_samples(start_date, end_date))
+        rows.append(
+            ["Oxygen content",
+             "Total # of samples",
+             "N/A", total_windrow_samples or 0,
+             "Normal operation (about 240 samples for 4 windrows)"])
+
+        low_windrow_sample_count = (
+            self.low_windrow_sample_count(start_date, end_date))
+        rows.append(
+            ["",
+             "Total # of samples below 10%",
+             "N/A", low_windrow_sample_count or "-",
+             "Normal operation (about 240 samples for 4 windrows)"])
+
+        if total_windrow_samples and low_windrow_sample_count:
+            percentage_of_low_samples = (
+                low_windrow_sample_count / total_windrow_samples)
+        else:
+            percentage_of_low_samples = "-"
+
+        rows.append(
+            ["", "", "%", percentage_of_low_samples,
+             "Normal operation (about 240 samples for 4 windrows)"])
+
+        fuel_consumption = self.fuel_consumption(start_date, end_date) or "-"
+        rows.append(
+            ["Energy",
+             "Fuel consumption (on site)", "Litres", fuel_consumption,
+             "Consistency with MSW processed"])
+
+        electricity_consumption = (
+            self.electricity_consumption(start_date, end_date) or "-")
+        rows.append(
+            ["", "Electricity consumption", "MWh", electricity_consumption,
+             "Consistency with normal activity"])
+
+        leachete_volume_accumulated = (
+            self.leachete_volume_accumulated(start_date, end_date) or "-")
+        rows.append(
+            ["Leachate", "Volume of leachate accumulated in 24 hours", "m3",
+             leachete_volume_accumulated, "Any impacting factors"])
 
         return headers, rows
 

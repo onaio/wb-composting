@@ -17,7 +17,7 @@ class TablibRenderer(object):
         headers, rows = municipality.report(start_date, end_date)
 
         dataset = tablib.Dataset(headers)
-        dataset.title = municipality.name
+        dataset.title = "{} Site Report".format(municipality.name)
 
         for row in rows:
             dataset.append(row)
