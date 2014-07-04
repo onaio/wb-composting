@@ -432,6 +432,15 @@ class Municipality(Base):
                 self._skips[skip_type] = skip
             return self._skips[skip_type]
 
+    def report(self, start_date, end_date):
+        """
+        Return row and headers for the municipality report
+        """
+        headers = []
+        rows = []
+
+        return headers, rows
+
 
 class MunicipalityFactory(ModelFactory):
     __acl__ = [

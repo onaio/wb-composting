@@ -14,12 +14,11 @@ class TablibRenderer(object):
         start_date = value.get('start')
         end_date = value.get('end')
 
-        headers = municipality.headers
-        dataset = tablib.Dataset(headers)
+        headers, rows = municipality.report(start_date, end_date)
 
+        dataset = tablib.Dataset(headers)
         dataset.title = municipality.name
 
-        rows = municipality.rows(start_date, end_date)
         for row in rows:
             dataset.append(row)
         return dataset
