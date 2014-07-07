@@ -19,6 +19,33 @@ from composting.models.daily_vehicle_register import DailyVehicleDataRegister
 from composting.tests.test_base import TestBase
 
 
+class TestMunicipalitySubmissionHandler(TestBase):
+    def setUp(self):
+        super(TestMunicipalitySubmissionHandler, self).setUp()
+        self.setup_test_data()
+
+    def test_get_municipality_from_payload_returns_none_if_key_is_none(self):
+        municipality = MunicipalitySubmissionHandler\
+            .get_municipality_from_payload({})
+        self.assertIsNone(municipality)
+
+    def test_get_municipality_from_payload(self):
+        json_payload = {
+            constants.SUBMITTED_BY: 'jinja_manager'
+        }
+        municipality = MunicipalitySubmissionHandler\
+            .get_municipality_from_payload(json_payload)
+        self.assertEqual(municipality.name, "Jinja")
+
+    def test_get_municipality_from_payload_returns_none_if_not_found(self):
+        json_payload = {
+            constants.SUBMITTED_BY: 'admin'
+        }
+        municipality = MunicipalitySubmissionHandler\
+            .get_municipality_from_payload(json_payload)
+        self.assertIsNone(municipality)
+
+
 class TestDailyWasteSubmissionHandling(TestBase):
     klass = DailyWaste
     xform_id = DailyWaste.XFORM_ID
@@ -43,6 +70,7 @@ class TestDailyWasteSubmissionHandling(TestBase):
     def test__call__(self):
         self.setup_test_data()
         json_payload = {
+            constants.SUBMITTED_BY: 'manager',
             XFORM_ID_STRING: self.xform_id,
             self.klass.DATE_FIELD: self.date_string
         }

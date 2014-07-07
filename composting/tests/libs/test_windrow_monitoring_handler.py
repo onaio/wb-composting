@@ -30,6 +30,7 @@ class TestWindrowMonitoringHandler(TestBase):
     def test__call__(self):
         self.setup_test_data()
         json_payload = {
+            '_submitted_by': 'manager',
             '_xform_id_string': self.xform_id,
             'date': self.date_string,
             'windrow_number': 'W5-21/5/2014',
