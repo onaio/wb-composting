@@ -15,6 +15,7 @@ class LeacheteMonthlyRegister(Submission):
     HEIGHT_AF_PUMPING_FIELD = 'after_pumping/fbHeight_after_pumping'
 
     LIST_ACTION_NAME = 'leachete-monthly-register'
+    FORM_ID = "1576"
 
     @property
     def net_height(self):

@@ -27,6 +27,7 @@ class MonthlyDensity(Submission):
 
     # required min. number of monthly densities to allow calculating average
     THRESHOLD_MIN = 5
+    FORM_ID = "3015"
 
     @property
     def time(self):

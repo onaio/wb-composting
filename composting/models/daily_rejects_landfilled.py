@@ -19,6 +19,7 @@ class DailyRejectsLandfilled(Submission):
     DATE_FIELD = 'date'
     DATE_FORMAT = '%Y-%m-%d'
     BARROWS_FROM_SIEVING_FIELD = 'barrows_number_frm_sieving'
+    FORM_ID = "2321"
 
     LIST_ACTION_NAME = 'daily-rejects-landfilled'
 

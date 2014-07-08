@@ -17,6 +17,7 @@ class MonthlyRejectsComposition(Submission):
     SIEVED_COMPOST_FIELD = 'sieved_compost'
 
     LIST_ACTION_NAME = 'monthly-rejects-composition-from-sieving'
+    FORM_ID = "2439"
 
     def percentage(self, key):
         return float(self.json_data[key])\
@@ -59,7 +60,7 @@ class MonthlyRejectsComposition(Submission):
     def create_or_update_report(self):
         report = self.get_or_create_report()
         volume_of_mature_compost = self.volume_of_mature_compost()
-        density_of_mature_compost = self.get_compost_density()/KGS_PER_TONNE
+        density_of_mature_compost = self.get_compost_density() / KGS_PER_TONNE
         conversion_factor = self.percentage(self.SIEVED_COMPOST_FIELD)
         report.report_json = {
             'volume_of_mature_compost': volume_of_mature_compost,

@@ -13,6 +13,7 @@ class MonthlyWasteComposition(Submission):
     DATE_FORMAT = '%Y-%m-%d'
 
     LIST_ACTION_NAME = 'monthly-solid-waste-composition'
+    FORM_ID = "2220"
 
     # list of fields that contain weight values
     VALUE_FIELDS = ['wood_products', 'paper_pulp', 'food_waste',
@@ -35,7 +36,8 @@ class MonthlyWasteComposition(Submission):
     @classmethod
     def total_by(cls, monthly_waste_compositions, key):
         """
-        Get the total value by the specified key across the provided monthly_wastes
+        Get the total value by the specified key across the provided
+        monthly_wastes
         """
         values = [s.json_data[key] for s in monthly_waste_compositions]
         return reduce(cls.reduce_by_sum, values, 0.0)
