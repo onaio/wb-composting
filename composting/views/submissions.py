@@ -1,4 +1,5 @@
 import urlparse
+import requests
 
 from pyramid.view import view_defaults, view_config
 from pyramid.response import Response
@@ -9,8 +10,7 @@ from composting.models.submission import Submission, ISubmission
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.views.helpers import selections_from_request
 
-from pyramid.events import ContextFound
-from pyramid.events import subscriber
+from pyramid.httpexceptions import HTTPBadRequest, HTTPFound
 
 
 #@subscriber(ContextFound)
@@ -20,11 +20,13 @@ def override_submission_renderer(event):
     """
     # check if the context provides the ISubmission interface
     if ISubmission.providedBy(event.request.context):
-        #event.request.override_renderer = 'json'
+        # event.request.override_renderer = 'json'
         pass
+
 
 @view_defaults(route_name='submissions', context=ISubmission)
 class Submissions(BaseView):
+
     @view_config(
         route_name='municipalities',
         name='',
@@ -92,3 +94,27 @@ class Submissions(BaseView):
     def unapprove(self):
         self.request.new_status = Submission.PENDING
         return Response(None)
+
+    @view_config(name='edit',
+                 request_method='GET')
+    def edit(self):
+        # redirects to the survey form for specified survey
+        submission = self.request.context
+        sub_id = submission.json_data['_id']
+        form_id = submission.FORM_ID
+        return_url = self.request.route_url(
+            'submissions', traverse=())
+        token = self.request.registry.settings['ona_auth_token']
+        url = urlparse.urljoin(
+            self.request.registry.settings['ona_data_api'],
+            "{}/{}/enketo?return_url={}".format(form_id, sub_id, return_url))
+
+        response = requests.get(
+            url,
+            headers={"Authorization": "Token {}".format(token)})
+        try:
+            edit_url = response.json()['url']
+        except KeyError:
+            raise HTTPBadRequest(response.json()['detail'])
+        else:
+            return HTTPFound(location=edit_url)
