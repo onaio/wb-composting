@@ -40,3 +40,7 @@ nosetests.xml
 # Deploy
 /.vagrant
 /ansible
+
+# Docs build
+/docs/_build/*
+!/docs/_build/.gitkeep

@@ -27,7 +27,8 @@ requires = [
     'deform',
     'Dashboard',
     'requests-oauthlib',
-    'mock'
+    'mock',
+    'Sphinx'
 ]
 
 setup(name='WBComposting',
