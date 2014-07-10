@@ -28,7 +28,8 @@ requires = [
     'Dashboard',
     'requests-oauthlib',
     'mock',
-    'tablib'
+    'tablib',
+    'httmock'
 ]
 
 setup(name='WBComposting',

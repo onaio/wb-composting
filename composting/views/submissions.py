@@ -112,6 +112,7 @@ class Submissions(BaseView):
         response = requests.get(
             url,
             headers={"Authorization": "Token {}".format(token)})
+
         try:
             edit_url = response.json()['url']
         except KeyError:
