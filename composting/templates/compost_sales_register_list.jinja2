@@ -74,7 +74,7 @@
                   </td>
                   <td>
                     <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(compost_sale.id,)) }}">View</a>
-                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(compost_sale.id, 'edit', )) }}">Edit</a>
+                    <a class="btn btn-default btn-xs" href="{{ request.route_path('submissions', traverse=(compost_sale.id, 'edit', )) }}">Edit</a>
                     {{ action_buttons(request, compost_sale) }}
                   </td>
                 </tr>

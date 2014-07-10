@@ -92,7 +92,7 @@
                   <td>{{ yes_no_message(report.moisture_added, "Yes", "No") }}</td>
                   <td>
                     <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(windrow_record.id,)) }}">View</a>
-                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(windrow_record.id, 'edit', )) }}">Edit</a>
+                    <a class="btn btn-default btn-xs" href="{{ request.route_path('submissions', traverse=(windrow_record.id, 'edit', )) }}">Edit</a>
                     {{ action_buttons(request, windrow_record) }}
                   </td>
                 </tr>

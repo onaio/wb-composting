@@ -51,7 +51,7 @@
                   </td>
                   <td>
                     <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(leachete.id,)) }}">View</a>
-                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(leachete.id, 'edit', )) }}">Edit</a>
+                    <a class="btn btn-default btn-xs" href="{{ request.route_path('submissions', traverse=(leachete.id, 'edit', )) }}">Edit</a>
                     {{ action_buttons(request, leachete) }}
                   </td>
                 </tr>
