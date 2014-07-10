@@ -47,6 +47,7 @@
                   </td>
                   <td>
                     <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(compost_density.id,)) }}">View</a>
+                    <a class="btn btn-default btn-xs btn-details" data-url="{{ request.route_path('submissions', traverse=(compost_density.id, 'edit', )) }}">Edit</a>
                     {{ action_buttons(request, compost_density) }}
                   </td>
                 </tr>
