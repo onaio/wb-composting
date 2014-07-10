@@ -79,6 +79,7 @@ def includeme(config):
         'xlsx', 'composting.views.renderers.TablibXLSXRenderer')
 
     config.add_static_view('static', 'composting:static', cache_max_age=3600)
+    config.add_static_view('docs', '../docs/_build/html', cache_max_age=3600)
     config.add_route('default', '/')
     config.add_route('auth', '/auth/{action}')
     config.add_route('oauth', '/oauth/{action}')

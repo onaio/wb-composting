@@ -29,7 +29,8 @@ requires = [
     'requests-oauthlib',
     'mock',
     'tablib',
-    'httmock'
+    'httmock',
+    'Sphinx'
 ]
 
 setup(name='WBComposting',
