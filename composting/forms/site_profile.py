@@ -10,18 +10,18 @@ class SiteProfileForm(colander.MappingSchema):
         colander.Str(), title="Municipality Name",
         widget=TextInputWidget(size=30))
     box_volume = colander.SchemaNode(
-        colander.Float(), title="Standard Box's Volume",
+        colander.Float(), title="Standard Box's Volume (m3)",
         validator=colander.Range(
             min=MIN_VOLUME, min_err="The length must be greater than 0"))
     wheelbarrow_volume = colander.SchemaNode(
-        colander.Float(), title="Wheelbarrow's Volume",
+        colander.Float(), title="Wheelbarrow's Volume (m3)",
         validator=colander.Range(
             min=MIN_VOLUME, min_err="The length must be greater than 0"))
     leachete_tank_length = colander.SchemaNode(
-        colander.Float(), title="Leachete Tank's Length",
+        colander.Float(), title="Leachete Tank's Length (m)",
         validator=colander.Range(
             min=MIN_VOLUME, min_err="The length must be greater than 0"))
     leachete_tank_width = colander.SchemaNode(
-        colander.Float(), title="Leachete Tank's Width",
+        colander.Float(), title="Leachete Tank's Width (m)",
         validator=colander.Range(
             min=MIN_VOLUME, min_err="The length must be greater than 0"))
