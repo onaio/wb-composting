@@ -102,3 +102,8 @@ body > .header .logo .icon {
 .skin-black .treeview-menu > li > a {
   color: #ccc;
 }
+
+.right-side > .content-header > h1 > small {
+    font-weight: normal;
+    color: #1F70A8!important;
+}

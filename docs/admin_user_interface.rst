@@ -49,7 +49,7 @@ Editing a Municipality's Profile
 --------------------------------
 
 To update a municipality's profile, click on the municipality from the
-municipalities list screen. Once its loaded, click on **Site Profile** on the
+municipalities list screen. Once it's loaded, click on **Site Profile** on the
 top-right of the screen.
 
 On the resulting screen, update the values as required to save the changes.
@@ -79,7 +79,7 @@ as follows:
     * **Small Breadth** - The width/breadth of the bottom part of the skip.
     * **Large Breadth** - The width/breadth of the top part of the skip.
 
-Click **Create** to save it. Once its is saved, you will get an alert that it
+Click **Create** to save it. Once it's saved, you will get an alert that it
 has been created. Click on **Skip Types** to go back to the list of skips. You
 should see the skip you just created in the list.
 
@@ -117,7 +117,7 @@ Activating users
 ----------------
 
 For a user to gain access to the dashboard, they must first have an
-`ona.io <https://ona.io>`_.
+`ona.io <https://ona.io>`_ account.
 
 Once a user has registered for an **ona.io** account, ask them to login to the
 dashboard at `<http://compost.ona.io/auth/sign-in>`_. Once they authorize
