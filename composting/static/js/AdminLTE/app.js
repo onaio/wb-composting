@@ -11,41 +11,6 @@
  */
 var left_side_width = 220; //Sidebar width in pixels
 
-(function ($, window, document) {
-    var pluginName = "imageMeta",
-        defaults = {};
-
-    function ImageMeta(element, options) {
-        this.element = element;
-        this.settings = $.extend( {}, defaults, options );
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    ImageMeta.prototype = {
-        init: function () {
-            $(this.element).on('load', function () {
-                console.log(this);
-               EXIF.getData(this, function() {
-                    console.log(EXIF.pretty(this));
-                });
-            });
-        }
-    };
-
-    $.fn[ pluginName ] = function ( options ) {
-        this.each(function () {
-            if (!$.data(this, "plugin_" + pluginName)) {
-                $.data(this, "plugin_" + pluginName, new ImageMeta(this, options));
-            }
-        });
-
-        // chain jQuery functions
-        return this;
-    }
-})(jQuery, window, document );
-
 $(function() {
     "use strict";
 
@@ -148,17 +113,7 @@ $(function() {
             $(".left-side, html, body").css("min-height", height + "px");
         }
     }
-    //Fire upon load
-    _fix();
-    //Fire when wrapper is resized
-    $(".wrapper").resize(function() {
-        _fix();
-        fix_sidebar();
-    });
-
-    //Fix the fixed layout sidebar scroll bug
-    fix_sidebar();
-
+    
     /*
      * We are gonna initialize all checkbox and radio inputs to 
      * iCheck plugin in.
@@ -168,60 +123,40 @@ $(function() {
         checkboxClass: 'icheckbox_minimal',
         radioClass: 'iradio_minimal'
     });
-
-    /*
-     * View details modal
-     */
-    $('.btn-details').on('click', function (e) {
-        var target = $(e.target);
-        var url = target.data('url');
-        var $loadingModal = $('#loading-modal');
-        var $detailsModal = $('#details-modal');
-        // get progress bar content from loading modal and clone it
-        var $loadingContent = $loadingModal.find('.modal-content').clone();
-        var $modalDialog = $detailsModal.find('.modal-dialog');
-        $modalDialog.html($loadingContent);
-        // remove large class if set
-        $modalDialog.removeClass('modal-lg');
-        $detailsModal.modal('show');
-        $.ajax(url, {})
-            .done(function (response) {
-                $modalDialog.html(response);
-                if(target.data('modal-lg')) {
-                    $modalDialog.addClass('modal-lg');
-                }
-                $detailsModal.modal('show');
-
-                //Read image timestamp from meta
-                //$('.image-timestamp').imageMeta({});
-            }).fail(function (e) {
-                $detailsModal.modal('hide');
-                alert("An error occurred: " + e.statusText)
-            });
+    
+    //Fire upon load
+    _fix();
+    //Fire when wrapper is resized
+    $(window).resize(function() {
+        console.log("Resize fired...");
+        _fix();
+        fix_sidebar();
     });
 
+    //Fix the fixed layout sidebar scroll bug
+    fix_sidebar();
+
+    function fix_sidebar(){
+        //Make sure the body tag has the .fixed class
+        if (!$("body").hasClass("fixed")) {
+            return;
+        }
+        
+        var originalHeight = $(".sidebar").css("height");
+        var sdHeight = $(window).height() - $(".header").height();
+        
+        //Add slimscroll
+        $(".sidebar").slimscroll({
+            height: sdHeight+"px",
+            color: "rgba(255,255,255,0.4)"
+        });
+        
+        //Adjust size of scroll container on resizing
+        $(".sidebar").css("height", sdHeight);
+    }
 });
 
-function fix_sidebar() {
-    //Make sure the body tag has the .fixed class
-    if (!$("body").hasClass("fixed")) {
-        return;
-    }
 
-    //Add slimscroll
-    $(".sidebar").slimscroll({
-        height: ($(window).height() - $(".header").height()) + "px",
-        color: "rgba(0,0,0,0.2)"
-    });
-}
-function change_layout() {
-    $("body").toggleClass("fixed");
-    fix_sidebar();
-}
-function change_skin(cls) {
-    $("body").removeClass("skin-blue skin-black");
-    $("body").addClass(cls);
-}
 /*END DEMO*/
 $(window).load(function() {
     /*! pace 0.4.17 */

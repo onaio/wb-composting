@@ -47,13 +47,13 @@ class SkipForm(colander.MappingSchema):
         title="Skip Type", description="A to Z",
         validator=deferred_skip_type_validator)
     small_length = colander.SchemaNode(
-        colander.Float(), title="Small Length")
+        colander.Float(), title="Small Length (m)")
     large_length = colander.SchemaNode(
-        colander.Float(), title="Large Length")
+        colander.Float(), title="Large Length (m)")
     small_breadth = colander.SchemaNode(
-        colander.Float(), title="Small Breadth")
+        colander.Float(), title="Small Breadth (m)")
     large_breadth = colander.SchemaNode(
-        colander.Float(), title="Large Breadth")
+        colander.Float(), title="Large Breadth (m)")
 
     def validator(self, node, value):
         exc = colander.Invalid(node, "")
