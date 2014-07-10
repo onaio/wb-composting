@@ -10,8 +10,8 @@ Administrative user interface
 When you first login, you will be presented with a list of existing
 municipalities, if any.
 
-Municipalities
-==============
+Managing Municipalities
+=======================
 
 .. _creating_a_municipality:
 
@@ -110,8 +110,8 @@ within municipality to get the Skip Types menu``
 Click on the button labelled **Delete** and click on **Delete** to confirm
 that you would like to delete the skip.
 
-Users
-=====
+Managing Users
+==============
 
 Activating users
 ----------------
