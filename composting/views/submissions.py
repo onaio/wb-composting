@@ -6,6 +6,7 @@ from pyramid.response import Response
 
 from dashboard.views.base import BaseView
 from dashboard.views.helpers import check_post_csrf
+from composting import constants
 from composting.models.submission import Submission, ISubmission
 from composting.models.municipality_submission import MunicipalitySubmission
 from composting.views.helpers import selections_from_request
@@ -100,7 +101,7 @@ class Submissions(BaseView):
     def edit(self):
         # redirects to the survey form for specified survey
         submission = self.request.context
-        sub_id = submission.json_data['_id']
+        sub_id = submission.json_data[constants.ONA_SUBMISSION_ID]
         form_id = submission.FORM_ID
         return_url = self.request.route_url(
             'submissions', traverse=())
