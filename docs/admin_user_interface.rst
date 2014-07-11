@@ -1,6 +1,5 @@
 .. _admin_user_interface:
 
-
 *****************************
 Administrative user interface
 *****************************
@@ -59,6 +58,8 @@ Configuring a Municipality's Skips
 
 Each municipality can configure the dimensions of any of its skips.
 A municipality can have a total of 26 skips, one for each of the letters A-Z.
+
+.. _creating_a_skip:
 
 Creating a new skip
 ~~~~~~~~~~~~~~~~~~~
