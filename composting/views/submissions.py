@@ -115,12 +115,11 @@ class Submissions(BaseView):
             url,
             headers={"Authorization": "Token {}".format(token)})
 
-        logging.getLogger(__name__).error(url)
-        logging.getLogger(__name__).error(str(response.json()))
-
         try:
             edit_url = response.json()['url']
         except KeyError:
+            logging.getLogger(__name__).error(url)
+            logging.getLogger(__name__).error(str(response.json()))
             raise HTTPBadRequest(response.json()['detail'])
         else:
             return HTTPFound(location=edit_url)
