@@ -20,4 +20,11 @@ approved records are not 5 or more``
 
 .. image:: _static/monthly_waste_density_unapproved.png
 
+When the record cannot be approved
+==================================
 
+If the density cannot be determined, you will not
+be able to approve the record and an exclamation will be displayed under the
+density column. This will happen if the specified skip type does not exist
+within the municipalities list of skip types and thus the waste's volume
+cannot be determined.
