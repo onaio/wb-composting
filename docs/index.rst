@@ -39,3 +39,4 @@ Register Documentation
    monthly_solid_waste_composition_register.rst
    monthly_density_of_rejects_from_sieving.rst
    register_of_daily_rejects_landfilled.rst
+   windrow_monitoring_register.rst
