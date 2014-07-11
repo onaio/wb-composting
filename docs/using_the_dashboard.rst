@@ -30,4 +30,4 @@ will load content in the content area.
 The content area
 ================
 
-The content area will display data for whichever section you are currently on
+The content area will display data for whichever register you are currently on.

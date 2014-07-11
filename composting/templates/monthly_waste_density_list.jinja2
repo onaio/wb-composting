@@ -35,13 +35,21 @@
                 <tr>
                   <td>{{ monthly_waste.date|format_date(request) }} {{ monthly_waste.time|format_time(request) }}</td>
                   <td>{{ report.skip_number }}</td>
-                  <td>{{ report.skip_type }}</td>
+                  <td>
+                    {{ report.skip_type }}
+                  </td>
                   <td>{% if report.waste_height %}{{ report.waste_height }}m{% endif %}</td>
                   <td>{% if monthly_waste.volume is not none %}{{ monthly_waste.volume|format_decimal(request) }}m<sup>3</sup>{% endif %}</td>
                   <td>{{ report.filled_weight }}</td>
                   <td>{{ report.empty_weight }}</td>
                   <td>{{ monthly_waste.net_weight }}</td>
-                  <td>{% if monthly_waste.volume is not none %}{{ monthly_waste.density|format_decimal(request) }} t/m<sup>3</sup>{% endif %}</td>
+                  <td>
+                    {% if monthly_waste.volume is not none %}
+                      {{ monthly_waste.density|format_decimal(request) }} t/m<sup>3</sup>
+                    {% else %}
+                      <span class="label label-danger" data-toggle="tooltip" title="Cannot approve! Invalid skip type"><i class="fa fa-warning"></i></span>
+                    {% endif %}
+                  </td>
                   <td>
                     {% if report.remarks %}
                     <div class="overflow-tooltip" data-toggle="tooltip" title="{{ report.remarks }}">
