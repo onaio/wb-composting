@@ -39,7 +39,7 @@
         <div class="box-header">
           <h3 class="box-title">{{ start|format_date(request) }}{% if start != end %} - {{ end|format_date(request) }}{% endif %}</h3>
           <!-- Download report button -->
-          <a href="{{request.route_path('municipalities', traverse=(municipality.id, 'reports',), _query={'format':'xlsx'})}}" class="btn btn-s btn-success pull-right download-xls">Download xls</a>
+          <a href="{{request.route_path('municipalities', traverse=(municipality.id, 'reports',), _query={'format':'xlsx', 'start': start, 'end': end})}}" class="btn btn-s btn-success pull-right download-xls">Download xls</a>
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
