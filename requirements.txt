@@ -45,5 +45,6 @@ requests==2.3.0
 requests-oauthlib==0.4.1
 mock==1.0.1
 Sphinx==1.2.2
+httmock==1.2.2
 
 -e git://github.com/onaio/dashboard-skeleton.git@0.1.2e#egg=Dashboard
