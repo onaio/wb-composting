@@ -19,6 +19,7 @@ class ElectricityRegister(Submission):
     METER_READING_FIELD = 'meter_reading'
 
     LIST_ACTION_NAME = 'municipality-electricity-register'
+    FORM_ID = "1575"
 
     @classmethod
     def get_last_meter_reading(cls, municipality, current_date):

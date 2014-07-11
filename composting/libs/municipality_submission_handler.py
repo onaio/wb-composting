@@ -20,6 +20,7 @@ from composting.models.compost_density_register import CompostDensityRegister
 from composting.models.monthly_rejects_composition import (
     MonthlyRejectsComposition)
 from composting.models.daily_vehicle_register import DailyVehicleDataRegister
+from composting.models.submission import Submission
 
 
 class MunicipalitySubmissionHandler(SubmissionHandler):
@@ -55,8 +56,8 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
             DailyVehicleDataRegister.XFORM_ID
         ]
 
-    @staticmethod
-    def create_submission(json_payload, **kwargs):
+    @classmethod
+    def create_submission(cls, json_payload, **kwargs):
         xform_id = json_payload[XFORM_ID_STRING]
         # get the specific submission sub-class
         try:
@@ -74,6 +75,23 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
                 **kwargs)
 
     @classmethod
+    def get_or_create_submission(cls, json_payload, **kwargs):
+        ona_sub_id = json_payload[constants.ONA_SUBMISSION_ID]
+        try:
+            submission = (
+                Submission.get(
+                    Submission.json_data[constants.ONA_SUBMISSION_ID].astext ==
+                    str(ona_sub_id)))
+            # Submission already exists so update its json_payload
+            submission.json_data = json_payload
+            return submission, True
+        except NoResultFound:
+            submission = cls.create_submission(json_payload, **kwargs)
+
+            # Submission does not exist
+            return submission, False
+
+    @classmethod
     def get_municipality_from_payload(cls, json_payload):
         """
         Try to determine the municipality the submission user belongs to from
@@ -86,27 +104,31 @@ class MunicipalitySubmissionHandler(SubmissionHandler):
 
         # find the user and join to municipality
         try:
-            municipality = DBSession.query(Municipality).select_from(User).filter(User.username == submitted_by).join(Municipality).one()
+            municipality = DBSession.query(Municipality)\
+                                    .select_from(User)\
+                                    .filter(User.username == submitted_by)\
+                                    .join(Municipality).one()
         except NoResultFound:
             return None
         else:
             return municipality
 
     def __call__(self, json_payload, **kwargs):
-        submission = self.create_submission(json_payload, **kwargs)
+        submission, is_updated = self.get_or_create_submission(
+            json_payload, **kwargs)
+
+        if not is_updated:
+            # determine the municipality id(object)
+            municipality = self.get_municipality_from_payload(json_payload)
+
+            if municipality is not None:
+                municipality_submission = MunicipalitySubmission(
+                    submission=submission,
+                    municipality=municipality)
+
+                DBSession.add(municipality_submission)
+                return
+
         # add the submission because we can save even when we can't determine
         # its municipality
         DBSession.add(submission)
-
-        # determine the municipality id
-        municipality = self.get_municipality_from_payload(json_payload)
-
-        if municipality is not None:
-            municipality_submission = MunicipalitySubmission(
-                submission=submission,
-                municipality=municipality)
-
-            # todo: save just the submission when if we don't have a municipality
-            DBSession.add(municipality_submission)
-        else:
-            DBSession.add(submission)

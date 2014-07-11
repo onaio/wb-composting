@@ -39,6 +39,8 @@ class WindrowMonitoring(Submission):
     OXYGEN_READING_4 = 'monitoring_group/o4'
     OXYGEN_READING_5 = 'monitoring_group/o5'
 
+    FORM_ID = "3024"
+
     def count_of_low_samples(self):
         # Count all samples within this submission that are below 10%
         oxygen_readings = [self.json_data[self.OXYGEN_READING_1],

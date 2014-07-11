@@ -13,6 +13,7 @@ from composting.models.electricity_register import ElectricityRegister
 from composting.models.leachete_monthly_register import LeacheteMonthlyRegister
 from composting.models.compost_sales_register import CompostSalesRegister
 from composting.models.compost_density_register import CompostDensityRegister
+from composting.models.submission import Submission
 from composting.models.monthly_rejects_composition import (
     MonthlyRejectsComposition)
 from composting.models.daily_vehicle_register import DailyVehicleDataRegister
@@ -45,6 +46,28 @@ class TestMunicipalitySubmissionHandler(TestBase):
             .get_municipality_from_payload(json_payload)
         self.assertIsNone(municipality)
 
+    def test_submission_updating(self):
+        submission = Submission.get(
+            Submission.json_data[constants.ONA_SUBMISSION_ID].astext ==
+            str(52559))
+        json_payload = {
+            constants.SUBMITTED_BY: 'manager',
+            XFORM_ID_STRING: DailyWaste.XFORM_ID,
+            DailyWaste.DATE_FIELD: '2014-04-21T10:34:03.000',
+            constants.ONA_SUBMISSION_ID: '52559'
+        }
+        handler = MunicipalitySubmissionHandler()
+        num_municipality_submissions = MunicipalitySubmission.count()
+        handler.__call__(json_payload)
+
+        self.assertEqual(MunicipalitySubmission.count(),
+                         num_municipality_submissions)
+
+        submission = Submission.get(
+            Submission.json_data[constants.ONA_SUBMISSION_ID].astext ==
+            str(52559))
+        self.assertEqual(submission.json_data, json_payload)
+
 
 class TestDailyWasteSubmissionHandling(TestBase):
     klass = DailyWaste
@@ -72,7 +95,8 @@ class TestDailyWasteSubmissionHandling(TestBase):
         json_payload = {
             constants.SUBMITTED_BY: 'manager',
             XFORM_ID_STRING: self.xform_id,
-            self.klass.DATE_FIELD: self.date_string
+            self.klass.DATE_FIELD: self.date_string,
+            constants.ONA_SUBMISSION_ID: '23456'
         }
         handler = MunicipalitySubmissionHandler()
         num_submissions = self.klass.count()

@@ -1,9 +1,8 @@
-from webob.multidict import MultiDict
 from pyramid.response import Response
+from httmock import urlmatch, HTTMock
 
 from composting.models import Municipality, Submission
 from composting.models.daily_waste import DailyWaste
-from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.windrow_monitoring import WindrowMonitoring
 from composting.models.daily_rejects_landfilled import DailyRejectsLandfilled
@@ -18,8 +17,30 @@ from composting.models.daily_vehicle_register import DailyVehicleDataRegister
 from composting.views.submissions import Submissions
 from composting.tests.test_base import IntegrationTestBase, FunctionalTestBase
 
+from pyramid.httpexceptions import HTTPBadRequest
+
+
+EDIT_URL = "http://test.enketo.org/edit?id=1"
+
+
+@urlmatch(netloc=r'(.*\.)?test.ona\.io$')
+def fetch_non_existent_submission_url(url, request):
+    return {
+        'status_code': 404,
+        'content': '{"code": 404, "detail": "Not Found"}'
+    }
+
+
+@urlmatch(netloc='test.ona.io', path='/api/v1/data/wb_composting/')
+def enketo_edit_url_mock(url, request):
+    return {
+        'status_code': 201,
+        'content': '{"url": "http://test.enketo.org/edit?id=1"}'
+    }
+
 
 class TestSubmissions(IntegrationTestBase):
+
     def setUp(self):
         super(TestSubmissions, self).setUp()
         self.setup_test_data()
@@ -49,8 +70,26 @@ class TestSubmissions(IntegrationTestBase):
         self.assertIsInstance(result, Response)
         self.assertEqual(self.request.new_status, Submission.PENDING)
 
+    def test_edit_submission_with_invalid_submission(self):
+        daily_waste = DailyWaste.newest()
+        self.request.context = daily_waste
+
+        with HTTMock(fetch_non_existent_submission_url):
+            self.assertRaises(HTTPBadRequest, self.views.edit)
+
+    def test_edit_submission_with_valid_submission(self):
+        daily_waste = DailyWaste.newest()
+        self.request.context = daily_waste
+
+        with HTTMock(enketo_edit_url_mock):
+            response = self.views.edit()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.location, EDIT_URL)
+
 
 class TestSubmissionsFunctional(FunctionalTestBase):
+
     def setUp(self):
         super(TestSubmissionsFunctional, self).setUp()
         self.setup_test_data()

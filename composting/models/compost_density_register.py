@@ -19,6 +19,7 @@ class CompostDensityRegister(Submission):
     EMPTY_BOX_WEIGHT_FIELD = 'empty_box_weight'
 
     LIST_ACTION_NAME = 'monthly-compost-density-register'
+    FORM_ID = "2399"
 
     @property
     def net_weight(self):
