@@ -2,6 +2,7 @@ import os
 import unittest
 import transaction
 import json
+import logging
 
 from pyramid.registry import Registry
 from pyramid import testing
@@ -104,6 +105,8 @@ class TestBase(unittest.TestCase):
         Base.metadata.bind = engine
         Base.metadata.drop_all()
         Base.metadata.create_all()
+        # enable logging
+        logging.config.fileConfig('test.ini', disable_existing_loggers=False)
 
     def tearDown(self):
         DBSession.remove()
