@@ -15,6 +15,7 @@ class MonthlyRejectsDensity(Submission):
     EMPTY_BOX_WEIGHT_FIELD = 'empty_box_weight'
 
     LIST_ACTION_NAME = 'density-of-rejects-from-sieving'
+    FORM_ID = "2325"
 
     @property
     def net_weight(self):
@@ -24,7 +25,7 @@ class MonthlyRejectsDensity(Submission):
     def density(self, municipality):
         # get the municipality for this submission
         box_volume = municipality.box_volume
-        return self.net_weight/box_volume
+        return self.net_weight / box_volume
 
     def create_or_update_report(self):
         municipality = self.municipality_submission.municipality

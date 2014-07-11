@@ -29,6 +29,7 @@ requires = [
     'requests-oauthlib',
     'mock',
     'tablib',
+    'httmock',
     'Sphinx'
 ]
 

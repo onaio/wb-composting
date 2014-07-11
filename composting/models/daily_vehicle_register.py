@@ -17,6 +17,7 @@ class DailyVehicleDataRegister(Submission):
 
     FUEL_PURCHASED_FLAG = 'fuel_purchased'
     FUEL_PURCHASED_LTRS = 'fuel_purchased_liters'
+    FORM_ID = "1580"
 
     _fuel = None
 

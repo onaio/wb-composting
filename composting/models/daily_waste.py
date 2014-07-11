@@ -20,6 +20,7 @@ class DailyWaste(Submission):
     VOLUME = 'volume'
     SKIP_TYPE = 'skip_type'
     WASTE_HEIGHT = 'waste_height'
+    FORM_ID = "1911"
 
     # list url suffix
     LIST_ACTION_NAME = 'daily-waste'

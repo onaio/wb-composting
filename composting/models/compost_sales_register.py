@@ -26,6 +26,7 @@ class CompostSalesRegister(Submission):
     DISTANCE_TRAVELLED = 'supply_distance'
 
     LIST_ACTION_NAME = 'outgoing-compost-sales-register'
+    FORM_ID = "2390"
 
     _compost_density = None
     _density = None
@@ -77,7 +78,7 @@ class CompostSalesRegister(Submission):
         if volume is None or density is None:
             return None
 
-        return (density * volume)/KGS_PER_TONNE
+        return (density * volume) / KGS_PER_TONNE
 
     def create_or_update_report(self):
         report = self.get_or_create_report()

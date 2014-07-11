@@ -34,7 +34,8 @@ class TestWindrowMonitoringHandler(TestBase):
             '_xform_id_string': self.xform_id,
             'date': self.date_string,
             'windrow_number': 'W5-21/5/2014',
-            'week_no': '1'
+            'week_no': '1',
+            '_id': '12345'
         }
         handler = WindrowMonitoringHandler()
         num_submissions = self.klass.count()
