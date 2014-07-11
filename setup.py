@@ -28,7 +28,7 @@ requires = [
     'Dashboard',
     'requests-oauthlib',
     'mock',
-    'tablib'
+    'tablib',
     'Sphinx'
 ]
 
