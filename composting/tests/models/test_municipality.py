@@ -263,15 +263,6 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         count = self.municipality.low_windrow_sample_count(start, end)
         self.assertEqual(count, 3)
 
-    def test_percentage_of_low_samples(self):
-        start = datetime.date(2014, 6, 1)
-        end = datetime.date(2014, 6, 30)
-
-        self.populate_windrow_monistoring()
-
-        percentage = self.municipality.percentage_of_low_samples(start, end)
-        self.assertAlmostEqual(percentage, 0.3)
-
     def populate_electricity_register_reports(self):
         query = self.get_pending_submissions_by_class(ElectricityRegister)
         electricity_registers = query.all()
@@ -313,3 +304,12 @@ class TestMunicipalityIntegration(IntegrationTestBase):
         self.populate_leachete_volume_reports()
         volume = self.municipality.leachete_volume_accumulated(start, end)
         self.assertEqual(volume, 179.0)
+
+    def test_report(self):
+        start = datetime.date(2014, 6, 1)
+        end = datetime.date(2014, 6, 30)
+
+        headers, rows = self.municipality.report(start, end)
+        self.assertEqual(headers,
+                         ["", "Parameter", "Unit", "Value", "Comments"])
+        self.assertTrue(rows)

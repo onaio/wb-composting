@@ -2,6 +2,7 @@ from pyramid.security import authenticated_userid
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm.exc import NoResultFound
+from pyramid.events import subscriber, NewRequest
 
 from composting.models.user import User
 
@@ -62,3 +63,11 @@ def get_request_user(request):
         return User.get(User.id == user_id)
     except NoResultFound:
         return None
+
+
+@subscriber(NewRequest)
+def requested_xlsx_format(event):
+    request = event.request
+    if request.GET.get('format') == 'xlsx':
+        request.override_renderer = 'xlsx'
+        return True
