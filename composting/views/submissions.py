@@ -115,6 +115,7 @@ class Submissions(BaseView):
             url,
             headers={"Authorization": "Token {}".format(token)})
 
+        logging.getLogger(__name__).error(url)
         logging.getLogger(__name__).error(str(response.json()))
 
         try:
