@@ -26,4 +26,13 @@ Using the dashboard
 
    using_the_dashboard.rst
    admin_user_interface.rst
-   end_user_interface.rst
+   general_municipality_ui.rst
+
+Register Documentation
+----------------------
+
+.. toctree::
+   :maxdepth: 3
+
+   register_monthly_waste_density.rst
+   register_daily_waste.rst

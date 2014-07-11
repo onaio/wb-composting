@@ -1,30 +1,28 @@
-.. _end-user-interface:
+.. _general_municipality_ui:
 
-
-*************************************************
-Site Manager/Environmental Officer user interface
-*************************************************
+**************************************
+General interaction with the registers
+**************************************
 
 When you first login, you will be presented with the municipality's overview
 screen.
+
     ``NOTE: This is blank at the moment and will be enhanced at a later date to
     display trends and snapshot data for the municipality.``
 
 You can access the various registers using the menu on the left hand side of
 the screen.
 
-General interaction with the registers
-======================================
-
 To access any of the registers, click on the name of the register on the left
 navigation.
+
     ``NOTE: The list will only show up on the left navigation when you
     are within a municipality``
 
 Each of the registers follows a similar convention allows the following actions.
 
 Filtering
----------
+=========
 
 When you first load any register, the data available within that register will
 be displayed within the content area. At the very top of the content area, you
@@ -40,7 +38,7 @@ e.g. **The Daily Waste Register**.
  e.g. The Leachate Monthly Register``
 
 Filter by month
-~~~~~~~~~~~~~~~
+---------------
 
 .. image:: _static/filter_by_month.png
 
@@ -48,7 +46,7 @@ This filter allows you to specify a month of interest and view data for
 that particular month.
 
 Filter by status
-~~~~~~~~~~~~~~~~
+----------------
 
 .. image:: _static/filter_by_status.png
 
@@ -57,7 +55,7 @@ Registers that contain this filter will, by default, only display
 including **approved** records within the register.
 
 Managing Records
-----------------
+================
 
 .. image:: _static/action_buttons.png
 
@@ -66,7 +64,7 @@ register you have accessed. With each record, the following actions can be
 performed.
 
 View the entire record
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 Each record within the list only displays a subset of the data to maximise the
 space available.
@@ -77,7 +75,7 @@ record. This is a good way to examine the data closely if something seems
 incorrect form within the list.
 
 Edit the record
-~~~~~~~~~~~~~~~
+---------------
 
 Any of the records can be edited if the data requires correction. To edit the
 record, click on the button labelled edit. You will be redirected to the edit
@@ -88,7 +86,7 @@ account username and password to proceed``
     in-case this happens, go back to the dashboard and click on edit once again.``
 
 Approve a record
-~~~~~~~~~~~~~~~~
+----------------
 
 Once you are satisfied with the data contained within a record, you should
 approve it to have it used within the reports. To approve a record, simply
@@ -101,7 +99,7 @@ click on the button labelled **Approve**
     record relies on a calculation ina different register.``
 
 Reject a record
-~~~~~~~~~~~~~~~
+---------------
 
 A record maybe rejected by either the environmental officer or by NEMA after
 it has been approved. This is useful when a record has some irregularity and
@@ -109,5 +107,3 @@ will guarantee that the record's data will not be used within the reports until
 it is re-approved.
 
 .. image:: _static/rejected_status.png
-
-
