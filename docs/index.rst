@@ -34,5 +34,8 @@ Register Documentation
 .. toctree::
    :maxdepth: 3
 
-   register_monthly_waste_density.rst
-   register_daily_waste.rst
+   monthly_waste_density_register.rst
+   daily_waste_register.rst
+   monthly_solid_waste_composition_register.rst
+   monthly_density_of_rejects_from_sieving.rst
+   register_of_daily_rejects_landfilled.rst
