@@ -100,3 +100,7 @@ class MonthlyDensity(Submission):
             return cls.calculate_average_density(monthly_densities)
         else:
             return None
+
+    def can_approve(self, request):
+        return super(MonthlyDensity, self).can_approve(request)\
+            and self.volume is not None
