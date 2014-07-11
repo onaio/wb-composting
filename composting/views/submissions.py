@@ -1,3 +1,4 @@
+import logging
 import urlparse
 import requests
 
@@ -113,6 +114,8 @@ class Submissions(BaseView):
         response = requests.get(
             url,
             headers={"Authorization": "Token {}".format(token)})
+
+        logging.getLogger(__name__).error(str(response.json()))
 
         try:
             edit_url = response.json()['url']
