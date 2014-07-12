@@ -40,8 +40,10 @@ NEMA = KeyValue('nema', "NEMA")
 WB = KeyValue('wb', "World Bank")
 ENV_OFFICER = KeyValue('env_officer', "Environmental Officer")
 SITE_MANAGER = KeyValue('sm', "Site Manager")
+DATA_ENTRY_CLERK = KeyValue('data_entry_clerk', "Data Entry Clerk")
 
-GROUPS = [NEMA, WB, ENV_OFFICER, SITE_MANAGER]
+
+GROUPS = [NEMA, WB, ENV_OFFICER, SITE_MANAGER, DATA_ENTRY_CLERK]
 
 
 GROUP_PERMISSIONS = {

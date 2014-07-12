@@ -33,10 +33,12 @@ class UserForm(colander.MappingSchema):
         exc = colander.Invalid(node, "")
         valid = True
         if value['municipality_id'] is None and value['group']\
-                in [security.ENV_OFFICER.key, security.SITE_MANAGER.key]:
+                in [security.ENV_OFFICER.key,
+                    security.SITE_MANAGER.key,
+                    security.DATA_ENTRY_CLERK.key]:
             valid = False
             exc['municipality_id'] = "You must specify the municipality for" \
                                      " site managers and environmental" \
-                                     " officers"
+                                     " officers and data entry clerks"
         if not valid:
             raise exc
