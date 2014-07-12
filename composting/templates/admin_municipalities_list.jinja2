@@ -40,20 +40,22 @@
         <div class="box-body">
           <p>
             Site Managers:
-             {% for user in municipality.site_managers %}
+             {%- for user in municipality.site_managers %}
                <strong style="{% if not user.active %}text-decoration:line-through{% endif %}">
                  <a href="{{ request.route_url('users', traverse=(user.id, 'edit')) }}" style="color: white">{{ user.username }}</a>
                </strong>
-             {% else %}
+               {%- if not loop.last %}, {% endif %}
+             {%- else %}
               -
              {% endfor %}
             <br/>
             Data Entry Clerks:
-             {% for user in municipality.data_entry_clerks %}
+             {%- for user in municipality.data_entry_clerks %}
                <strong style="{% if not user.active %}text-decoration:line-through{% endif %}">
                  <a href="{{ request.route_url('users', traverse=(user.id, 'edit')) }}" style="color: white">{{ user.username }}</a>
                </strong>
-             {% else %}
+               {%- if not loop.last %}, {% endif %}
+             {%- else %}
               -
              {% endfor %}
           </p>
