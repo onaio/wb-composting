@@ -17,6 +17,7 @@ from composting.models.daily_waste import DailyWaste
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.skip import Skip
+from composting.models.user import User
 from composting.models.municipality_submission import (
     MunicipalitySubmission)
 from composting.models.windrow_monitoring import (
@@ -431,6 +432,28 @@ class Municipality(Base):
             else:
                 self._skips[skip_type] = skip
             return self._skips[skip_type]
+
+    def get_users_by_group_query(self, group):
+        return DBSession.query(User)\
+            .filter(User.group == group,
+                    User.municipality == self)
+
+    @property
+    def site_managers(self):
+        """
+        Get the list of users who are the site managers for this municipality
+        :return: list
+        """
+        return self.get_users_by_group_query(security.SITE_MANAGER.key).all()
+
+    @property
+    def data_entry_clerks(self):
+        """
+        Get the list of users who are the site managers for this municipality
+        :return: list
+        """
+        return self.get_users_by_group_query(
+            security.DATA_ENTRY_CLERK.key).all()
 
 
 class MunicipalityFactory(ModelFactory):
