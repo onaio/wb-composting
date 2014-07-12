@@ -38,8 +38,25 @@
           <h3 class="box-title"><a href="{{ request.route_url('municipalities', traverse=(municipality.id,)) }}">{{ municipality.name }}</a></h3>
         </div>
         <div class="box-body">
-          <p>Site Manager: Mr James Smith
-          <br/>Data Entry Clerk: Mr Jane Doe</p>
+          <p>
+            Site Managers:
+             {% for user in municipality.site_managers %}
+               <strong style="{% if not user.active %}text-decoration:line-through{% endif %}">
+                 <a href="{{ request.route_url('users', traverse=(user.id, 'edit')) }}" style="color: white">{{ user.username }}</a>
+               </strong>
+             {% else %}
+              -
+             {% endfor %}
+            <br/>
+            Data Entry Clerks:
+             {% for user in municipality.data_entry_clerks %}
+               <strong style="{% if not user.active %}text-decoration:line-through{% endif %}">
+                 <a href="{{ request.route_url('users', traverse=(user.id, 'edit')) }}" style="color: white">{{ user.username }}</a>
+               </strong>
+             {% else %}
+              -
+             {% endfor %}
+          </p>
         </div><!-- /.box-body -->
       </div><!-- /.box -->
     </div>
