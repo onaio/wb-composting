@@ -30,6 +30,12 @@ MUNICIPALITY_EDIT_ANY = KeyValue(
 MUNICIPALITY_EDIT_OWN = KeyValue(
     'p:municipality-edit:{}',
     "Only Edit Their Own Municipality's Details")
+SUBMISSION_REJECT_ANY = KeyValue(
+    'p:submission-reject',
+    "Reject Submissions in any municipality")
+SUBMISSION_REJECT_OWN = KeyValue(
+    'p:submission-reject:{}',
+    "Reject Submissions in their own municipality")
 
 # User Permissions
 USER_MANAGE_ALL = KeyValue(
@@ -50,8 +56,10 @@ GROUP_PERMISSIONS = {
     WB.key: [MUNICIPALITY_MANAGE_ALL.key, MUNICIPALITY_SHOW_ANY.key,
              MUNICIPALITY_EDIT_ANY.key],
     NEMA.key: [MUNICIPALITY_MANAGE_ALL.key, MUNICIPALITY_SHOW_ANY.key,
-               MUNICIPALITY_EDIT_ANY.key, USER_MANAGE_ALL.key],
-    ENV_OFFICER.key: [MUNICIPALITY_SHOW_OWN.key, MUNICIPALITY_EDIT_OWN.key],
+               MUNICIPALITY_EDIT_ANY.key, USER_MANAGE_ALL.key,
+               SUBMISSION_REJECT_ANY.key],
+    ENV_OFFICER.key: [MUNICIPALITY_SHOW_OWN.key, MUNICIPALITY_EDIT_OWN.key,
+                      SUBMISSION_REJECT_ANY.key],
     SITE_MANAGER.key: [MUNICIPALITY_SHOW_OWN.key, MUNICIPALITY_EDIT_OWN.key]
 }
 

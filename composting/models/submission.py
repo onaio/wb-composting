@@ -1,5 +1,5 @@
 from zope.interface import Interface
-
+from pyramid.security import has_permission, Allow
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy import (
@@ -11,8 +11,8 @@ from sqlalchemy import (
 )
 from sqlalchemy import event
 from dashboard.libs.utils import date_string_to_datetime, default_date_format
-from pyramid.security import Allow, ALL_PERMISSIONS, Everyone
 
+from composting import security
 from composting.models.base import Base, DBSession, ModelFactory
 from composting.models.report import Report
 from composting.constants import SUBMISSION_TIME
@@ -58,6 +58,14 @@ class Submission(Base):
             self.request = request
         super(Submission, self).__init__(**kwargs)
 
+    def __acl__(self):
+        # users who have the p:submission-reject permission and the
+        # p:submission-reject:<id>
+        # in their effective principal's def can reject
+        return [
+            (Allow, security.SUBMISSION_REJECT_ANY.key, 'reject'),
+        ]
+
     def can_approve(self, request):
         """
         Anyone with permissions can approve if pending AND has valid density
@@ -70,7 +78,7 @@ class Submission(Base):
         Only NEMA and WB can reject and only after it been approved
         """
         return (self.status == Submission.APPROVED
-                and request.GET.get('role') == 'nema')
+                and has_permission('reject', self, request))
 
     def can_unapprove(self, request):
         """
