@@ -34,8 +34,8 @@ another for registers that capture could capture data multiple times ina  month
 e.g. **The Daily Waste Register**.
 
 ``NOTE: some registers may be labelled as monthly but actually capture data
- multiple times in a given month, these will have a status filter instead
- e.g. The Leachate Monthly Register``
+multiple times in a given month, these will have a status filter instead
+e.g. The Leachate Monthly Register``
 
 Filter by month
 ---------------

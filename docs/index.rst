@@ -40,3 +40,11 @@ Register Documentation
    monthly_density_of_rejects_from_sieving.rst
    register_of_daily_rejects_landfilled.rst
    windrow_monitoring_register.rst
+   monthly_compost_density_register.rst
+   monthly_composition_of_rejects_from_sieving.rst
+   electricity_register.rst
+   leachate_monthly_register.rst
+   monthly_compost_density_register.rst
+   monthly_density_of_rejects_from_sieving.rst
+   daily_outgoing_compost_register.rst
+   daily_vehicle_data_register.rst
