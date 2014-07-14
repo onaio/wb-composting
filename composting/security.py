@@ -91,5 +91,5 @@ def group_finder(user_id, request):
 
 
 def friendly_group_name(group_key, request):
-    group = filter(lambda g: g.key == group_key, GROUPS)[0]
-    return group.label
+    groups = filter(lambda g: g.key == group_key, GROUPS)
+    return groups[0].label if len(groups) == 1 else None
