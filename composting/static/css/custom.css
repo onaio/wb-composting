@@ -101,7 +101,11 @@ body > .header .logo .icon {
     color: #1F70A8!important;
 }
 
-.download-xls {
+.report-actions {
     margin-right: 1em;
     margin-top: 0.5em;
+}
+
+.download-xls {
+  margin-left: 0.5em;
 }
