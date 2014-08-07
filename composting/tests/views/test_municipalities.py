@@ -1,15 +1,19 @@
 import datetime
 from webob.multidict import MultiDict
+from mock import MagicMock
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden
 from pyramid import testing
 
 from composting.libs.utils import get_month_start_end
 from composting.models.user import User
 from composting.models import Municipality, Skip
+from composting.models.site_report import SiteReport
 from composting.views.municipalities import Municipalities
 from composting.forms import SkipForm
 from composting.tests.test_base import (
     IntegrationTestBase, FunctionalTestBase)
+
+from sqlalchemy import inspect
 
 
 class TestMunicipalities(IntegrationTestBase):
@@ -209,6 +213,27 @@ class TestMunicipalities(IntegrationTestBase):
         ])
         result = self.views.site_reports()
         self.assertEqual(result['start'], datetime.date(2014, 6, 13))
+
+    def test_save_site_report(self):
+        initial_count = SiteReport.count()
+        # use existing municipality instance state
+        instance_state = inspect(self.municipality)
+        attrs = {'get_data_map.return_value': {'test': 'data'},
+                 '_sa_instance_state': instance_state}
+        mock_municipality = MagicMock(Municipality, **attrs)
+
+        self.request.context = mock_municipality
+        self.request.method = 'POST'
+        self.request.POST = MultiDict([
+            ('start', '2014-06-1'),
+            ('end', '2014-06-30')])
+
+        response = self.views.save_site_report()
+        self.assertIsInstance(response, HTTPFound)
+        self.assertEqual(SiteReport.count(), initial_count + 1)
+
+        site_report = SiteReport.get_report_by_month(6)
+        self.assertEqual(site_report.date_created.day, 30)
 
 
 class TestMunicipalitiesFunctional(FunctionalTestBase):

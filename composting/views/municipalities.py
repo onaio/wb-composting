@@ -4,6 +4,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden
 from pyramid.view import view_defaults, view_config
 from deform import Form, ValidationFailure, Button
 from sqlalchemy import and_
+from sqlalchemy.orm.exc import NoResultFound
 from dashboard.views.base import BaseView
 from dashboard.views.helpers import check_post_csrf
 
@@ -16,6 +17,7 @@ from composting.models.municipality import MunicipalityFactory
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.municipality_submission import MunicipalitySubmission
+from composting.models.site_report import SiteReport
 from composting.forms import SkipForm, SiteProfileForm
 
 
@@ -286,3 +288,38 @@ class Municipalities(BaseView):
             'end': end,
             'label': label
         }
+
+    @view_config(name='save-report',
+                 request_method='POST',
+                 permission='show')
+    def save_site_report(self):
+        # get the selected month to create a report for
+        # if another report already exists, update it with the report_data
+        # contained in the municipality
+        today = datetime.date.today()
+        default_start, default_end = get_month_start_end(today)
+        start, end = get_start_end_date(
+            self.request.POST, default_start, default_end, today)
+
+        municipality = self.request.context
+
+        # Populate report_data json
+        report_json = municipality.get_data_map(start, end)
+
+        # Get start and end date for the month being reported on
+        month_start, month_end = get_month_start_end(end)
+        try:
+            site_report = SiteReport.get_report_by_month(month_end.month)
+            site_report.report_json = report_json
+        except NoResultFound:
+            site_report = SiteReport(date_created=today,
+                                     municipality=municipality,
+                                     report_json=report_json)
+
+        site_report.save()
+        self.request.session.flash(
+            u"The site report has been saved.", "success")
+
+        return HTTPFound(self.request.route_url(
+            'municipalities',
+            traverse=(municipality.id, 'reports')))
