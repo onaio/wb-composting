@@ -8,7 +8,9 @@ from dashboard.views.base import BaseView
 from dashboard.views.helpers import check_post_csrf
 
 from composting.libs.utils import get_month_start_end
-from composting.views.helpers import selections_from_request
+from composting.views.helpers import (
+    selections_from_request,
+    get_start_end_date)
 from composting.models import Municipality, DailyWaste, Submission, Skip
 from composting.models.municipality import MunicipalityFactory
 from composting.models.monthly_density import MonthlyDensity
@@ -250,38 +252,13 @@ class Municipalities(BaseView):
                  renderer='site_reports.jinja2',
                  permission='show')
     def site_reports(self):
-        def date_from_string_or_default(
-                data, key, default, date_format='%Y-%m-%d'):
-            try:
-                date_string = data[key]
-            except KeyError:
-                return default
-            return datetime.datetime.strptime(date_string, date_format).date()
-
         municipality = self.request.context
-
         # default to start and end of current month
         today = datetime.date.today()
         default_start, default_end = get_month_start_end(today)
 
-        try:
-            start = date_from_string_or_default(
-                self.request.GET, 'start', default_start)
-        except ValueError:
-            raise HTTPBadRequest("Couldn't parse start date")
-
-        try:
-            end = date_from_string_or_default(
-                self.request.GET, 'end', default_end)
-        except ValueError:
-            raise HTTPBadRequest("Couldn't parse end date")
-
-        # lets not go beyond the current date
-        end = min(today, end)
-
-        # start must be less than or equal to end
-        if start > end:
-            start = end
+        start, end = get_start_end_date(
+            self.request.GET, default_start, default_end, today)
 
         # not necessary but pretty format the date range when we can
         if start == default_start and end == default_end:
