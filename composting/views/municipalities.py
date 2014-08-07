@@ -282,11 +282,27 @@ class Municipalities(BaseView):
         else:
             label = None
 
+        # confirm if site report for selected month period is available
+        show_save_report = False
+        update_report = False
+
+        if (end - start).days <= 31:
+            # show save button if the time period selected is a month
+            show_save_report = True
+            try:
+                # try to retrieve month report
+                SiteReport.get_report_by_month(end.month, municipality)
+                update_report = True
+            except NoResultFound:
+                pass
+
         return {
             'municipality': municipality,
             'start': start,
             'end': end,
-            'label': label
+            'label': label,
+            'show_save_report': show_save_report,
+            'update_report': update_report
         }
 
     @view_config(name='save-report',
@@ -307,20 +323,23 @@ class Municipalities(BaseView):
         report_json = municipality.get_data_map(start, end)
 
         # Get start and end date for the month being reported on
-        month_start, month_end = get_month_start_end(end)
+        month_start, month_end = get_month_start_end(start)
         try:
             site_report = SiteReport.get_report_by_month(month_end.month,
                                                          municipality)
             site_report.report_json = report_json
+            self.request.session.flash(
+                u"The site report has been updated.", "success")
         except NoResultFound:
             site_report = SiteReport(date_created=month_end,
                                      municipality=municipality,
                                      report_json=report_json)
+            self.request.session.flash(
+                u"The site report has been saved.", "success")
 
         site_report.save()
-        self.request.session.flash(
-            u"The site report has been saved.", "success")
 
         return HTTPFound(self.request.route_url(
             'municipalities',
-            traverse=(municipality.id, 'reports')))
+            traverse=(municipality.id, 'reports'),
+            _query={'start': start, 'end': end}))
