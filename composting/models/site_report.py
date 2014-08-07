@@ -3,7 +3,8 @@ from sqlalchemy import (
     Column,
     Integer,
     ForeignKey,
-    Date
+    Date,
+    and_
 )
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import relationship
@@ -24,6 +25,8 @@ class SiteReport(Base):
     municipality = relationship('Municipality')
 
     @classmethod
-    def get_report_by_month(cls, month):
+    def get_report_by_month(cls, month, municipality):
         return DBSession.query(SiteReport)\
-            .filter(extract('month', SiteReport.date_created) == month).one()
+            .filter(and_(
+                extract('month', SiteReport.date_created) == month),
+                SiteReport.municipality == municipality).one()

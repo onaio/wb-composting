@@ -309,10 +309,11 @@ class Municipalities(BaseView):
         # Get start and end date for the month being reported on
         month_start, month_end = get_month_start_end(end)
         try:
-            site_report = SiteReport.get_report_by_month(month_end.month)
+            site_report = SiteReport.get_report_by_month(month_end.month,
+                                                         municipality)
             site_report.report_json = report_json
         except NoResultFound:
-            site_report = SiteReport(date_created=today,
+            site_report = SiteReport(date_created=month_end,
                                      municipality=municipality,
                                      report_json=report_json)
 

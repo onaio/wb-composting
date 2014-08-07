@@ -1,4 +1,5 @@
 import datetime
+import transaction
 from webob.multidict import MultiDict
 from mock import MagicMock
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden
@@ -13,7 +14,7 @@ from composting.forms import SkipForm
 from composting.tests.test_base import (
     IntegrationTestBase, FunctionalTestBase)
 
-from sqlalchemy import inspect
+YEAR, MONTH, DAY = 2014, 8, 1
 
 
 class TestMunicipalities(IntegrationTestBase):
@@ -216,13 +217,8 @@ class TestMunicipalities(IntegrationTestBase):
 
     def test_save_site_report(self):
         initial_count = SiteReport.count()
-        # use existing municipality instance state
-        instance_state = inspect(self.municipality)
-        attrs = {'get_data_map.return_value': {'test': 'data'},
-                 '_sa_instance_state': instance_state}
-        mock_municipality = MagicMock(Municipality, **attrs)
 
-        self.request.context = mock_municipality
+        self.request.context = self.municipality
         self.request.method = 'POST'
         self.request.POST = MultiDict([
             ('start', '2014-06-1'),
@@ -232,8 +228,36 @@ class TestMunicipalities(IntegrationTestBase):
         self.assertIsInstance(response, HTTPFound)
         self.assertEqual(SiteReport.count(), initial_count + 1)
 
-        site_report = SiteReport.get_report_by_month(6)
+        site_report = SiteReport.get_report_by_month(6, self.municipality)
         self.assertEqual(site_report.date_created.day, 30)
+
+    def _add_site_report(self):
+        site_report = SiteReport(date_created=datetime.datetime(YEAR,
+                                                                MONTH,
+                                                                DAY),
+                                 municipality=self.municipality,
+                                 report_json={'vehicle_count': 0})
+        with transaction.manager:
+            site_report.save()
+
+    def test_update_report(self):
+        self._add_site_report()
+        initial_count = SiteReport.count()
+        # use existing municipality instance state
+        municipality = self.municipality
+        municipality.vehicle_count = MagicMock(return_value=15)
+
+        self.request.context = municipality
+        self.request.method = 'POST'
+        self.request.POST = MultiDict([
+            ('start', '{}-{}-{}'.format(YEAR, MONTH, 1)),
+            ('end', '{}-{}-{}'.format(YEAR, MONTH, 31))])
+        response = self.views.save_site_report()
+        self.assertIsInstance(response, HTTPFound)
+        self.assertEqual(SiteReport.count(), initial_count)
+
+        site_report = SiteReport.get_report_by_month(MONTH, self.municipality)
+        self.assertEqual(site_report.report_json['vehicle_count'], 15)
 
 
 class TestMunicipalitiesFunctional(FunctionalTestBase):
