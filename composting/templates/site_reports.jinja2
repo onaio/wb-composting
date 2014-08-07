@@ -40,7 +40,18 @@
         <div class="box-header">
           <h3 class="box-title">{{ start|format_date(request) }}{% if start != end %} - {{ end|format_date(request) }}{% endif %}</h3>
           <!-- Download report button -->
-          <a href="{{request.route_path('municipalities', traverse=(municipality.id, 'reports',), _query={'format':'xlsx', 'start': start, 'end': end})}}" class="btn btn-s btn-success pull-right download-xls">Download as Excel</a>
+          <div class="pull-right report-actions">
+              <form method="post" action="{{request.route_path('municipalities', traverse=(municipality.id, 'save-report'))}}" class="form-inline">
+                  <input name="start" type="hidden" value="{{start}}" />
+                  <input name="end" type="hidden" value="{{end}}" />
+                  {% if show_save_report %}
+                  <input class="btn btn-s btn-success text-normal" 
+                  value="{% if update_report %}Update {% else %}Save {% endif %} Report" type="submit">
+                  {% endif %}
+                  <a href="{{request.route_path('municipalities', traverse=(municipality.id, 'reports',), _query={'format':'xlsx', 'start': start, 'end': end})}}" class="btn btn-s btn-success download-xls">Download as Excel</a>
+
+              </form>
+          </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">

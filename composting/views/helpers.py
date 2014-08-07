@@ -1,6 +1,7 @@
+import datetime
 from pyramid.security import authenticated_userid
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.events import subscriber, NewRequest
 
@@ -36,7 +37,8 @@ def update_status(context, request):
 
     if not hasattr(context.__class__, 'LIST_ACTION_NAME'):
         raise ValueError(
-            "You must set 'LIST_ACTION_NAME' on '{}'".format(context.__class__))
+            "You must set 'LIST_ACTION_NAME' on '{}'".format(
+                context.__class__))
     action = context.__class__.LIST_ACTION_NAME
 
     municipality_id = context.municipality_submission.municipality_id
@@ -71,3 +73,34 @@ def requested_xlsx_format(event):
     if request.GET.get('format') == 'xlsx':
         request.override_renderer = 'xlsx'
         return True
+
+
+def date_from_string_or_default(data, key, default, date_format='%Y-%m-%d'):
+    try:
+        date_string = data[key]
+    except KeyError:
+        return default
+    return datetime.datetime.strptime(date_string, date_format).date()
+
+
+def get_start_end_date(data, default_start, default_end, today):
+    try:
+        start = date_from_string_or_default(
+            data, 'start', default_start)
+    except ValueError:
+        raise HTTPBadRequest("Couldn't parse start date")
+
+    try:
+        end = date_from_string_or_default(
+            data, 'end', default_end)
+    except ValueError:
+        raise HTTPBadRequest("Couldn't parse end date")
+
+    # lets not go beyond the current date
+    end = min(today, end)
+
+    # start must be less than or equal to end
+    if start > end:
+        start = end
+
+    return start, end

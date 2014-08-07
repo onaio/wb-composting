@@ -4,16 +4,20 @@ from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden
 from pyramid.view import view_defaults, view_config
 from deform import Form, ValidationFailure, Button
 from sqlalchemy import and_
+from sqlalchemy.orm.exc import NoResultFound
 from dashboard.views.base import BaseView
 from dashboard.views.helpers import check_post_csrf
 
 from composting.libs.utils import get_month_start_end
-from composting.views.helpers import selections_from_request
+from composting.views.helpers import (
+    selections_from_request,
+    get_start_end_date)
 from composting.models import Municipality, DailyWaste, Submission, Skip
 from composting.models.municipality import MunicipalityFactory
 from composting.models.monthly_density import MonthlyDensity
 from composting.models.monthly_waste_composition import MonthlyWasteComposition
 from composting.models.municipality_submission import MunicipalitySubmission
+from composting.models.site_report import SiteReport
 from composting.forms import SkipForm, SiteProfileForm
 
 
@@ -250,38 +254,13 @@ class Municipalities(BaseView):
                  renderer='site_reports.jinja2',
                  permission='show')
     def site_reports(self):
-        def date_from_string_or_default(
-                data, key, default, date_format='%Y-%m-%d'):
-            try:
-                date_string = data[key]
-            except KeyError:
-                return default
-            return datetime.datetime.strptime(date_string, date_format).date()
-
         municipality = self.request.context
-
         # default to start and end of current month
         today = datetime.date.today()
         default_start, default_end = get_month_start_end(today)
 
-        try:
-            start = date_from_string_or_default(
-                self.request.GET, 'start', default_start)
-        except ValueError:
-            raise HTTPBadRequest("Couldn't parse start date")
-
-        try:
-            end = date_from_string_or_default(
-                self.request.GET, 'end', default_end)
-        except ValueError:
-            raise HTTPBadRequest("Couldn't parse end date")
-
-        # lets not go beyond the current date
-        end = min(today, end)
-
-        # start must be less than or equal to end
-        if start > end:
-            start = end
+        start, end = get_start_end_date(
+            self.request.GET, default_start, default_end, today)
 
         # not necessary but pretty format the date range when we can
         if start == default_start and end == default_end:
@@ -303,9 +282,64 @@ class Municipalities(BaseView):
         else:
             label = None
 
+        # confirm if site report for selected month period is available
+        show_save_report = False
+        update_report = False
+
+        if (end - start).days <= 31:
+            # show save button if the time period selected is a month
+            show_save_report = True
+            try:
+                # try to retrieve month report
+                SiteReport.get_report_by_month(end.month, municipality)
+                update_report = True
+            except NoResultFound:
+                pass
+
         return {
             'municipality': municipality,
             'start': start,
             'end': end,
-            'label': label
+            'label': label,
+            'show_save_report': show_save_report,
+            'update_report': update_report
         }
+
+    @view_config(name='save-report',
+                 request_method='POST',
+                 permission='show')
+    def save_site_report(self):
+        # get the selected month to create a report for
+        # if another report already exists, update it with the report_data
+        # contained in the municipality
+        today = datetime.date.today()
+        default_start, default_end = get_month_start_end(today)
+        start, end = get_start_end_date(
+            self.request.POST, default_start, default_end, today)
+
+        municipality = self.request.context
+
+        # Populate report_data json
+        report_json = municipality.get_data_map(start, end)
+
+        # Get start and end date for the month being reported on
+        month_start, month_end = get_month_start_end(start)
+        try:
+            site_report = SiteReport.get_report_by_month(month_end.month,
+                                                         municipality)
+            site_report.report_json = report_json
+            self.request.session.flash(
+                u"The site report has been updated.", "success")
+        except NoResultFound:
+            site_report = SiteReport(date_created=month_end,
+                                     municipality=municipality,
+                                     report_json=report_json)
+            self.request.session.flash(
+                u"The site report has been saved.", "success")
+
+        site_report.save()
+
+        return HTTPFound(self.request.route_url(
+            'municipalities',
+            traverse=(municipality.id, 'reports'),
+            _query={'start': start, 'end': end}))
