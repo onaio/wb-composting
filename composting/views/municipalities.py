@@ -299,7 +299,7 @@ class Municipalities(BaseView):
             show_save_report = True
             try:
                 # try to retrieve month report
-                SiteReport.get_report_by_month(end.month, municipality)
+                SiteReport.get_report_by_date(end, municipality)
                 update_report = True
             except NoResultFound:
                 pass
@@ -333,13 +333,13 @@ class Municipalities(BaseView):
         # Get start and end date for the month being reported on
         month_start, month_end = get_month_start_end(start)
         try:
-            site_report = SiteReport.get_report_by_month(month_end.month,
-                                                         municipality)
+            site_report = SiteReport.get_report_by_date(month_start,
+                                                        municipality)
             site_report.report_json = report_json
             self.request.session.flash(
                 u"The site report has been updated.", "success")
         except NoResultFound:
-            site_report = SiteReport(date_created=month_end,
+            site_report = SiteReport(report_date=month_start,
                                      municipality=municipality,
                                      report_json=report_json)
             self.request.session.flash(

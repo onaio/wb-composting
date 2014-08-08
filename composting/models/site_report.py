@@ -18,15 +18,16 @@ class SiteReport(Base):
     __tablename__ = 'site_reports'
 
     id = Column(Integer, primary_key=True)
-    date_created = Column(Date, nullable=False, server_default='1970-01-01')
+    report_date = Column(Date, nullable=False, server_default='1970-01-01')
     report_json = Column(JSON, nullable=False)
     municipality_id = Column(
         Integer, ForeignKey('municipalities.id'), nullable=False)
     municipality = relationship('Municipality')
 
     @classmethod
-    def get_report_by_month(cls, month, municipality):
+    def get_report_by_date(cls, date, municipality):
         return DBSession.query(SiteReport)\
             .filter(and_(
-                extract('month', SiteReport.date_created) == month),
-                SiteReport.municipality == municipality).one()
+                extract('month', SiteReport.report_date) == date.month,
+                extract('year', SiteReport.report_date) == date.year,
+                SiteReport.municipality == municipality)).one()

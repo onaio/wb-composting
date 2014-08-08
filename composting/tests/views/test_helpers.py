@@ -38,11 +38,11 @@ class TestHelpers(unittest.TestCase):
 
     def test_get_trend_data(self):
         site_report_1 = SiteReport(
-            date_created=date.today(),
+            report_date=date.today(),
             report_json={'volume_count': 10,
                          'energy_consumption': 150})
         site_report_2 = SiteReport(
-            date_created=date.today(),
+            report_date=date.today(),
             report_json={'volume_count': 10,
                          'energy_consumption': 200})
 

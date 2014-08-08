@@ -115,7 +115,7 @@ def get_trend_data(site_reports):
     trend_data_map = {}
 
     for report in site_reports:
-        utc_stamp = calendar.timegm(report.date_created.timetuple()) * 1000
+        utc_stamp = calendar.timegm(report.report_date.timetuple()) * 1000
         for key, value in report.report_json.iteritems():
             trend_data_list[key].append([utc_stamp, value]
                                         if value
