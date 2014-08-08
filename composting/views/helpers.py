@@ -8,6 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from pyramid.events import subscriber, NewRequest
 
 from composting.models.user import User
+from composting.models.site_report import SiteReport, RATIO
 
 
 def selections_from_request(request, selection_list, comparator, defaults):
@@ -117,13 +118,19 @@ def get_trend_data(site_reports):
     for report in site_reports:
         utc_stamp = calendar.timegm(report.report_date.timetuple()) * 1000
         for key, value in report.report_json.iteritems():
+            # adjust ratio values
+            if SiteReport.REPORT_VALUE_UNITS[key] == RATIO:
+                value = value * 100
+
             trend_data_list[key].append([utc_stamp, value]
                                         if value
                                         else [utc_stamp, 0])
 
     for key, value in trend_data_list.iteritems():
+        label = key.title().replace('Msw', 'MSW').replace('_', ' ')
+        label = "{} ({})".format(label, SiteReport.REPORT_VALUE_UNITS[key])
         trend_data_map[key] = {
-            'label': key.title().replace('Msw', 'MSW').replace('_', ' '),
+            'label': label,
             'data': value
         }
 

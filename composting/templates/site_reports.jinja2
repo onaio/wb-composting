@@ -77,7 +77,7 @@
             </tr>
             <tr>
               <td>Density of MSW</td>
-              <td>t/m<sup>3</sup></td>
+              <td>Ton/m<sup>3</sup></td>
               {% set density_of_msw = municipality.density_of_msw(start, end) %}
               <td>{{ density_of_msw|default(0, true)|format_decimal(request) }}</td>
               <td style="width: 25%">Consistency with normal monthly supply</td>
