@@ -20,7 +20,7 @@ def upgrade():
     op.create_table(
         'site_reports',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('date_created',
+        sa.Column('report_date',
                   sa.Date(),
                   server_default='1970-01-01',
                   nullable=False),

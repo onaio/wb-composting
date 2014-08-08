@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden
 from pyramid.view import view_defaults, view_config
@@ -11,7 +12,8 @@ from dashboard.views.helpers import check_post_csrf
 from composting.libs.utils import get_month_start_end
 from composting.views.helpers import (
     selections_from_request,
-    get_start_end_date)
+    get_start_end_date,
+    get_trend_data)
 from composting.models import Municipality, DailyWaste, Submission, Skip
 from composting.models.municipality import MunicipalityFactory
 from composting.models.monthly_density import MonthlyDensity
@@ -48,8 +50,14 @@ class Municipalities(BaseView):
                  permission='show')
     def show(self):
         municipality = self.request.context
+        # generate a trend view of saved municipality reports
+        # get all site reports belonging to the municipality
+
+        site_reports = SiteReport.all(SiteReport.municipality == municipality)
+        trend_data = json.dumps(get_trend_data(site_reports))
         return {
-            'municipality': municipality
+            'municipality': municipality,
+            'trend_data': trend_data
         }
 
     #@view_config(name='daily-waste', renderer='daily_waste_list.jinja2')
@@ -291,7 +299,7 @@ class Municipalities(BaseView):
             show_save_report = True
             try:
                 # try to retrieve month report
-                SiteReport.get_report_by_month(end.month, municipality)
+                SiteReport.get_report_by_date(end, municipality)
                 update_report = True
             except NoResultFound:
                 pass
@@ -325,13 +333,13 @@ class Municipalities(BaseView):
         # Get start and end date for the month being reported on
         month_start, month_end = get_month_start_end(start)
         try:
-            site_report = SiteReport.get_report_by_month(month_end.month,
-                                                         municipality)
+            site_report = SiteReport.get_report_by_date(month_start,
+                                                        municipality)
             site_report.report_json = report_json
             self.request.session.flash(
                 u"The site report has been updated.", "success")
         except NoResultFound:
-            site_report = SiteReport(date_created=month_end,
+            site_report = SiteReport(report_date=month_start,
                                      municipality=municipality,
                                      report_json=report_json)
             self.request.session.flash(

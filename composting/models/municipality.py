@@ -446,10 +446,10 @@ class Municipality(Base):
             ["", "Density of MSW", "t/m3", density_of_msw,
              "Consistency with normal monthly supply"])
 
-        tonnage_of_msw_processed = data_map['tonnage_of_msw_processed'] or 0
+        quantity_of_msw_processed = data_map['quantity_of_msw_processed'] or 0
         rows.append(
             ["", "Quantity of MSW processed", "Tonnes",
-             tonnage_of_msw_processed, ""])
+             quantity_of_msw_processed, ""])
 
         num_trucks_delivered_msw = data_map['num_trucks_delivered_msw'] or 0
         rows.append(
@@ -613,7 +613,7 @@ class Municipality(Base):
             'volume_of_msw_processed': self.volume_of_msw_processed(
                 start_date, end_date) or 0,
             'density_of_msw': self.density_of_msw(start_date, end_date) or 0,
-            'tonnage_of_msw_processed': self.tonnage_of_msw_processed(
+            'quantity_of_msw_processed': self.tonnage_of_msw_processed(
                 start_date, end_date) or 0,
             'num_trucks_delivered_msw': self.num_trucks_delivered_msw(
                 start_date, end_date) or 0,

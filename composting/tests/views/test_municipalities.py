@@ -228,13 +228,14 @@ class TestMunicipalities(IntegrationTestBase):
         self.assertIsInstance(response, HTTPFound)
         self.assertEqual(SiteReport.count(), initial_count + 1)
 
-        site_report = SiteReport.get_report_by_month(6, self.municipality)
-        self.assertEqual(site_report.date_created.day, 30)
+        site_report = SiteReport.get_report_by_date(
+            datetime.datetime(2014, 6, 1), self.municipality)
+        self.assertEqual(site_report.report_date.day, 1)
 
     def _add_site_report(self):
-        site_report = SiteReport(date_created=datetime.datetime(YEAR,
-                                                                MONTH,
-                                                                DAY),
+        site_report = SiteReport(report_date=datetime.datetime(YEAR,
+                                                               MONTH,
+                                                               DAY),
                                  municipality=self.municipality,
                                  report_json={'vehicle_count': 0})
         with transaction.manager:
@@ -242,6 +243,7 @@ class TestMunicipalities(IntegrationTestBase):
 
     def test_update_report(self):
         self._add_site_report()
+        report_date = datetime.datetime(YEAR, MONTH, DAY)
         initial_count = SiteReport.count()
         # use existing municipality instance state
         municipality = self.municipality
@@ -256,7 +258,8 @@ class TestMunicipalities(IntegrationTestBase):
         self.assertIsInstance(response, HTTPFound)
         self.assertEqual(SiteReport.count(), initial_count)
 
-        site_report = SiteReport.get_report_by_month(MONTH, self.municipality)
+        site_report = SiteReport.get_report_by_date(
+            report_date, self.municipality)
         self.assertEqual(site_report.report_json['vehicle_count'], 15)
 
 

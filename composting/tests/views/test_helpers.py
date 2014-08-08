@@ -5,10 +5,10 @@ from webob.multidict import MultiDict
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, Response
 from pyramid import testing
 
-from composting import constants
 from composting.models import Submission, DailyWaste
 from composting.models.municipality import Municipality
 from composting.models.municipality_submission import MunicipalitySubmission
+from composting.models.site_report import SiteReport
 from composting.views import helpers
 from composting.tests.test_base import IntegrationTestBase
 
@@ -35,6 +35,22 @@ class TestHelpers(unittest.TestCase):
         selections = helpers.selections_from_request(
             request, selection_list, lambda v: v == '1', ['pending'])
         self.assertEqual(sorted(selections), ['pending'])
+
+    def test_get_trend_data(self):
+        site_report_1 = SiteReport(
+            report_date=date.today(),
+            report_json={'volume_count': 10,
+                         'energy_consumption': 150})
+        site_report_2 = SiteReport(
+            report_date=date.today(),
+            report_json={'volume_count': 10,
+                         'energy_consumption': 200})
+
+        site_reports = [site_report_1, site_report_2]
+        trend_data_map = helpers.get_trend_data(site_reports)
+        self.assertIsInstance(trend_data_map, dict)
+        self.assertIsNotNone(trend_data_map['volume_count'])
+        self.assertIsNotNone(trend_data_map['energy_consumption'])
 
 
 class TestHelpersIntegration(IntegrationTestBase):
