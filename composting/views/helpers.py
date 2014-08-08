@@ -127,4 +127,4 @@ def get_trend_data(site_reports):
             'data': value
         }
 
-    return trend_data_map
+    return trend_data_map or None

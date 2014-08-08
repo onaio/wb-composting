@@ -4,10 +4,22 @@
 {% block breadcrumbs %}
 {% endblock breadcrumbs %}
 {% block content %}
+
+{% if trend_data == 'null' %}
+<div class="row">
+    <div class="col-sm-4">
+        <div class="well well-lg text-center"> 
+            No Site Reports Available
+        </div>
+    </div>
+</div>
+{% else %}
 <div class="row">
     <div id="chart" class="col-sm-8"></div>
     <p id="choices" class="col-sm-3"></p>
 </div>
+{% endif %}
+
 {% endblock %}
 
 {% block page_scripts %}
