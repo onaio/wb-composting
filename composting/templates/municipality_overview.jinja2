@@ -45,6 +45,15 @@
                 }
             if (data.length > 0) {
                 $.plot("#chart", data, {
+                    series: {
+                        lines: {
+                            show: true,
+                            steps: false
+                        },
+                        points: {
+                            show: true
+                        }
+                    },
                     yaxis: {
                         min: 0
                     },
@@ -53,17 +62,8 @@
                         minTickSize: [1, "month"],
                         timeformat: "%d-%b-%Y"
                     },
-                    series: {
-                        lines: {
-                            show: true
-                        },
-                        points: {
-                            show: true
-                        }
-                    },
                     grid: {
-                        hoverable: true,
-                        clickable: true
+                        hoverable: true
                     },
                 });
             }
