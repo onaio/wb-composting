@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest, HTTPForbidden
 from pyramid.view import view_defaults, view_config
@@ -11,7 +12,8 @@ from dashboard.views.helpers import check_post_csrf
 from composting.libs.utils import get_month_start_end
 from composting.views.helpers import (
     selections_from_request,
-    get_start_end_date)
+    get_start_end_date,
+    get_trend_data)
 from composting.models import Municipality, DailyWaste, Submission, Skip
 from composting.models.municipality import MunicipalityFactory
 from composting.models.monthly_density import MonthlyDensity
@@ -48,8 +50,14 @@ class Municipalities(BaseView):
                  permission='show')
     def show(self):
         municipality = self.request.context
+        # generate a trend view of saved municipality reports
+        # get all site reports belonging to the municipality
+
+        site_reports = SiteReport.all(SiteReport.municipality == municipality)
+        trend_data = json.dumps(get_trend_data(site_reports))
         return {
-            'municipality': municipality
+            'municipality': municipality,
+            'trend_data': trend_data
         }
 
     #@view_config(name='daily-waste', renderer='daily_waste_list.jinja2')

@@ -109,3 +109,8 @@ body > .header .logo .icon {
 .download-xls {
   margin-left: 0.5em;
 }
+
+#chart {
+  margin-left: 1em;
+  height: 500px;
+}
