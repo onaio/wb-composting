@@ -39,18 +39,18 @@ class TestHelpers(unittest.TestCase):
     def test_get_trend_data(self):
         site_report_1 = SiteReport(
             report_date=date.today(),
-            report_json={'volume_count': 10,
-                         'energy_consumption': 150})
+            report_json={'volume_of_mature_compost': 10,
+                         'electricity_consumption': 150})
         site_report_2 = SiteReport(
             report_date=date.today(),
-            report_json={'volume_count': 10,
-                         'energy_consumption': 200})
+            report_json={'volume_of_mature_compost': 10,
+                         'electricity_consumption': 200})
 
         site_reports = [site_report_1, site_report_2]
         trend_data_map = helpers.get_trend_data(site_reports)
         self.assertIsInstance(trend_data_map, dict)
-        self.assertIsNotNone(trend_data_map['volume_count'])
-        self.assertIsNotNone(trend_data_map['energy_consumption'])
+        self.assertIsNotNone(trend_data_map['volume_of_mature_compost'])
+        self.assertIsNotNone(trend_data_map['electricity_consumption'])
 
 
 class TestHelpersIntegration(IntegrationTestBase):
