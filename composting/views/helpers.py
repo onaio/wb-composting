@@ -1,6 +1,6 @@
 import datetime
 import calendar
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from pyramid.security import authenticated_userid
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
@@ -113,7 +113,7 @@ def get_trend_data(site_reports):
     # generate data format expected by map
 
     trend_data_list = defaultdict(list)
-    trend_data_map = {}
+    trend_data_map = OrderedDict()
 
     for report in site_reports:
         utc_stamp = calendar.timegm(report.report_date.timetuple()) * 1000
@@ -126,7 +126,7 @@ def get_trend_data(site_reports):
                                         if value
                                         else [utc_stamp, 0])
 
-    for key, value in trend_data_list.iteritems():
+    for key, value in sorted(trend_data_list.iteritems()):
         label = key.title().replace('Msw', 'MSW').replace('_', ' ')
         label = "{} ({})".format(label, SiteReport.REPORT_VALUE_UNITS[key])
         trend_data_map[key] = {

@@ -30,7 +30,7 @@
         <table class="table table-hover table-bordered table-condensed">
             <thead>
                 <th>{% trans %}Year{% endtrans %}</th>
-                {% for key in site_reports[0].report_json.iterkeys() %}
+                {% for key in site_reports[0].report_json.iterkeys()|sort %}
                     <th>{{key | capitalize | replace("_", " ") | replace("msw", "MSW")}}</th>
                 {% endfor %}
             </thead>
@@ -38,7 +38,7 @@
                 {% for report in site_reports|sort(attribute='report_date') %}
                 <tr>
                     <td>{{report.report_date.strftime("%B-%Y")}}</td>
-                    {% for value in report.report_json.itervalues() %}
+                    {% for key, value in report.report_json|dictsort %}
                         <td>{{value or "-"}}</td>
                     {% endfor%}
                 </tr>
