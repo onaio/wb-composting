@@ -27,11 +27,12 @@
 </div>
 <div class="row">
     <div class="col-sm-12 table-responsive">
-        <table class="table table-hover table-bordered table-condensed">
+        <table class="table tablesaw" 
+        	data-mode="swipe" data-minimap>
             <thead>
-                <th>{% trans %}Year{% endtrans %}</th>
+                <th data-priority="persist">{% trans %}Year{% endtrans %}</th>
                 {% for key in site_reports[0].report_json.iterkeys()|sort %}
-                    <th>{{key | capitalize | replace("_", " ") | replace("msw", "MSW")}}</th>
+                    <th data-priority="{{loop.index}}">{{key | capitalize | replace("_", " ") | replace("msw", "MSW")}}</th>
                 {% endfor %}
             </thead>
             <tbody>
