@@ -114,3 +114,7 @@ body > .header .logo .icon {
   margin-left: 1em;
   height: 500px;
 }
+
+.chart.row {
+  margin-bottom: 1em;
+}

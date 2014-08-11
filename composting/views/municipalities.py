@@ -57,7 +57,8 @@ class Municipalities(BaseView):
         trend_data = json.dumps(get_trend_data(site_reports))
         return {
             'municipality': municipality,
-            'trend_data': trend_data
+            'trend_data': trend_data,
+            'site_reports': site_reports
         }
 
     #@view_config(name='daily-waste', renderer='daily_waste_list.jinja2')

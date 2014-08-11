@@ -15,8 +15,37 @@
 </div>
 {% else %}
 <div class="row">
+    <div class="col-sm-6 col-sm-offset-3 text-center">
+        <h3>{% trans %}Site Report Summary for {% endtrans %}{{municipality.name}}</h3>
+    </div>
+</div>
+<div class="chart row">
     <div id="chart" class="col-sm-8"></div>
-    <p id="choices" class="col-sm-3"></p>
+    <div class="col-sm-3">
+        <p id="choices"></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 table-responsive">
+        <table class="table table-hover table-bordered table-condensed">
+            <thead>
+                <th>{% trans %}Year{% endtrans %}</th>
+                {% for key in site_reports[0].report_json.iterkeys() %}
+                    <th>{{key | capitalize | replace("_", " ") | replace("msw", "MSW")}}</th>
+                {% endfor %}
+            </thead>
+            <tbody>
+                {% for report in site_reports|sort(attribute='report_date') %}
+                <tr>
+                    <td>{{report.report_date.strftime("%B-%Y")}}</td>
+                    {% for value in report.report_json.itervalues() %}
+                        <td>{{value or "-"}}</td>
+                    {% endfor%}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endif %}
 
@@ -72,7 +101,7 @@
                     xaxis: {
                         mode: "time",
                         minTickSize: [1, "month"],
-                        timeformat: "%d-%b-%Y"
+                        timeformat: "%b-%Y"
                     },
                     grid: {
                         hoverable: true
