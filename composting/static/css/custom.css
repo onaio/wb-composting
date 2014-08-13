@@ -131,3 +131,8 @@ body > .header .logo .icon {
 .chart.row {
   margin-bottom: 1em;
 }
+
+div.overview-table table {
+  margin-left: 1em;
+  font-size: 11px;
+}

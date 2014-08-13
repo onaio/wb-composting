@@ -25,7 +25,7 @@
         <p id="choices"></p>
     </div>
 </div>
-<div class="row clearfix">
+<div class="overview-table row clearfix">
 	<table class="table table-bordered tablesaw" 
     	data-mode="swipe" data-minimap data-sortable>
         <thead>
@@ -50,11 +50,7 @@
 
 {% endblock %}
 {% block page_scripts %}
-
-<!-- jQuery 1.11.1 -->
 <script type="text/javascript" src="{{ request.static_url('composting:static/js/jquery.min.js') }}"></script>
-<!-- Bootstrap -->
-<script src="{{ request.static_url('composting:static/js/bootstrap.min.js') }}" type="text/javascript"></script>
 <!-- Tablesaw -->
 <script src="{{ request.static_url('composting:static/js/tablesaw.min.js') }}" type="text/javascript"></script>
 
