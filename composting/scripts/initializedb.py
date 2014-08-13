@@ -60,7 +60,7 @@ def main(argv=sys.argv):
 
     # add dummy site reports
     site_report_1 = SiteReport(
-        report_date=datetime.date.today(),
+        report_date=datetime.date(2014, 6, 1),
         municipality=municipality,
         report_json={
             'volume_of_msw_processed': 400,
@@ -84,7 +84,7 @@ def main(argv=sys.argv):
             'leachete_volume_accumulated': 200})
 
     site_report_2 = SiteReport(
-        report_date=datetime.date.today(),
+        report_date=datetime.date(2014, 4, 1),
         municipality=municipality,
         report_json={
             'volume_of_msw_processed': 300,
@@ -108,7 +108,7 @@ def main(argv=sys.argv):
             'leachete_volume_accumulated': 170})
 
     site_report_3 = SiteReport(
-        report_date=datetime.date.today(),
+        report_date=datetime.date(2014, 5, 1),
         municipality=municipality,
         report_json={
             'volume_of_msw_processed': 200,
