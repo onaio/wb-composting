@@ -18,10 +18,16 @@
 }
 
 /*reset tablesaw style*/
+table.tablesaw thead{
+  background:transparent;
+}
 table.tablesaw tr th{
-  background:#FFFFFF;
   color:#777;
   font-weight:bold!important;
+  vertical-align:bottom;
+}
+table.tablesaw tr th button{
+  padding-right:0!important;
 }
 
 .label a {

@@ -27,11 +27,11 @@
 </div>
 <div class="row clearfix">
 	<table class="table table-bordered tablesaw" 
-    	data-mode="swipe" data-minimap>
+    	data-mode="swipe" data-minimap data-sortable>
         <thead>
-            <th data-priority="persist">{% trans %}Year{% endtrans %}</th>
+            <th data-priority="persist" data-sortable-col data-sortable-default-col>{% trans %}Year{% endtrans %}</th>
             {% for key in site_reports[0].report_json.iterkeys()|sort %}
-                <th data-priority="{{loop.index}}">{{key | capitalize | replace("_", " ") | replace("msw", "MSW")}}</th>
+                <th data-priority="{{loop.index}}" data-sortable-col>{{key | capitalize | replace("_", " ") | replace("msw", "MSW")}}</th>
             {% endfor %}
         </thead>
         <tbody>
