@@ -14,39 +14,37 @@
     </div>
 </div>
 {% else %}
-<div class="row">
+<div class="row clearfix">
     <div class="col-sm-6 col-sm-offset-3 text-center">
         <h3>{% trans %}Site Report Summary for {% endtrans %}{{municipality.name}}</h3>
     </div>
 </div>
-<div class="chart row">
+<div class="chart row clearfix">
     <div id="chart" class="col-sm-8"></div>
     <div class="col-sm-3">
         <p id="choices"></p>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-12 table-responsive">
-        <table class="table tablesaw" 
-        	data-mode="swipe" data-minimap>
-            <thead>
-                <th data-priority="persist">{% trans %}Year{% endtrans %}</th>
-                {% for key in site_reports[0].report_json.iterkeys()|sort %}
-                    <th data-priority="{{loop.index}}">{{key | capitalize | replace("_", " ") | replace("msw", "MSW")}}</th>
-                {% endfor %}
-            </thead>
-            <tbody>
-                {% for report in site_reports|sort(attribute='report_date') %}
-                <tr>
-                    <td>{{report.report_date.strftime("%B-%Y")}}</td>
-                    {% for key, value in report.report_json|dictsort %}
-                        <td>{{value or "-"}}</td>
-                    {% endfor%}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="row clearfix">
+	<table class="table table-bordered tablesaw" 
+    	data-mode="swipe" data-minimap>
+        <thead>
+            <th data-priority="persist">{% trans %}Year{% endtrans %}</th>
+            {% for key in site_reports[0].report_json.iterkeys()|sort %}
+                <th data-priority="{{loop.index}}">{{key | capitalize | replace("_", " ") | replace("msw", "MSW")}}</th>
+            {% endfor %}
+        </thead>
+        <tbody>
+            {% for report in site_reports|sort(attribute='report_date') %}
+            <tr>
+                <td>{{report.report_date.strftime("%B-%Y")}}</td>
+                {% for key, value in report.report_json|dictsort %}
+                    <td>{{value or "-"}}</td>
+                {% endfor%}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endif %}
 

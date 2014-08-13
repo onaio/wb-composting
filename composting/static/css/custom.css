@@ -17,6 +17,13 @@
     background-color: #f5f5f5;
 }
 
+/*reset tablesaw style*/
+table.tablesaw tr th{
+  background:#FFFFFF;
+  color:#777;
+  font-weight:bold!important;
+}
+
 .label a {
     color: white;
 }
