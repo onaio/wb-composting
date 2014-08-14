@@ -120,6 +120,7 @@ class Submissions(BaseView):
         except KeyError:
             logging.getLogger(__name__).error(url)
             logging.getLogger(__name__).error(str(response.json()))
+
             raise HTTPBadRequest(response.json()['detail'])
         else:
             return HTTPFound(location=edit_url)
