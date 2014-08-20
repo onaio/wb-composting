@@ -526,3 +526,11 @@ class TestMunicipalitiesFunctional(FunctionalTestBase):
         headers = self._login_user(1)
         response = self.testapp.get(url, headers=headers)
         self.assertEqual(response.status_code, 200)
+
+    def test_show_with_period(self):
+        url = self.request.route_path(
+            'municipalities', traverse=(self.municipality.id,),
+            _query={'period': '2014-05'})
+        headers = self._login_user(1)
+        result = self.testapp.get(url, headers=headers)
+        self.assertEqual(result.status_code, 200)
