@@ -104,8 +104,8 @@ class Submissions(BaseView):
         submission = self.request.context
         sub_id = submission.json_data[constants.ONA_SUBMISSION_ID]
         form_id = submission.FORM_ID
-        return_url = self.request.route_url(
-            'submissions', traverse=())
+
+        return_url = self.request.referrer
         token = self.request.registry.settings['ona_auth_token']
         url = urlparse.urljoin(
             self.request.registry.settings['ona_data_api'],
