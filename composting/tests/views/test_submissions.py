@@ -73,6 +73,7 @@ class TestSubmissions(IntegrationTestBase):
     def test_edit_submission_with_invalid_submission(self):
         daily_waste = DailyWaste.newest()
         self.request.context = daily_waste
+        self.request.referrer = "http://composting.ona.io"
 
         with HTTMock(fetch_non_existent_submission_url):
             self.assertRaises(HTTPBadRequest, self.views.edit)
@@ -80,6 +81,7 @@ class TestSubmissions(IntegrationTestBase):
     def test_edit_submission_with_valid_submission(self):
         daily_waste = DailyWaste.newest()
         self.request.context = daily_waste
+        self.request.referrer = "http://composting.ona.io"
 
         with HTTMock(enketo_edit_url_mock):
             response = self.views.edit()
