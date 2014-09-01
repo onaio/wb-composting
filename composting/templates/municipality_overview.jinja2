@@ -5,16 +5,11 @@
   <link href="{{ request.static_url('composting:static/css/datetimepicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 {% block content %}
-
-{% if site_reports is none %}
+{% if site_reports|length == 0 %}
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-6 col-sm-offset-3">
             <div class="well well-lg text-center"> 
-                {% if date %}
-                    No Site Reports available for {{ date.strftime("%b, %Y") }}.
-                {% else %}
-                    No Site Reports Saved.
-                {% endif %}
+                No Site Reports Saved.
             </div>
         </div>
     </div>
